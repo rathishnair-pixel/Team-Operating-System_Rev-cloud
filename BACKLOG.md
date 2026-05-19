@@ -1,6 +1,6 @@
 # Backlog
 
-## Feature: Smart Product Swapper
+## Example Feature: Smart Product Swapper
 
 ### User Story
 As a Salesforce CPQ user, I want a swap action that replaces a legacy quote line item with a new product SKU while inheriting the same legacy discount percentage, so the quote preserves negotiated discount intent.
