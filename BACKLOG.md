@@ -3,7 +3,7 @@
 ## Feature: Smart Product Swapper
 
 ### User Story
-As a Salesforce CPQ user, I want an Agentforce-driven swap action that replaces a legacy quote line item with a new product SKU while inheriting the same legacy discount percentage, so the quote preserves negotiated discount intent.
+As a Salesforce CPQ user, I want a swap action that replaces a legacy quote line item with a new product SKU while inheriting the same legacy discount percentage, so the quote preserves negotiated discount intent.
 
 ### Acceptance Criteria
 - Object context is a `Quote` with related `QuoteLine` items.
