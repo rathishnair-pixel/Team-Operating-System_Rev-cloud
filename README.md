@@ -129,7 +129,49 @@ Pending QA/Deployment:
 
 ---
 
-## Getting Started
+## Using This Framework — Onboarding Guide
+
+### Prerequisites
+- [Claude Code](https://claude.ai/code) installed (`npm install -g @anthropic-ai/claude-code`)
+- Salesforce CLI v2+ installed (`npm install -g @salesforce/cli`)
+- Access to a Salesforce org with Revenue Cloud (RLM) enabled
+- _(Optional)_ Figma account for [XA] persona UI work
+
+### Step 1 — Clone the repo
+```bash
+git clone git@git.soma.salesforce.com:rathish-nair/Team-OS.git
+cd Team-OS
+```
+
+### Step 2 — Start Claude Code
+```bash
+claude
+```
+That's it. Claude Code automatically loads `CLAUDE.md` on startup, activating the full 7-persona swarm. No configuration needed.
+
+### Step 3 — Start a feature
+Just describe what you want to build in plain English. The [PM] + [SA] personas will automatically run the **PO Interview Discovery Funnel** — asking one question at a time, in sequence, before any code is written.
+
+Example prompt to get started:
+```
+I want to build a subscription bundle for enterprise customers with tiered pricing.
+```
+
+### Step 4 — Adapt the state files for your project
+Before starting your first feature, reset these files for your context:
+
+| File | Action |
+|---|---|
+| `BACKLOG.md` | Clear existing items, add your own sprint backlog |
+| `PROJECT_STATE.md` | Reset to blank template — [PM] will populate it |
+| `REVENUE_SPEC.md` | Archive or delete — a new one will be generated per feature |
+
+### Key Principle
+**The swarm enforces its own process.** You don't need to manage personas manually. Claude Code reads `CLAUDE.md` and routes every task through the correct persona, review gate, and guardrail automatically.
+
+---
+
+## Getting Started (Salesforce CLI)
 
 ```bash
 # Authenticate to your org
