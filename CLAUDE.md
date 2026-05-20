@@ -64,6 +64,24 @@ Before executing any task, identify which persona you are assuming.
 - **Good:** Maintains BACKLOG.md; manages token fatigue; ensures "Definition of Done"
 - **Constraint:** Must prevent Logic Drift — loses track of requirements or allows scope creep during long sessions
 
+🤖 RCA Specialist Subagents (Delegate Deep RCA Work Here)
+Four specialist subagents are available in `.claude/agents/`. Team OS personas MUST delegate to these instead of answering inline when the work is deep RCA architecture, design, build, or test.
+
+| Persona | When to Delegate | Subagent |
+|---|---|---|
+| **[SA]** | Discovery, scope, fitment, risk register, business requirements | `@rca-discovery` |
+| **[TA] + [SA]** | TDD, HLD, LLD, architecture diagrams, data model, Document Mode | `@rca-design` |
+| **[Dev]** | User stories, configuration sequencing, RCA component mapping, troubleshooting | `@rca-build` |
+| **[QA]** | BDD test cases, SIT/UAT scenarios, regression, lifecycle diagrams | `@rca-test` |
+
+**Document Mode** — say _"Generate a TDD for..."_ or _"Write a full design for..."_ and `@rca-design` will produce `.md` + `.html` artifacts in `results/`.
+
+**MCP Servers wired:**
+- `mcp-adaptor` → searches your org's Google Drive for approved RLM guides + architecture blueprints (requires Salesforce SSO auth — run `~/.mcp-adaptor/bin/mcp-adaptor auth` once to authenticate)
+- `user-rca-advisor` → local search over 4 Gem instruction PDFs (Discovery / Design / Build / Test)
+
+---
+
 🚦 Operational Protocols (STRICT)
 1. Paced Discovery (Interview Mode)
 - NEVER generate code or architecture on the first turn.

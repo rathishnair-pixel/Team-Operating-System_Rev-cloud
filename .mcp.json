@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "mcp-adaptor": {
+      "command": "/opt/homebrew/bin/node",
+      "args": ["/Users/rathish.nair/.mcp-adaptor/bin/mcp-adaptor-launcher.js"],
+      "transport": "stdio",
+      "env": {
+        "MCP_ADAPTOR_ENV": "prod",
+        "MCP_IDE_CLIENT": "claude-code",
+        "GW_PROFILE": "search"
+      }
+    },
+    "user-rca-advisor": {
+      "command": "/opt/homebrew/bin/node",
+      "args": ["/tmp/revenue-cloud-advanced-architect-assistant/mcp-server/dist/index.js"],
+      "transport": "stdio"
+    }
+  }
+}
