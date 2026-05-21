@@ -121,6 +121,25 @@ Role: Assume [PM] + [SA] personas simultaneously.
 - [Dev]: Every Agentforce Apex Action MUST have a `description` attribute (min 20 words) explaining When and Why the agent should use it. High-quality descriptions are the "UI" for Agentforce reasoning.
 - [QA]: After code is written, immediately create/run tests: `sf apex run test`.
 
+5. Feature Journey Dashboard (Mandatory on Every Phase Completion)
+Every persona MUST update `FEATURE_TRACKER.json` and regenerate the dashboard when their phase is complete. No phase is "done" until the dashboard reflects it.
+
+| Persona | Phase Complete | Action |
+|---|---|---|
+| `@rca-discovery` / [SA] | Discovery done, REVENUE_SPEC.md produced | Set `discovery → complete`, add artifact path |
+| `@rca-design` / [TA] | TDD/HLD written to `results/` | Set `design → complete`, add artifact path |
+| `@rca-build` / [Dev] | User stories + config sequencing done | Set `build → complete`, add artifact path |
+| `@rca-test` / [QA] | Test plan signed off | Set `test → complete`, add artifact path |
+| [DevOps] | Deploy preview passed + deployed | Set `deploy → complete`, add artifact path |
+
+**Update sequence (run after every phase completion):**
+```bash
+# 1. Edit FEATURE_TRACKER.json — set stage status + add artifact path
+# 2. Regenerate dashboard
+node scripts/generate-journey.js
+```
+Dashboard auto-refreshes in browser every 30 seconds. File: `results/feature-journey.html`.
+
 🛠 Technical Guardrails (Revenue Cloud & Agentforce)
 - Semantic Intent: Agentforce logic depends on descriptions. Use rich language for all metadata labels.
 - Data Hierarchy: [TA] must ensure all scripts account for the Product > Pricebook > Quote > Quote Line hierarchy; all code must include a Revenue Cloud Constraint Model (CML) validation.

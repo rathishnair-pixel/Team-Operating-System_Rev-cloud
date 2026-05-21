@@ -1,0 +1,72 @@
+{
+  "project": "Team OS",
+  "lastUpdated": "2026-05-21",
+  "features": [
+    {
+      "id": "FTR-001",
+      "name": "Tiered Pricing Expression Sets",
+      "pattern": "tiered-volume-pricing",
+      "startDate": "2026-05-20",
+      "stages": {
+        "discovery": {
+          "status": "complete",
+          "date": "2026-05-20",
+          "artifacts": ["REVENUE_SPEC.md"]
+        },
+        "design": {
+          "status": "complete",
+          "date": "2026-05-20",
+          "artifacts": ["results/tiered-pricing-tdd-2026-05-20.md", "results/tiered-pricing-tdd-2026-05-20.html"]
+        },
+        "build": {
+          "status": "in-progress",
+          "date": "2026-05-21",
+          "artifacts": []
+        },
+        "test": {
+          "status": "pending",
+          "date": null,
+          "artifacts": []
+        },
+        "deploy": {
+          "status": "pending",
+          "date": null,
+          "artifacts": []
+        }
+      }
+    },
+    {
+      "id": "FTR-002",
+      "name": "Smart Product Swap",
+      "pattern": "guided-selling",
+      "startDate": "2026-05-12",
+      "stages": {
+        "discovery": {
+          "status": "complete",
+          "date": "2026-05-12",
+          "artifacts": ["REVENUE_SPEC.md"]
+        },
+        "design": {
+          "status": "complete",
+          "date": "2026-05-13",
+          "artifacts": []
+        },
+        "build": {
+          "status": "complete",
+          "date": "2026-05-14",
+          "artifacts": []
+        },
+        "test": {
+          "status": "complete",
+          "date": "2026-05-15",
+          "artifacts": []
+        },
+        "deploy": {
+          "status": "complete",
+          "date": "2026-05-15",
+          "artifacts": []
+        }
+      }
+    }
+  ]
+}
