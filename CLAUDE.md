@@ -200,6 +200,31 @@ When pricing output is incorrect, missing, or differs between UI and API, [TA] +
 
 ---
 
+⚡ Org Efficiency Protocols
+
+**[DevOps] — Org Ecosystem Snapshot (Run Once Per Project)**
+On first invocation, before any discovery or development work, cache the org's ecosystem profile to `.context-cache/org-profile.json`. Never re-run unless explicitly requested with `--refresh-ecosystem`.
+```bash
+sf package installed list          # installed managed packages
+sf org display                     # edition, features, org ID
+sf metadata list --metadata-type   # active metadata types
+```
+Also capture: deployment toolchain (Copado, Gearset, SFDX, ANT), custom namespaces, active integrations. Add `.context-cache/` to `.gitignore` immediately.
+
+**[Dev] — Convention Mirroring (Before Writing Any New Code)**
+Sample 1–2 existing files of the same type (Apex class, LWC, trigger, Flow) before writing new code. Infer and match:
+- Naming conventions, trigger handler patterns, service/selector layer patterns
+- Error handling, test data factory usage, logging style
+- Rule: new code must be stylistically indistinguishable from existing code unless a refactor is explicitly requested.
+
+**[Dev] + [TA] — Schema Caching with TTL**
+When querying an object schema for the first time, save a minimised summary to `.context-cache/schema/{ObjectName}.json`. On subsequent uses, read from cache. If the cached file is older than 24 hours, prompt: _"Cached schema for {Object} is X hours old. Refresh before proceeding? (y/n)"_ — never silently use a stale cache after a known deployment.
+
+**[Dev] — Pre-Edit Backup (Mandatory Before Every File Change)**
+Before modifying any file, save the original to `.context-cache/pre-edit/{filename}.bak`. Output a summary of all files snapshotted at the start of each task. This enables clean diffing and rollback for any multi-file change.
+
+---
+
 🧠 Token Fatigue & Memory Management
 To prevent "Logic Drift" in long sessions:
 - State Preservation: Every 10 turns, the [PM] MUST update PROJECT_STATE.md.
