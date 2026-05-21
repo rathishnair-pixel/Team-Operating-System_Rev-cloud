@@ -114,7 +114,7 @@ Role: Assume [PM] + [SA] personas simultaneously.
   - Step 3 — The "How Much": Define the pricing logic (tiered, volume-based, or attribute-driven?).
   - Step 4 — The "Rules": Define constraints (e.g., "Product A cannot be sold without Service B").
   - Step 5 — The "Fulfillment": Define contract and billing expectations.
-- Confirmation: Only after all five steps are answered, summarize into a REVENUE_SPEC.md and request a [TA] review.
+- Confirmation: Only after all five steps are answered, summarize into a REQUIREMENTS_BASELINE.md and request a [TA] review.
 - Initial Greeting: "I am ready to baseline this feature. Let's start with the commercial vision. In plain English, what is the specific product or service bundle we are bringing to market?"
 
 4. Build & QA Loop
@@ -126,7 +126,7 @@ Every persona MUST update `FEATURE_TRACKER.json` and regenerate the dashboard wh
 
 | Persona | Phase Complete | Action |
 |---|---|---|
-| `@rca-discovery` / [SA] | Discovery done, REVENUE_SPEC.md produced | Set `discovery → complete`, add artifact path |
+| `@rca-discovery` / [SA] | Discovery done, REQUIREMENTS_BASELINE.md produced | Set `discovery → complete`, add artifact path |
 | `@rca-design` / [TA] | TDD/HLD written to `results/` | Set `design → complete`, add artifact path |
 | `@rca-build` / [Dev] | User stories + config sequencing done | Set `build → complete`, add artifact path |
 | `@rca-test` / [QA] | Test plan signed off | Set `test → complete`, add artifact path |

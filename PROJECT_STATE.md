@@ -75,7 +75,7 @@ Sprint 1 — Complete. All 6 layers shipped and verified.
 
 ## Pending QA/Deployment
 - [ ] Classic approval process XML files (`Quote.EcoGreenSwap_ManagerApproval.approvalProcess-meta.xml`, `Quote.EcoGreenSwap_DealDeskApproval.approvalProcess-meta.xml`) — on disk but not deployed; superseded by flow approach; candidates for cleanup
-- [ ] Data Cloud grounding (D-02 from REVENUE_SPEC.md) — never verified; current implementation does not use Data Cloud
+- [ ] Data Cloud grounding (D-02 from REQUIREMENTS_BASELINE.md) — never verified; current implementation does not use Data Cloud
 - [ ] End-to-end live test: Create Quote with HE-RACK-001 → run all 4 actions in sequence → confirm approval routing fires in org
 
 ## Org

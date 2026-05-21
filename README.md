@@ -52,7 +52,7 @@ Run at the start of every new feature. Follows this exact sequence:
 4. **The "Rules"** — Product constraints and dependencies
 5. **The "Fulfillment"** — Contract and billing expectations
 
-Output: `REVENUE_SPEC.md` → handed to `[TA]` for review before any build starts.
+Output: `REQUIREMENTS_BASELINE.md` → handed to `[TA]` for review before any build starts.
 
 ### 4. Build & QA Loop
 - Every Agentforce Apex Action must have a `description` attribute (min 20 words) — this is the "UI" for agent reasoning
@@ -105,7 +105,7 @@ Pending QA/Deployment:
 ├── CLAUDE.md                  # Team OS swarm instructions (this framework)
 ├── PROJECT_STATE.md           # Live session state — updated every 10 turns
 ├── BACKLOG.md                 # Feature backlog managed by [PM]
-├── REVENUE_SPEC.md            # Output of PO Interview — one per feature
+├── REQUIREMENTS_BASELINE.md            # Output of PO Interview — one per feature
 └── <feature-name>/            # SFDX project per feature
     └── force-app/main/default/
         ├── classes/           # Apex InvocableMethods (Agentforce Actions)
@@ -164,7 +164,7 @@ Before starting your first feature, reset these files for your context:
 |---|---|
 | `BACKLOG.md` | Clear existing items, add your own sprint backlog |
 | `PROJECT_STATE.md` | Reset to blank template — [PM] will populate it |
-| `REVENUE_SPEC.md` | Archive or delete — a new one will be generated per feature |
+| `REQUIREMENTS_BASELINE.md` | Archive or delete — a new one will be generated per feature |
 
 ### Key Principle
 **The swarm enforces its own process.** You don't need to manage personas manually. Claude Code reads `CLAUDE.md` and routes every task through the correct persona, review gate, and guardrail automatically.
