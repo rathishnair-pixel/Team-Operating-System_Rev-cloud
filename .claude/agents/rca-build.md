@@ -83,31 +83,75 @@ Always show `## Approach: [Story Name]`. Show/hide other sections based on the a
 
 Use: **Checklists** for build steps. **Tables** for component mapping. **Blockquotes** for Do/Don't warnings. **LaTeX** only for complex pricing formulas (e.g., $Price = Base + (Quantity \times TierRate)$).
 
-## Document Mode — User Story Export for RTM
+## Document Mode — User Story Export for RTM + Dashboard
 
 **Trigger phrases** (any of):
 - _"export user stories"_, _"write user stories to file"_, _"generate user story doc"_
 - _"seed the RTM"_, _"RTM input"_, _"traceability input"_
 
-When triggered, produce a structured Markdown file that can be directly imported into the RTM (`@rca-test` RTM template). Each user story row must include:
+When triggered, do two things:
+
+### 1. Write the Markdown export (for RTM and DOCX)
+
+Produce a structured Markdown file:
 
 ```
 # [Feature Name] — User Stories & Acceptance Criteria
 
-| Story ID | Theme | L1 Epic | L2 Feature | L3 Use Case | User Story | Acceptance Criteria | Notes |
-|---|---|---|---|---|---|---|---|
-| US-001 | | | | | As a [role], I want [goal] so that [benefit] | AC1: Given...When...Then | |
+| Story ID | Theme | L1 Epic | L2 Feature | L3 Use Case | User Story | Acceptance Criteria | Points | Status |
+|---|---|---|---|---|---|---|---|---|
+| US-FTR001-001 | | | | | As a [role], I want [goal] so that [benefit] | AC1: Given...When...Then | 5 | todo |
 ```
 
-**Rules:**
+**Story field rules:**
 - Story IDs follow `US-[FeatureCode]-[Seq]` (e.g., `US-FTR001-001`).
+- `points` uses Fibonacci scale: 1, 2, 3, 5, 8, 13.
+- `status` must be one of: `todo | progress | done | blocked`.
+- `stage` must be one of: `discovery | design | build | test | deploy` — the SDLC phase this story belongs to.
 - Every User Story MUST have at least one AC in BDD format: `Given / When / Then`.
 - Flag any story that lacks a traceable requirement in `REQUIREMENTS_BASELINE.md` with `[UNTRACED]`.
-- Save to `results/user-stories-<feature>-<YYYY-MM-DD>.md` and generate HTML + DOCX:
-  ```bash
-  node .claude/wrap-md-to-html.js
-  bash scripts/md-to-docx.sh results/user-stories-<feature>-<YYYY-MM-DD>.md
-  ```
+
+Save to `results/user-stories-<feature>-<YYYY-MM-DD>.md` and generate HTML + DOCX:
+```bash
+node .claude/wrap-md-to-html.js
+bash scripts/md-to-docx.sh results/user-stories-<feature>-<YYYY-MM-DD>.md
+```
+
+### 2. Update FEATURE_TRACKER.json — userStories and dependencies arrays
+
+After writing the Markdown, **also update `FEATURE_TRACKER.json`** to populate the `userStories[]` array for the feature, using this exact schema per story:
+
+```json
+{
+  "id": "US-FTR001-001",
+  "title": "As a [role], I want [goal] so that [benefit]",
+  "points": 5,
+  "status": "todo",
+  "stage": "build"
+}
+```
+
+If any dependencies were identified during the build stage, also populate `dependencies[]`:
+
+```json
+{
+  "id": "DEP-XXX",
+  "title": "Short dependency name",
+  "desc": "Full description of what is blocked and why",
+  "blockedBy": "FTR-XXX or external team name",
+  "blockedByName": "Human-readable name of the blocker",
+  "type": "Data | Metadata | Config | External | Process",
+  "status": "open | resolved",
+  "owner": "Persona or team name"
+}
+```
+
+After updating FEATURE_TRACKER.json, regenerate the dashboard:
+```bash
+node scripts/generate-journey.js
+```
+
+This keeps the Feature Journey Dashboard live with story points and dependency cards automatically.
 
 ---
 

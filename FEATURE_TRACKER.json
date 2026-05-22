@@ -45,7 +45,38 @@
           "date": null,
           "artifacts": []
         }
-      }
+      },
+      "userStories": [
+        { "id": "US-FTR001-001", "title": "As a Pricing Manager, I want tiered rate lookup tables so prices auto-calculate by quantity band", "points": 5, "status": "done", "stage": "discovery" },
+        { "id": "US-FTR001-002", "title": "As a Solution Architect, I want a Pricing Lineage Report so every price element is traceable to an sObject field", "points": 3, "status": "done", "stage": "design" },
+        { "id": "US-FTR001-003", "title": "As a Developer, I want Expression Set variables with input/output flags so writeback to Quote is explicit", "points": 8, "status": "progress", "stage": "build" },
+        { "id": "US-FTR001-004", "title": "As a Developer, I want Context Tag mappings wired to Quote fields so pricing context resolves correctly at runtime", "points": 5, "status": "progress", "stage": "build" },
+        { "id": "US-FTR001-005", "title": "As a QA Engineer, I want decision table permutation tests covering all tier boundaries including edge quantities", "points": 5, "status": "todo", "stage": "test" },
+        { "id": "US-FTR001-006", "title": "As a QA Engineer, I want UI vs API context divergence test cases to catch channel-specific runtime differences", "points": 3, "status": "todo", "stage": "test" },
+        { "id": "US-FTR001-007", "title": "As a Release Engineer, I want a SFDMU seeding script so tiered pricing data deploys repeatably to any sandbox", "points": 5, "status": "todo", "stage": "deploy" }
+      ],
+      "dependencies": [
+        {
+          "id": "DEP-001",
+          "title": "Standard Pricebook must exist in target org",
+          "desc": "FTR-001 pricing procedures cannot activate until the Standard Pricebook record is seeded. This is a data dependency, not metadata.",
+          "blockedBy": "FTR-002",
+          "blockedByName": "Smart Product Swap",
+          "type": "Data",
+          "status": "open",
+          "owner": "DevOps"
+        },
+        {
+          "id": "DEP-002",
+          "title": "Context Tag schema approved by SA",
+          "desc": "Expression Set variables cannot be declared until the Solution Architect signs off the Context Tag schema from the Design gate.",
+          "blockedBy": "FTR-001",
+          "blockedByName": "FTR-001 Design Gate",
+          "type": "Process",
+          "status": "resolved",
+          "owner": "SA Lead"
+        }
+      ]
     },
     {
       "id": "FTR-002",
@@ -53,37 +84,19 @@
       "pattern": "guided-selling",
       "startDate": "2026-05-12",
       "stages": {
-        "discovery": {
-          "status": "complete",
-          "approval_status": "approved",
-          "date": "2026-05-12",
-          "artifacts": ["REQUIREMENTS_BASELINE.md"]
-        },
-        "design": {
-          "status": "complete",
-          "approval_status": "approved",
-          "date": "2026-05-13",
-          "artifacts": []
-        },
-        "build": {
-          "status": "complete",
-          "approval_status": "approved",
-          "date": "2026-05-14",
-          "artifacts": []
-        },
-        "test": {
-          "status": "complete",
-          "approval_status": "approved",
-          "date": "2026-05-15",
-          "artifacts": []
-        },
-        "deploy": {
-          "status": "complete",
-          "approval_status": "approved",
-          "date": "2026-05-15",
-          "artifacts": []
-        }
-      }
+        "discovery": { "status": "complete", "approval_status": "approved", "date": "2026-05-12", "artifacts": ["REQUIREMENTS_BASELINE.md"] },
+        "design":    { "status": "complete", "approval_status": "approved", "date": "2026-05-13", "artifacts": [] },
+        "build":     { "status": "complete", "approval_status": "approved", "date": "2026-05-14", "artifacts": [] },
+        "test":      { "status": "complete", "approval_status": "approved", "date": "2026-05-15", "artifacts": [] },
+        "deploy":    { "status": "complete", "approval_status": "approved", "date": "2026-05-15", "artifacts": [] }
+      },
+      "userStories": [
+        { "id": "US-FTR002-001", "title": "As a Sales Rep, I want swap eligibility auto-detected so I am never shown ineligible replacement products", "points": 5, "status": "done", "stage": "build" },
+        { "id": "US-FTR002-002", "title": "As a Sales Rep, I want margin delta displayed during swap so I can make an informed decision before confirming", "points": 3, "status": "done", "stage": "build" },
+        { "id": "US-FTR002-003", "title": "As a QA Engineer, I want regression coverage on swap logic so upstream pricing is not regressed by the new flow", "points": 5, "status": "done", "stage": "test" },
+        { "id": "US-FTR002-004", "title": "As a Release Engineer, I want a deployment runbook with rollback steps so swap data can be cleanly reversed in production", "points": 3, "status": "done", "stage": "deploy" }
+      ],
+      "dependencies": []
     },
     {
       "id": "FTR-003",
@@ -91,37 +104,38 @@
       "pattern": "tbd — pending discovery",
       "startDate": "2026-05-21",
       "stages": {
-        "discovery": {
-          "status": "in-progress",
-          "approval_status": "awaiting",
-          "date": "2026-05-21",
-          "artifacts": []
+        "discovery": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-21", "artifacts": [] },
+        "design":    { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] },
+        "build":     { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] },
+        "test":      { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] },
+        "deploy":    { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] }
+      },
+      "userStories": [
+        { "id": "US-FTR003-001", "title": "As a Product Owner, I want fibre speed tiers defined in the catalogue so reps configure them without code changes", "points": 3, "status": "progress", "stage": "discovery" },
+        { "id": "US-FTR003-002", "title": "As a Product Owner, I want install fee rules captured so billing calculates the correct one-time charge at order activation", "points": 2, "status": "todo", "stage": "discovery" }
+      ],
+      "dependencies": [
+        {
+          "id": "DEP-003",
+          "title": "Regulatory approval for broadband pricing tiers",
+          "desc": "Tier pricing structure requires legal sign-off before being coded into Expression Sets. This is blocking design start.",
+          "blockedBy": "Legal",
+          "blockedByName": "Legal / Regulatory Team",
+          "type": "External",
+          "status": "open",
+          "owner": "PM"
         },
-        "design": {
-          "status": "pending",
-          "approval_status": "pending",
-          "date": null,
-          "artifacts": []
-        },
-        "build": {
-          "status": "pending",
-          "approval_status": "pending",
-          "date": null,
-          "artifacts": []
-        },
-        "test": {
-          "status": "pending",
-          "approval_status": "pending",
-          "date": null,
-          "artifacts": []
-        },
-        "deploy": {
-          "status": "pending",
-          "approval_status": "pending",
-          "date": null,
-          "artifacts": []
+        {
+          "id": "DEP-004",
+          "title": "Fibre product SKUs loaded into org",
+          "desc": "FTR-003 discovery cannot complete until core fibre product SKUs are loaded into the org by the data team.",
+          "blockedBy": "FTR-001",
+          "blockedByName": "Tiered Pricing Expression Sets",
+          "type": "Data",
+          "status": "open",
+          "owner": "DA"
         }
-      }
+      ]
     }
   ]
 }
