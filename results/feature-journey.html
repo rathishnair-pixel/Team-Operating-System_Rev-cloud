@@ -35,6 +35,12 @@
   .pill-blocked  { background: #3d0c0c; color: #f85149; border: 1px solid #6e1a1a; }
   @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 #f0883e44} 50%{box-shadow:0 0 0 5px #f0883e00} }
 
+  .appr-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-top: 3px; letter-spacing: 0.3px; }
+  .appr-approved { background: #0d3321; color: #3fb950; border: 1px solid #238636; }
+  .appr-skipped  { background: #1c2128; color: #8b949e; border: 1px solid #484f58; }
+  .appr-rejected { background: #3d0c0c; color: #f85149; border: 1px solid #6e1a1a; }
+  .appr-awaiting { background: #1a1f2e; color: #58a6ff; border: 1px solid #1f6feb; animation: pulse 2s infinite; }
+
   .cell-date { display: block; font-size: 10px; color: #484f58; margin-top: 4px; }
   .artifacts { margin-top: 5px; }
   .artifact-link { display: block; font-size: 10px; color: #58a6ff; text-decoration: none; max-width: 130px; margin: 0 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -49,7 +55,7 @@
 <div class="header">
   <h1>Team OS</h1>
   <span class="project">Feature Journey Dashboard</span>
-  <span class="updated">Updated: 21 May 2026, 15:01 <span class="refresh-note">(auto-refreshes every 30s)</span></span>
+  <span class="updated">Updated: 22 May 2026, 12:43 <span class="refresh-note">(auto-refreshes every 30s)</span></span>
 </div>
 
 <table>
@@ -75,16 +81,19 @@
         
         <td class="stage-cell stage-complete">
           <span class="stage-pill pill-complete">✓ Done</span>
+          <span class="appr-badge appr-approved">✓ Approved</span>
           <span class="cell-date">2026-05-20</span>
-          <div class="artifacts"><a class="artifact-link" href="../REVENUE_SPEC.md" title="REVENUE_SPEC.md">REVENUE_SPEC.md</a></div>
+          <div class="artifacts"><a class="artifact-link" href="../REQUIREMENTS_BASELINE.md" title="REQUIREMENTS_BASELINE.md">REQUIREMENTS_BASELINE.md</a></div>
         </td>
         <td class="stage-cell stage-complete">
           <span class="stage-pill pill-complete">✓ Done</span>
+          <span class="appr-badge appr-approved">✓ Approved</span>
           <span class="cell-date">2026-05-20</span>
           <div class="artifacts"><a class="artifact-link" href="tiered-pricing-tdd-2026-05-20.md" title="results/tiered-pricing-tdd-2026-05-20.md">tiered-pricing-tdd-2026-05-20.md</a><br><a class="artifact-link" href="tiered-pricing-tdd-2026-05-20.html" title="results/tiered-pricing-tdd-2026-05-20.html">tiered-pricing-tdd-2026-05-20.html</a></div>
         </td>
         <td class="stage-cell stage-active">
           <span class="stage-pill pill-active">⟳ Active</span>
+          
           <span class="cell-date">2026-05-21</span>
           
         </td>
@@ -92,9 +101,11 @@
           <span class="stage-pill pill-pending">· —</span>
           
           
+          
         </td>
         <td class="stage-cell stage-pending">
           <span class="stage-pill pill-pending">· —</span>
+          
           
           
         </td>
@@ -109,26 +120,31 @@
         
         <td class="stage-cell stage-complete">
           <span class="stage-pill pill-complete">✓ Done</span>
+          <span class="appr-badge appr-approved">✓ Approved</span>
           <span class="cell-date">2026-05-12</span>
-          <div class="artifacts"><a class="artifact-link" href="../REVENUE_SPEC.md" title="REVENUE_SPEC.md">REVENUE_SPEC.md</a></div>
+          <div class="artifacts"><a class="artifact-link" href="../REQUIREMENTS_BASELINE.md" title="REQUIREMENTS_BASELINE.md">REQUIREMENTS_BASELINE.md</a></div>
         </td>
         <td class="stage-cell stage-complete">
           <span class="stage-pill pill-complete">✓ Done</span>
+          <span class="appr-badge appr-approved">✓ Approved</span>
           <span class="cell-date">2026-05-13</span>
           
         </td>
         <td class="stage-cell stage-complete">
           <span class="stage-pill pill-complete">✓ Done</span>
+          <span class="appr-badge appr-approved">✓ Approved</span>
           <span class="cell-date">2026-05-14</span>
           
         </td>
         <td class="stage-cell stage-complete">
           <span class="stage-pill pill-complete">✓ Done</span>
+          <span class="appr-badge appr-approved">✓ Approved</span>
           <span class="cell-date">2026-05-15</span>
           
         </td>
         <td class="stage-cell stage-complete">
           <span class="stage-pill pill-complete">✓ Done</span>
+          <span class="appr-badge appr-approved">✓ Approved</span>
           <span class="cell-date">2026-05-15</span>
           
         </td>
@@ -143,6 +159,7 @@
         
         <td class="stage-cell stage-active">
           <span class="stage-pill pill-active">⟳ Active</span>
+          <span class="appr-badge appr-awaiting">⏸ Awaiting</span>
           <span class="cell-date">2026-05-21</span>
           
         </td>
@@ -150,19 +167,23 @@
           <span class="stage-pill pill-pending">· —</span>
           
           
-        </td>
-        <td class="stage-cell stage-pending">
-          <span class="stage-pill pill-pending">· —</span>
-          
           
         </td>
         <td class="stage-cell stage-pending">
           <span class="stage-pill pill-pending">· —</span>
           
           
+          
         </td>
         <td class="stage-cell stage-pending">
           <span class="stage-pill pill-pending">· —</span>
+          
+          
+          
+        </td>
+        <td class="stage-cell stage-pending">
+          <span class="stage-pill pill-pending">· —</span>
+          
           
           
         </td>
@@ -175,6 +196,11 @@
   <span class="legend-item"><span style="color:#f0883e">⟳</span> In Progress</span>
   <span class="legend-item"><span style="color:#484f58">·</span> Pending</span>
   <span class="legend-item"><span style="color:#f85149">✗</span> Blocked</span>
+  <span style="margin-left:16px;color:#484f58;font-size:11px;">Gates:</span>
+  <span class="legend-item"><span class="appr-badge appr-approved">✓ Approved</span></span>
+  <span class="legend-item"><span class="appr-badge appr-awaiting">⏸ Awaiting</span></span>
+  <span class="legend-item"><span class="appr-badge appr-rejected">↩ Revise</span></span>
+  <span class="legend-item"><span class="appr-badge appr-skipped">» Skipped</span></span>
 </div>
 
 </body>

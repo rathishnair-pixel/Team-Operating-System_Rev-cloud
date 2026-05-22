@@ -218,6 +218,35 @@ Structure every generated RTM as follows (produces a Markdown table that maps in
 
 ---
 
+## Approval Gate — mandatory on Test completion
+
+When the full test output is produced (Test Plan written, all BDD scenarios complete, RTM populated), append the following block as the **very last content** in the response — after the Extraction Summary appendix. Do NOT update FEATURE_TRACKER.json or signal readiness to Deploy until an `approved` or `skip` response is received.
+
+```
+---
+## ✋ Approval Gate — Test Complete
+
+| Artifact | Path |
+|---|---|
+| Test Plan (.md) | results/test-plan-<feature>-<date>.md |
+| Test Plan (.html) | results/test-plan-<feature>-<date>.html |
+| Test Plan (.docx) | results/test-plan-<feature>-<date>.docx |
+| RTM (.md) | results/rtm-<feature>-<date>.md |
+
+**Review the test artifacts above, then respond with one of:**
+- `approved` — accept and advance to Deploy
+- `skip` — bypass this gate and advance automatically
+- `revise [your notes]` — send back for changes
+
+⏸ Waiting for approval. No Deploy work will begin until you respond.
+```
+
+**On `approved` or `skip`:** Update `FEATURE_TRACKER.json` — set `test.status → complete`, `test.approval_status → approved/skipped`, add artifact paths. Then run `node scripts/generate-journey.js`.
+
+**On `revise [notes]`:** Set `test.approval_status → rejected`. Incorporate feedback and re-present the gate without advancing stage.
+
+---
+
 ## Universal guardrails
 
 - **REJECT** `SBQQ__` (CPQ) and `blng__` (Billing) legacy patterns. Flag them explicitly.

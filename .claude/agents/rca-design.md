@@ -189,6 +189,34 @@ If a tool is missing:
 
 ---
 
+## Approval Gate — mandatory on Design completion
+
+When Document Mode produces a full design artifact (`.md` + `.html` + `.docx` written), append the following block as the **very last content** in the response — after the Extraction Summary appendix. Do NOT update FEATURE_TRACKER.json or delegate to `@rca-build` until an `approved` or `skip` response is received.
+
+```
+---
+## ✋ Approval Gate — Design Complete
+
+| Artifact | Path |
+|---|---|
+| Solution Design (.md) | results/<slug>-<date>.md |
+| Solution Design (.html) | results/<slug>-<date>.html |
+| Solution Design (.docx) | results/<slug>-<date>.docx |
+
+**Review the design artifacts above, then respond with one of:**
+- `approved` — accept and advance to Build
+- `skip` — bypass this gate and advance automatically
+- `revise [your notes]` — send back for changes
+
+⏸ Waiting for approval. No Build work will begin until you respond.
+```
+
+**On `approved` or `skip`:** Update `FEATURE_TRACKER.json` — set `design.status → complete`, `design.approval_status → approved/skipped`, add artifact paths. Then run `node scripts/generate-journey.js`.
+
+**On `revise [notes]`:** Set `design.approval_status → rejected`. Incorporate feedback and re-present the gate without advancing stage.
+
+---
+
 ## Universal guardrails
 
 - **REJECT** `SBQQ__` (CPQ) and `blng__` (Billing) legacy patterns. Flag them explicitly.

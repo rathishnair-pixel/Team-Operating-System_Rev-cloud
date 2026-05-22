@@ -148,10 +148,52 @@ node scripts/generate-journey.js
 ```
 Dashboard auto-refreshes in browser every 30 seconds. File: `results/feature-journey.html`.
 
-6. Delta Rule — Follow-Up Responses
+6. Approval Gate — Human-in-the-Loop (Mandatory on Every Phase Completion)
+No phase may advance to the next until the human explicitly approves, skips, or requests a revision. This applies to all subagents and all personas.
+
+**Gate vocabulary (three valid responses):**
+- `approved` — stage accepted, FEATURE_TRACKER updated to `complete`, next stage may begin
+- `skip` — gate bypassed, stage marked `skipped`, next stage may begin (use when iterating fast)
+- `revise [feedback]` — stage sent back; agent incorporates feedback and re-presents the gate without advancing
+
+**Hard-stop rule:** After presenting the Approval Gate block, the agent MUST NOT update FEATURE_TRACKER.json, delegate to the next subagent, or begin any next-stage work. Execution is frozen until one of the three gate responses is received.
+
+**Approval Gate block format** (every subagent appends this at the end of every phase-complete output):
+
+```
+---
+## ✋ Approval Gate — [Stage Name] Complete
+
+| Artifact | Path |
+|---|---|
+| [artifact name] | results/... |
+
+**Review the output above, then respond with one of:**
+- `approved` — accept and advance to [Next Stage]
+- `skip` — bypass this gate and advance automatically
+- `revise [your notes]` — send back for changes
+
+⏸ Waiting for approval. No next-stage work will begin until you respond.
+```
+
+**FEATURE_TRACKER.json `approval_status` field:** Each stage now carries an `approval_status` field alongside `status`:
+- `pending` — gate not yet reached
+- `awaiting` — gate presented, waiting for human response
+- `approved` — human approved
+- `skipped` — human skipped
+- `rejected` — human sent back with revise (stage re-opens)
+
+**Update sequence when gate is passed:**
+```bash
+# 1. Update FEATURE_TRACKER.json — set stage approval_status + status → complete
+# 2. Regenerate dashboard
+node scripts/generate-journey.js
+```
+
+7. Delta Rule — Follow-Up Responses
 When a user asks a follow-up question or requests a correction on a prior response, output ONLY the changed or added content — never repeat the full prior response. Clearly signal what changed with a `> Changed:` prefix or a diff-style summary header. This applies to all personas and subagents.
 
-7. Source Citation Appendix — MCP Responses
+8. Source Citation Appendix — MCP Responses
 Every response that uses `mcp-adaptor` or `user-rca-advisor` MUST end with an extraction summary table:
 
 ```

@@ -1,6 +1,13 @@
 {
   "project": "Team OS",
-  "lastUpdated": "2026-05-21",
+  "lastUpdated": "2026-05-22",
+  "approvalGateVocabulary": {
+    "approved": "Human accepted — stage complete, next stage may begin",
+    "skipped": "Human bypassed gate — stage marked skipped, next stage may begin",
+    "rejected": "Human sent back with revise notes — stage re-opens",
+    "awaiting": "Gate presented, waiting for human response",
+    "pending": "Gate not yet reached"
+  },
   "features": [
     {
       "id": "FTR-001",
@@ -10,26 +17,31 @@
       "stages": {
         "discovery": {
           "status": "complete",
+          "approval_status": "approved",
           "date": "2026-05-20",
           "artifacts": ["REQUIREMENTS_BASELINE.md"]
         },
         "design": {
           "status": "complete",
+          "approval_status": "approved",
           "date": "2026-05-20",
           "artifacts": ["results/tiered-pricing-tdd-2026-05-20.md", "results/tiered-pricing-tdd-2026-05-20.html"]
         },
         "build": {
           "status": "in-progress",
+          "approval_status": "pending",
           "date": "2026-05-21",
           "artifacts": []
         },
         "test": {
           "status": "pending",
+          "approval_status": "pending",
           "date": null,
           "artifacts": []
         },
         "deploy": {
           "status": "pending",
+          "approval_status": "pending",
           "date": null,
           "artifacts": []
         }
@@ -43,32 +55,36 @@
       "stages": {
         "discovery": {
           "status": "complete",
+          "approval_status": "approved",
           "date": "2026-05-12",
           "artifacts": ["REQUIREMENTS_BASELINE.md"]
         },
         "design": {
           "status": "complete",
+          "approval_status": "approved",
           "date": "2026-05-13",
           "artifacts": []
         },
         "build": {
           "status": "complete",
+          "approval_status": "approved",
           "date": "2026-05-14",
           "artifacts": []
         },
         "test": {
           "status": "complete",
+          "approval_status": "approved",
           "date": "2026-05-15",
           "artifacts": []
         },
         "deploy": {
           "status": "complete",
+          "approval_status": "approved",
           "date": "2026-05-15",
           "artifacts": []
         }
       }
-    }
-  ,
+    },
     {
       "id": "FTR-003",
       "name": "Internet Commercial Offers (Fibre Broadband)",
@@ -77,13 +93,34 @@
       "stages": {
         "discovery": {
           "status": "in-progress",
+          "approval_status": "awaiting",
           "date": "2026-05-21",
           "artifacts": []
         },
-        "design": { "status": "pending", "date": null, "artifacts": [] },
-        "build":   { "status": "pending", "date": null, "artifacts": [] },
-        "test":    { "status": "pending", "date": null, "artifacts": [] },
-        "deploy":  { "status": "pending", "date": null, "artifacts": [] }
+        "design": {
+          "status": "pending",
+          "approval_status": "pending",
+          "date": null,
+          "artifacts": []
+        },
+        "build": {
+          "status": "pending",
+          "approval_status": "pending",
+          "date": null,
+          "artifacts": []
+        },
+        "test": {
+          "status": "pending",
+          "approval_status": "pending",
+          "date": null,
+          "artifacts": []
+        },
+        "deploy": {
+          "status": "pending",
+          "approval_status": "pending",
+          "date": null,
+          "artifacts": []
+        }
       }
     }
   ]

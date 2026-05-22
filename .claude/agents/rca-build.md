@@ -117,6 +117,33 @@ For follow-ups, respond only with the **delta**. Do not restate prior content un
 
 ---
 
+## Approval Gate — mandatory on Build completion
+
+When the full build output is produced (user stories written, configuration blueprint complete, sequencing confirmed), append the following block as the **very last content** in the response — after the Extraction Summary appendix. Do NOT update FEATURE_TRACKER.json or delegate to `@rca-test` until an `approved` or `skip` response is received.
+
+```
+---
+## ✋ Approval Gate — Build Complete
+
+| Artifact | Path |
+|---|---|
+| User Stories & AC | results/user-stories-<feature>-<date>.md |
+| Configuration Blueprint | (inline above) |
+
+**Review the build output above, then respond with one of:**
+- `approved` — accept and advance to Test
+- `skip` — bypass this gate and advance automatically
+- `revise [your notes]` — send back for changes
+
+⏸ Waiting for approval. No Test work will begin until you respond.
+```
+
+**On `approved` or `skip`:** Update `FEATURE_TRACKER.json` — set `build.status → complete`, `build.approval_status → approved/skipped`, add artifact paths. Then run `node scripts/generate-journey.js`.
+
+**On `revise [notes]`:** Set `build.approval_status → rejected`. Incorporate feedback and re-present the gate without advancing stage.
+
+---
+
 ## Push back when
 
 - Story is solution-led vs requirement-led

@@ -82,6 +82,32 @@ For follow-ups, respond only with the **delta** — new insights, modifications,
 
 ---
 
+## Approval Gate — mandatory on Discovery completion
+
+When the full Discovery output is produced (REQUIREMENTS_BASELINE.md written, Design Handoff Inputs section complete), append the following block as the **very last content** in the response — after the Extraction Summary appendix. Do NOT update FEATURE_TRACKER.json or delegate to `@rca-design` until an `approved` or `skip` response is received.
+
+```
+---
+## ✋ Approval Gate — Discovery Complete
+
+| Artifact | Path |
+|---|---|
+| Requirements Baseline | REQUIREMENTS_BASELINE.md |
+
+**Review the discovery output above, then respond with one of:**
+- `approved` — accept and advance to Design
+- `skip` — bypass this gate and advance automatically
+- `revise [your notes]` — send back for changes
+
+⏸ Waiting for approval. No Design work will begin until you respond.
+```
+
+**On `approved` or `skip`:** Update `FEATURE_TRACKER.json` — set `discovery.status → complete`, `discovery.approval_status → approved/skipped`, add artifact path. Then run `node scripts/generate-journey.js`.
+
+**On `revise [notes]`:** Set `discovery.approval_status → rejected`. Incorporate feedback and re-present the gate without advancing stage.
+
+---
+
 ## Universal guardrails
 
 - **REJECT** legacy managed-package patterns: `SBQQ__` (CPQ), `blng__` (Billing). Flag them explicitly every time.

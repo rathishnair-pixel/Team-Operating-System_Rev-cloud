@@ -33,6 +33,20 @@ function statusLabel(status) {
   return { complete: 'Done', 'in-progress': 'Active', pending: '—', blocked: 'Blocked' }[status] || '—';
 }
 
+function approvalBadge(approval_status, stage_status) {
+  if (stage_status === 'pending') return '';
+  const map = {
+    approved:  { cls: 'appr-approved',  icon: '✓', label: 'Approved' },
+    skipped:   { cls: 'appr-skipped',   icon: '»', label: 'Skipped'  },
+    rejected:  { cls: 'appr-rejected',  icon: '↩', label: 'Revise'   },
+    awaiting:  { cls: 'appr-awaiting',  icon: '⏸', label: 'Awaiting' },
+    pending:   { cls: 'appr-pending',   icon: '',   label: ''         },
+  };
+  const m = map[approval_status] || map['pending'];
+  if (!m.label) return '';
+  return `<span class="appr-badge ${m.cls}">${m.icon} ${m.label}</span>`;
+}
+
 function artifactLinks(stage) {
   if (!stage.artifacts || stage.artifacts.length === 0) return '';
   return stage.artifacts.map(a => {
@@ -46,15 +60,17 @@ function artifactLinks(stage) {
 function featureRows() {
   return tracker.features.map(f => {
     const cells = STAGES.map(s => {
-      const stage  = f.stages[s] || { status: 'pending', artifacts: [] };
+      const stage  = f.stages[s] || { status: 'pending', approval_status: 'pending', artifacts: [] };
       const cls    = statusClass(stage.status);
       const icon   = statusIcon(stage.status);
       const label  = statusLabel(stage.status);
       const links  = artifactLinks(stage);
       const date   = stage.date ? `<span class="cell-date">${stage.date}</span>` : '';
+      const appr   = approvalBadge(stage.approval_status || 'pending', stage.status);
       return `
         <td class="stage-cell stage-${cls}">
           <span class="stage-pill pill-${cls}">${icon} ${label}</span>
+          ${appr}
           ${date}
           ${links ? `<div class="artifacts">${links}</div>` : ''}
         </td>`;
@@ -116,6 +132,12 @@ const html = `<!DOCTYPE html>
   .pill-blocked  { background: #3d0c0c; color: #f85149; border: 1px solid #6e1a1a; }
   @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 #f0883e44} 50%{box-shadow:0 0 0 5px #f0883e00} }
 
+  .appr-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-top: 3px; letter-spacing: 0.3px; }
+  .appr-approved { background: #0d3321; color: #3fb950; border: 1px solid #238636; }
+  .appr-skipped  { background: #1c2128; color: #8b949e; border: 1px solid #484f58; }
+  .appr-rejected { background: #3d0c0c; color: #f85149; border: 1px solid #6e1a1a; }
+  .appr-awaiting { background: #1a1f2e; color: #58a6ff; border: 1px solid #1f6feb; animation: pulse 2s infinite; }
+
   .cell-date { display: block; font-size: 10px; color: #484f58; margin-top: 4px; }
   .artifacts { margin-top: 5px; }
   .artifact-link { display: block; font-size: 10px; color: #58a6ff; text-decoration: none; max-width: 130px; margin: 0 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -154,6 +176,11 @@ const html = `<!DOCTYPE html>
   <span class="legend-item"><span style="color:#f0883e">⟳</span> In Progress</span>
   <span class="legend-item"><span style="color:#484f58">·</span> Pending</span>
   <span class="legend-item"><span style="color:#f85149">✗</span> Blocked</span>
+  <span style="margin-left:16px;color:#484f58;font-size:11px;">Gates:</span>
+  <span class="legend-item"><span class="appr-badge appr-approved">✓ Approved</span></span>
+  <span class="legend-item"><span class="appr-badge appr-awaiting">⏸ Awaiting</span></span>
+  <span class="legend-item"><span class="appr-badge appr-rejected">↩ Revise</span></span>
+  <span class="legend-item"><span class="appr-badge appr-skipped">» Skipped</span></span>
 </div>
 
 </body>
