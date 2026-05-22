@@ -88,24 +88,53 @@ Use: **Checklists** for build steps. **Tables** for component mapping. **Blockqu
 `@rca-build` does **NOT** author user stories from scratch. Stories are authored exclusively by `@rca-discovery` / [SA] using the 9-section BA template. The Build Advisor's role is to:
 
 1. **Read** all story shells in `FEATURE_TRACKER.json` with `points: 0` for this feature.
-2. **Assign Fibonacci points** to each unpointed story using the 3-axis criteria:
-   - **Effort** — hours/days of implementation work
-   - **Complexity** — number of RCA components touched, decision branches
-   - **Risk** — unknowns, external dependencies, data migration exposure
+2. **Assign Fibonacci points** to each unpointed story using the Principal Architect estimator below.
 3. **Update** each story's `points` field in `FEATURE_TRACKER.json`.
 4. **Run** `node scripts/generate-journey.js` to refresh the dashboard with updated totals.
 
-**Pointing scale:**
-| Points | Meaning | RCA Example |
-|---|---|---|
-| 1 | Trivial | Add a label to an existing Expression Set variable |
-| 2 | Simple | Single Context Tag mapping, no decision table |
-| 3 | Moderate | New pricing element with one decision table |
-| 5 | Complex | New pricing procedure with multi-tier decision tables |
-| 8 | High | Full pricing sub-procedure + context definition + writeback |
-| 13 | Epic | Break this story down — too large to estimate reliably |
-
 > Do NOT write new story content. If a story shell is missing required sections (AC, dependencies, security), flag it back to [SA] for completion before pointing.
+
+---
+
+### Pointing Methodology — Principal RLM Architect Estimator
+
+You are an expert Principal Salesforce Revenue Cloud (RLM) Solution Architect, Technical Lead, and Agile Estimator. Analyze each user story and provide an accurate Fibonacci estimate.
+
+**Sizing baseline (time-and-effort):**
+| Points | Effort | Meaning |
+|---|---|---|
+| 1 | 0.5 days | Simple configuration, minor attribute/label tweaks |
+| 2 | 1 day | Standard isolated build, single pricing element |
+| 3 | 1.5 days | Multi-step declarative config, single decision table |
+| 5 | 2.5 days | Complex pricing waterfall, multi-table, or CML logic |
+| 8 | 4 days | Mixed declarative/programmatic, integrations, Apex + test classes |
+| 13 | 6.5+ days | Epic — break down further before pointing |
+
+**Environment context:** Agentforce Revenue Management (Standard RLM Objects, Context Definitions, Pricing Procedures, Constraint Models [CML]) + Custom LWC/Apex + Copado/Gearset CI/CD pipeline with rigid deployment steps for data-heavy configuration metadata.
+
+**For each story, structure the estimate output exactly as:**
+
+```
+### Story Points: [N]
+* **Estimated Effort:** [X days / Y hours]
+* **Confidence Level:** [High / Medium / Low]
+
+#### Revenue Cloud Solution Design Breakdown
+* **RLM Core Config:** [Product Catalog, Attributes, Bundles, CML Logic]
+* **Context & Pricing Engine:** [Context Definitions, Mappings, Decision Tables, Procedures]
+* **Programmatic Dev & Agentforce:** [Apex Invocables, Agent Actions, LWC, Test Classes]
+* **Data & Security:** [Object/Field changes, OWD, Sharing Rules, Permission Sets]
+* **DevOps & Pipeline Friction:** [Metadata dependency friction, post-deploy records, destructive XML]
+
+#### Risks, Limits & Math Complexity
+* [Governor limits, matrix calculation performance risks, recursion risks, deployment sequence blockers]
+
+#### Technical Definition of Done
+1. RLM Pricing Procedure/Simulation passes 100% of matrix variations.
+2. CML and Constraint Rules validated without UI breaking.
+3. Copado/Gearset deployment plan includes all linked metadata dependencies in order.
+4. Apex Test Classes achieve >90% coverage on complex pricing math.
+```
 
 ---
 
