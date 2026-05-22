@@ -87,38 +87,103 @@ For follow-ups, respond only with the **delta**. Do not restate prior content un
 
 ---
 
-## Document Mode — generate `.md` and `.html` artifacts
+## Document Mode — generate `.md`, `.html`, and `.docx` artifacts
 
 **Trigger phrases** (any of):
 
-- _"generate a [TDD / HLD / LLD / design document]"_
+- _"generate a [TDD / HLD / LLD / solution design]"_
 - _"create a .md file"_
 - _"save to file"_
 - _"produce an HTML"_
 - _"write a full [TDD / HLD / LLD / design]"_
 
-When triggered:
+### Solution Design Document — mandatory template
+
+When producing a Solution Design document (TDD, HLD, LLD), structure the output using the following sections (omit sections that are not applicable — annotate omitted sections with `N/A — [reason]`):
+
+```
+# [Project Name] — Solution Design
+## Document Version History
+## Document Approval History
+
+# 1. Introduction
+## 1.1 Project Overview
+### 1.1.1 Project Background
+### 1.1.2 Project Scope
+### 1.1.3 Assumptions
+### 1.1.4 Statement of Confidentiality
+
+# 2. Solution Design Overview (Executive Summary)
+## Architecture Diagram (Mermaid flowchart TD)
+
+# 3. Current State (As-Is)
+## 3.1 Business Model
+### 3.1.1 Business Cycle
+### 3.1.2 Customer Data Model
+## 3.2 Current State Business Processes
+## 3.3 Current State System Architecture
+
+# 4. Future State (To-Be)
+## 4.1 Design Considerations
+### 4.1.1 Decision Log
+## 4.2 Future State Business Processes
+## 4.3 Future State System Architecture
+
+# 5. Solution Design
+## 5.1 Data Layer
+### 5.1.1 Data Model (Mermaid erDiagram)
+### 5.1.2 Data Migration Considerations
+### 5.1.3 Data Management
+## 5.2 Business Layer
+### 5.2.1 Business Objects
+### 5.2.2 Visibility and Sharing Model
+### 5.2.3 Business Process Automation
+## 5.3 Integration Layer
+### 5.3.1 Integration Overview
+### 5.3.2 Integration Use Cases
+## 5.4 Analytics Layer
+
+# 6. Pricing Lineage (mandatory for all pricing features)
+## Pricing Lineage Report (per feature — use template from CLAUDE.md)
+
+# 7. Security & Compliance
+## 7.1 System Access
+## 7.2 Security Controls
+
+# 8. Scalability & Performance
+
+# Appendices
+## Appendix A: Glossary of Terms
+## Appendix B: Related Documents
+## Appendix C: Epics, Features & User Stories
+## Appendix D: Deployment Runbook
+## Appendix E: Extraction Summary (MCP sources)
+```
+
+**Rules:**
+- Every diagram MUST be an inline ` ```mermaid ` block — follow CLAUDE.md Mermaid Diagram Rules strictly.
+- Decision Log must include: Decision, Options Considered, Rationale, Owner, Date.
+- The Pricing Lineage section is mandatory for any feature that touches pricing, expression sets, or context service.
+- Appendix E (Extraction Summary) is the last section — one row per MCP source used.
+
+### File generation steps
 
 1. Run the mandatory `doc_search` queries first (≥5 in parallel). No exceptions.
-2. Produce the full design with all relevant sections from the Output format list above — including Mermaid diagrams inline.
-3. Ensure the output directory exists with a single idempotent command — run `mkdir -p results` (silent if it already exists). Then write the artifact with `Write` to `results/<slug>-<YYYY-MM-DD>.md`. Do NOT chain `ls ... && echo ... || (mkdir ...)` style checks; one `mkdir -p results` is the whole step.
-   - `<slug>` is derived from the user's topic in kebab-case (e.g., `tiered-pricing-tdd`, `dro-orchestration-hld`).
-   - Always include the date so re-runs don't overwrite each other.
-   - Diagrams MUST be inline ` ```mermaid ` blocks (not separate `.mmd` files). Follow `.cursor/rules/rca-mermaid-generation.mdc` strictly — the HTML and DOCX renderers both depend on those rules being honored (no Unicode em-dashes, no smart quotes, no unquoted special chars in pipe labels, no semicolons in `sequenceDiagram` notes).
-4. Generate the HTML and DOCX wrappers:
+2. Produce the full document using the Solution Design template above.
+3. Write to `results/` with a single idempotent `mkdir -p results` then `Write` to `results/<slug>-<YYYY-MM-DD>.md`.
+   - `<slug>` in kebab-case (e.g., `tiered-pricing-solution-design`, `dro-orchestration-hld`).
+4. Generate HTML and DOCX:
 
    ```bash
    node .claude/wrap-md-to-html.js
    bash scripts/md-to-docx.sh results/<slug>-<YYYY-MM-DD>.md
    ```
 
-   - `wrap-md-to-html.js` regenerates `.html` for every `.md` in `results/`. HTML renders Markdown + Mermaid client-side via CDN — opens with double-click, no server.
-   - `md-to-docx.sh` pre-renders each ` ```mermaid ` block to a PNG via `mmdc`, then pipes the rewritten markdown through `pandoc` to a `.docx`. Pass the single file path so only its diagrams re-render.
-5. In your chat response, confirm all three paths (`.md`, `.html`, `.docx`) and summarize what was written (short — the user will read the file).
+5. Confirm all three paths (`.md`, `.html`, `.docx`) in your chat response.
 
-If a tool is missing, surface the error and the install command:
+If a tool is missing:
 - `pandoc` → `brew install pandoc`
-- `mmdc` → from repo root: `npm install`
+- `mmdc` → `npm install` from repo root
 
 **Conversational mode is the default.** If the user asks a question without a trigger phrase, answer inline and do not write a file.
 

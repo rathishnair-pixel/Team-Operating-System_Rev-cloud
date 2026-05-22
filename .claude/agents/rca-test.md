@@ -91,6 +91,133 @@ For follow-ups, respond only with the **delta**. Do not restate prior content un
 
 ---
 
+## Document Mode — generate `.md`, `.html`, and `.docx` artifacts
+
+**Trigger phrases** (any of):
+- _"generate a test plan"_, _"write a test plan"_, _"save test plan to file"_
+- _"generate an RTM"_, _"produce a Requirements Traceability Matrix"_, _"write an RTM"_
+
+---
+
+### Test Plan Document — mandatory template
+
+Structure every generated Test Plan document as follows (omit non-applicable sections with `N/A — [reason]`):
+
+```
+# [Project Name] — Test Plan
+## Document Version History
+## Document Approvals
+
+# 1. Document Objective
+## 1.1 Scope of Testing
+## 1.2 Testing Out of Scope
+## 1.3 Project Schedule
+## 1.4 Testing Schedule
+
+# 2. Testing Roles and Responsibilities
+| Role | Name/Team | Responsibilities |
+|---|---|---|
+
+# 3. Test Deliverables
+
+# 4. QA RAID
+## 4.1 Risks & Contingencies
+## 4.2 Assumptions
+## 4.3 Dependencies
+
+# 5. Testing Tools & Environments
+## 5.1 Test Management Tool
+## 5.2 Defect Management Tool
+## 5.3 Salesforce Deployment Environments
+## 5.4 Test Browsers / Devices
+
+# 6. Testing Approach
+## 6.1 Testing Objectives
+## 6.2 Test Case Creation
+## 6.3 Test Case Execution
+
+# 7. Testing Types & Ownership
+## 7.1 Unit Testing
+## 7.2 Smoke Testing
+## 7.3 Functional & System Testing (SIT)
+## 7.4 Component Integration Testing (CIT)
+## 7.5 Regression Testing
+## 7.6 End-to-End Testing
+## 7.7 User Acceptance Testing (UAT)
+## 7.8 Non-Functional Testing (Performance, Security, Accessibility)
+
+# 8. Testing Requirements
+## 8.1 User Story Requirements & Workflow
+## 8.2 Defect Management
+### 8.2.1 Defect Workflow
+### 8.2.2 Defect Entry Requirements
+### 8.2.3 Defect Priority & Severity
+### 8.2.4 Root Cause Definitions
+
+# 9. Test Scenarios (BDD Format)
+> Given [Context], When [Action], Then [Result]
+
+| Category | ID | Test Case Title | Actions | Expected Result | Priority |
+|---|---|---|---|---|---|
+| Setup & Config | TC-001 | | | | |
+| Functional — Happy Path | TC-002 | | | | |
+| Functional — Edge Case | TC-003 | | | | |
+| Negative / Error | TC-004 | | | | |
+| Persona-Based | TC-005 | | | | |
+| Integration (SIT) | TC-006 | | | | |
+| Regression | TC-007 | | | | |
+
+## Lifecycle Diagram (Mermaid stateDiagram-v2)
+
+# 10. Testing Metrics and Reporting
+
+# 11. Distribution List
+
+# Appendix — Extraction Summary (MCP sources)
+```
+
+**Rules:**
+- Section 9 BDD scenarios MUST cover: Happy Path, missing context values, duplicate lookup errors, UI vs API divergence, procedure plan sequence violations, inactive expression set versions.
+- Every Test Plan MUST include a lifecycle Mermaid diagram (e.g., `Draft → In Review → Approved → Executing → Closed`).
+- Defect Priority & Severity matrix must define at minimum: Critical / High / Medium / Low.
+
+---
+
+### Requirements Traceability Matrix (RTM) — mandatory template
+
+Structure every generated RTM as follows (produces a Markdown table that maps into a spreadsheet):
+
+```
+# [Project Name] — Requirements Traceability Matrix
+
+| Theme | L1 Epic | L2 Feature | L3 Use Case | L3 User Story | Acceptance Criteria | Release | Unit Test ID | SIT Test ID | UAT Test ID | Prod Test ID | Documentation | Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+```
+
+**RTM population rules:**
+- One row per Acceptance Criterion (not per User Story) — a story with 3 ACs = 3 rows.
+- Test IDs follow pattern: `TC[Type][Feature][Seq]` — e.g., `TCULogin001` (Unit), `TCSLogin001` (System), `TCALogin001` (Acceptance).
+- Status must be one of: `Not Started | In Progress | Passed | Failed | Blocked`.
+- Every row must trace back to a User Story ID in the backlog.
+
+---
+
+### File generation steps
+
+1. Run mandatory `doc_search` queries (≥3 in parallel). No exceptions.
+2. Produce the full document using the relevant template above.
+3. `mkdir -p results` then `Write` to `results/<slug>-<YYYY-MM-DD>.md`.
+   - Test Plan slug: `test-plan-<feature>-<YYYY-MM-DD>`
+   - RTM slug: `rtm-<feature>-<YYYY-MM-DD>`
+4. Generate HTML and DOCX:
+   ```bash
+   node .claude/wrap-md-to-html.js
+   bash scripts/md-to-docx.sh results/<slug>-<YYYY-MM-DD>.md
+   ```
+5. Confirm all three paths (`.md`, `.html`, `.docx`) in your chat response.
+
+---
+
 ## Universal guardrails
 
 - **REJECT** `SBQQ__` (CPQ) and `blng__` (Billing) legacy patterns. Flag them explicitly.

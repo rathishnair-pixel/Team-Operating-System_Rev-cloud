@@ -74,7 +74,15 @@ Four specialist subagents are available in `.claude/agents/`. Team OS personas M
 | **[Dev]** | User stories, configuration sequencing, RCA component mapping, troubleshooting | `@rca-build` |
 | **[QA]** | BDD test cases, SIT/UAT scenarios, regression, lifecycle diagrams | `@rca-test` |
 
-**Document Mode** — say _"Generate a TDD for..."_ or _"Write a full design for..."_ and `@rca-design` will produce `.md` + `.html` artifacts in `results/`.
+**Document Mode** — three templates are registered across the subagents:
+
+| Trigger | Subagent | Output Template | File Slug |
+|---|---|---|---|
+| _"Generate a TDD/HLD/LLD/solution design for..."_ | `@rca-design` | Solution Design (Intro → Current State → Future State → Solution Design → Pricing Lineage → Security → Appendices) | `<feature>-solution-design-<date>` |
+| _"Generate a test plan for..."_ | `@rca-test` | Test Plan (Scope → RAID → Environments → Testing Types → BDD Scenarios → Metrics) | `test-plan-<feature>-<date>` |
+| _"Generate an RTM for..."_ or _"Export user stories"_ | `@rca-test` / `@rca-build` | Requirements Traceability Matrix (Theme → Epic → Feature → Story → AC → Test IDs per phase) | `rtm-<feature>-<date>` |
+
+All Document Mode outputs produce `.md` + `.html` + `.docx` in `results/`.
 
 **MCP Servers wired:**
 - `mcp-adaptor` → searches your org's Google Drive for approved RLM guides + architecture blueprints (requires Salesforce SSO auth — run `~/.mcp-adaptor/bin/mcp-adaptor auth` once to authenticate)

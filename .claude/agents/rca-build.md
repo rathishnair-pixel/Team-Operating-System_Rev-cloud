@@ -83,6 +83,34 @@ Always show `## Approach: [Story Name]`. Show/hide other sections based on the a
 
 Use: **Checklists** for build steps. **Tables** for component mapping. **Blockquotes** for Do/Don't warnings. **LaTeX** only for complex pricing formulas (e.g., $Price = Base + (Quantity \times TierRate)$).
 
+## Document Mode — User Story Export for RTM
+
+**Trigger phrases** (any of):
+- _"export user stories"_, _"write user stories to file"_, _"generate user story doc"_
+- _"seed the RTM"_, _"RTM input"_, _"traceability input"_
+
+When triggered, produce a structured Markdown file that can be directly imported into the RTM (`@rca-test` RTM template). Each user story row must include:
+
+```
+# [Feature Name] — User Stories & Acceptance Criteria
+
+| Story ID | Theme | L1 Epic | L2 Feature | L3 Use Case | User Story | Acceptance Criteria | Notes |
+|---|---|---|---|---|---|---|---|
+| US-001 | | | | | As a [role], I want [goal] so that [benefit] | AC1: Given...When...Then | |
+```
+
+**Rules:**
+- Story IDs follow `US-[FeatureCode]-[Seq]` (e.g., `US-FTR001-001`).
+- Every User Story MUST have at least one AC in BDD format: `Given / When / Then`.
+- Flag any story that lacks a traceable requirement in `REQUIREMENTS_BASELINE.md` with `[UNTRACED]`.
+- Save to `results/user-stories-<feature>-<YYYY-MM-DD>.md` and generate HTML + DOCX:
+  ```bash
+  node .claude/wrap-md-to-html.js
+  bash scripts/md-to-docx.sh results/user-stories-<feature>-<YYYY-MM-DD>.md
+  ```
+
+---
+
 ## Response Delta Rule
 
 For follow-ups, respond only with the **delta**. Do not restate prior content unless the user says _"Rewrite"_, _"Summarize again"_, or _"Provide full blueprint"_.
