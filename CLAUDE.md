@@ -58,16 +58,24 @@ Before executing any task, identify which persona you are assuming.
 ## 9. Story ID: [US-FTRxxx-yyy]
 ```
 
+**Work Item Hierarchy — Agile + PMP Alignment**
+
+| Work Item | Point Range | Target Duration | Rule |
+|---|---|---|---|
+| **User Story** | 1–8 pts | < 1 sprint (1–5 days) | Must be completable, testable, and accepted within a single sprint. 8 pts is a "smell" — review for decomposition before committing to sprint. |
+| **Feature** | 13–40 pts | 1–2 sprints (2–4 weeks) | A distinct piece of business functionality (e.g., "Enable Legacy SKU Swap") broken into 5–8 user stories. Tracked as a `feature` in FEATURE_TRACKER.json. |
+| **Epic** | 40+ pts (often 100+) | Multi-sprint / quarter | A large body of work (e.g., "Modernise Revenue Cloud Architecture") spanning multiple features. Cannot be delivered in a single sprint. Must be decomposed before design begins. |
+
 **Story Pointing Rules ([Dev] / @rca-build assigns after SA authors):**
 
-| Points | Meaning | RCA Example |
-|---|---|---|
-| 1 | Trivial — single config touch, no risk | Add a metadata label |
-| 2 | Simple — known pattern, zero unknowns | Create a Permission Set entry |
-| 3 | Moderate — standard RCA pattern, minor unknowns | Map a Context Tag to a Quote field |
-| 5 | Complex — multi-component, some unknowns | Build an Expression Set with 3 variables |
-| 8 | High — cross-system, significant unknowns | Wire DPE procedure with prehook + writeback |
-| 13 | Epic — must be broken down, too large for one sprint | Full Pricing Procedure with decision tables |
+| Points | Tier | Meaning | RCA Example |
+|---|---|---|---|
+| 1 | User Story | Trivial — single config touch, no risk | Add a metadata label |
+| 2 | User Story | Simple — known pattern, zero unknowns | Create a Permission Set entry |
+| 3 | User Story | Moderate — standard RCA pattern, minor unknowns | Map a Context Tag to a Quote field |
+| 5 | User Story | Complex — multi-component, some unknowns | Build an Expression Set with 3 variables |
+| 8 | User Story (smell) | High — cross-system, significant unknowns. Decompose unless [PM]+[TA] explicitly sign off. | Wire DPE procedure with prehook + writeback |
+| 13 | Feature boundary | This is NOT a valid sprint story. Treat as a Feature — decompose into ≤8pt user stories before the sprint. | Full Pricing Procedure with decision tables |
 
 **Pointing axes (all three must be considered):**
 1. **Effort** — hours of configuration or coding work
@@ -198,11 +206,14 @@ Every decomposed story MUST adhere to the **INVEST criteria:**
 - **I**ndependent — deployable without requiring another in-progress story
 - **N**egotiable — scope can be adjusted without breaking other slices
 - **V**aluable — delivers demonstrable business or technical value on its own
-- **E**stimable — can be sized confidently at ≤ 3 points
-- **S**mall — fits within a single sprint (≤ 3 points max after decomposition)
+- **E**stimable — can be sized confidently at ≤ 8 points
+- **S**mall — fits within a single sprint (user stories max at 8 pts; ≤5 pts preferred)
 - **T**estable — has at least one BDD acceptance criterion
 
-**Decomposition trigger:** Any story estimated at 8 or 13 points MUST be decomposed before it enters the sprint backlog. `@rca-build` flags 13-point stories as epics and returns them to [SA] + [PM] for slicing. 8-point stories may proceed only if [PM] confirms they fit within sprint capacity and [TA] signs off the risk.
+**Decomposition triggers:**
+- **13 pts** — `@rca-build` MUST return this to [SA] + [PM]. It is a Feature, not a story. Decompose into ≤8pt user stories before it touches the sprint backlog.
+- **8 pts (smell)** — `@rca-build` flags it. [PM] must confirm sprint capacity and [TA] must sign off risk before it is committed. Decompose if either declines.
+- **>40 pts across a feature** — [PM] escalates to Epic. Break into sub-features before design begins.
 
 6. Feature Journey Dashboard (Mandatory on Every Phase Completion)
 Every persona MUST update `FEATURE_TRACKER.json` and regenerate the dashboard when their phase is complete. No phase is "done" until the dashboard reflects it.
