@@ -1,8 +1,23 @@
-# Project State — Eco-Green Modular Server Smart Swap
-**Last Updated:** 2026-05-14
+# Project State — Team OS v3.1
+**Last Updated:** 2026-05-22
 
 ## Active Sprint
-Sprint 1 — Complete. All 6 layers shipped and verified.
+Team OS v3.1 — Framework build. Agent swarm configured, protocols active.
+
+## Team OS Protocol Status
+| # | Protocol | Status | Notes |
+|---|---|---|---|
+| 1 | Paced Discovery (Interview Mode) | Active | |
+| 2 | /plan Review Gate (Pre-Build) | Active | |
+| 3 | PO Interview — Feature Discovery | Active | |
+| 4 | Build & QA Loop | Active | |
+| 5 | **Technical Decomposition Protocol** | **Active — 2026-05-22** | 8-13pt stories must be sliced to ≤3pt vertical slices via INVEST criteria |
+| 6 | Feature Journey Dashboard | Active | FEATURE_TRACKER.json → generate-journey.js |
+| 7 | Approval Gate — Human-in-the-Loop | Active | approved / skip / revise vocabulary |
+| 8 | Delta Rule | Active | |
+| 9 | Source Citation Appendix (MCP) | Active | |
+
+## Recent Decisions (The "Why")
 
 ## Recent Decisions (The "Why")
 - **Standalone ContextDefinition**: Platform-managed `RLM_SalesTransactionContext` cannot be extended via metadata (all attributes are `inheritedFrom`). Created self-contained `EcoGreenSwapContext` with `EcoSwapLineItem` node (`transposable=true`) instead.

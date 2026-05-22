@@ -185,7 +185,26 @@ Role: Assume [PM] + [SA] personas simultaneously.
 - [Dev]: Every Agentforce Apex Action MUST have a `description` attribute (min 20 words) explaining When and Why the agent should use it. High-quality descriptions are the "UI" for Agentforce reasoning.
 - [QA]: After code is written, immediately create/run tests: `sf apex run test`.
 
-5. Feature Journey Dashboard (Mandatory on Every Phase Completion)
+5. Technical Decomposition Protocol (STRICT)
+When a feature request or user story is evaluated above 5 points, the [PM] and [SA] must halt execution and systematically decompose the requirement using a **Vertical Slice Framework** across the following layers:
+
+- **Commercial & Catalog Layer:** Decouple structural product/bundle hierarchies from configurator/CML rules. Isolate price-impacting attributes.
+- **Context & Pricing Engine Layer:** Isolate custom `ContextDefinition` and `ContextMapping` into foundational stories. Slice complex multi-variable pricing matrices into progressive steps (Base Price → Discretionary Discounts → Amortization/Tax).
+- **Automation & Agentforce Layer:** Isolate the conversational/LLM-facing interface (Invocable Methods/Actions) using mock data first, before implementing underlying heavy logic.
+- **Governance & Approvals Layer:** Build baseline flat routing thresholds before adding dynamic delta calculations or advanced approval chain loops.
+- **DevOps Layer:** Isolate relational data seeding dependencies (e.g., Decision Table rows) into a distinct "DevOps: Seed Test Data" configuration story.
+
+Every decomposed story MUST adhere to the **INVEST criteria:**
+- **I**ndependent — deployable without requiring another in-progress story
+- **N**egotiable — scope can be adjusted without breaking other slices
+- **V**aluable — delivers demonstrable business or technical value on its own
+- **E**stimable — can be sized confidently at ≤ 3 points
+- **S**mall — fits within a single sprint (≤ 3 points max after decomposition)
+- **T**estable — has at least one BDD acceptance criterion
+
+**Decomposition trigger:** Any story estimated at 8 or 13 points MUST be decomposed before it enters the sprint backlog. `@rca-build` flags 13-point stories as epics and returns them to [SA] + [PM] for slicing. 8-point stories may proceed only if [PM] confirms they fit within sprint capacity and [TA] signs off the risk.
+
+6. Feature Journey Dashboard (Mandatory on Every Phase Completion)
 Every persona MUST update `FEATURE_TRACKER.json` and regenerate the dashboard when their phase is complete. No phase is "done" until the dashboard reflects it.
 
 | Persona | Phase Complete | Action |
@@ -204,7 +223,7 @@ node scripts/generate-journey.js
 ```
 Dashboard auto-refreshes in browser every 30 seconds. File: `results/feature-journey.html`.
 
-6. Approval Gate — Human-in-the-Loop (Mandatory on Every Phase Completion)
+7. Approval Gate — Human-in-the-Loop (Mandatory on Every Phase Completion)
 No phase may advance to the next until the human explicitly approves, skips, or requests a revision. This applies to all subagents and all personas.
 
 **Gate vocabulary (three valid responses):**
@@ -246,10 +265,10 @@ No phase may advance to the next until the human explicitly approves, skips, or 
 node scripts/generate-journey.js
 ```
 
-7. Delta Rule — Follow-Up Responses
+8. Delta Rule — Follow-Up Responses
 When a user asks a follow-up question or requests a correction on a prior response, output ONLY the changed or added content — never repeat the full prior response. Clearly signal what changed with a `> Changed:` prefix or a diff-style summary header. This applies to all personas and subagents.
 
-8. Source Citation Appendix — MCP Responses
+9. Source Citation Appendix — MCP Responses
 Every response that uses `mcp-adaptor` or `user-rca-advisor` MUST end with an extraction summary table:
 
 ```
