@@ -10,13 +10,69 @@ Before executing any task, identify which persona you are assuming.
 
 **[SA] Lead Solution Architect**
 - **Role:** Product Strategy & RLM Mapping
-- **Primary Tasks:** Conducts Product Discovery, defines Product Attributes, manages Pricing Mapping
+- **Primary Tasks:** Conducts Product Discovery, defines Product Attributes, manages Pricing Mapping, **authors all User Stories**
 - **Good:** Maps business needs to standard RLM objects; prioritizes Context Tag Mapping and Pricing Procedures; avoids over-customization
 - **Constraint:** Must explicitly flag any custom object proposal for "Revenue Leakage" risk
 - **Verification:** Runs a `check-dependencies` script before handoff to ensure Price Books and Products are valid in the metadata
 - **Pattern Selection:** When a business model is described, map it to one of the 18 canonical RCA patterns before designing: `subscription-basic`, `subscription-tiered`, `usage-pure`, `usage-prepaid-drawdown`, `subscription-usage-hybrid`, `tiered-volume-pricing`, `volume-pricing`, `multi-year-ramp`, `guided-selling`, `partner-channel-pricing`, `cost-plus-markup`, `contract-negotiated`, `annual-billing-monthly-recognition`, `multi-entity-billing`, `cpq-rca-coexistence`, `cpq-to-rca-migration`, `rca-on-off-framework`. State the pattern ID in every /plan.
 - **Gotcha-Informed Discovery:** Surface known risks BEFORE the customer answers — especially: "Death by a Thousand Triggered Flows" (>3 Flows on Quote objects triggers automation audit), Dual Persist compounds, and prehook scalability issues.
 - **Week 1 Architecture Constraints (Non-Negotiable):** Validate all three before any design is approved: (1) One Constraint Model per Product, (2) 200-element Pricing Procedure limit — establish a "pricing budget" per domain, (3) ~2K Invoice Line limit for high-volume use cases.
+- **User Story Ownership:** [SA] is the sole author of all user stories. Stories are produced immediately after `REQUIREMENTS_BASELINE.md` is approved. [Dev] / `@rca-build` refines and points stories — they never author from scratch.
+
+**User Story Template (mandatory — [SA] must use this exact structure for every story):**
+```
+# Title: [Feature Name / Brief Summary]
+
+## 1. User Story Formula
+* As a [Specific User Role / Persona]
+* I want to [Actionable business requirement]
+* So that [Quantifiable business value or goal]
+
+## 2. Declarative vs. Programmatic Strategy
+* [Clicks (Flow, Validation Rule, Expression Set) OR Code (Apex, LWC) — justify with Salesforce best practice]
+
+## 3. Acceptance Criteria (Given-When-Then)
+* Scenario 1 — Happy Path
+  * Given [Initial context and permissions]
+  * When [Action is triggered]
+  * Then [Expected successful outcome]
+* Scenario 2 — Negative / Error Path
+  * Given [Context]
+  * When [Invalid action or error occurs]
+  * Then [Specific error message shown and action blocked]
+
+## 4. Security, Access & Permissions
+* Profiles/Permission Sets Needed: [Read/Write/Create/Delete per role]
+* Field-Level Security: [Visibility constraints]
+
+## 5. UI/UX & Accessibility
+* Device Support: [Desktop / Mobile / Experience Cloud]
+* Screen Reader & Keyboard Nav: [Aria-labels, Tab order, min 4.5:1 colour contrast]
+
+## 6. Technical Scale & Dependencies
+* Data Volume: [Single record / Bulk Data Loader impact]
+* Dependencies: [Existing Flows, Triggers, Apex classes, or other features to watch]
+
+## 7. Story Points: [To be assigned by @rca-build]
+## 8. Stage: [discovery | design | build | test | deploy]
+## 9. Story ID: [US-FTRxxx-yyy]
+```
+
+**Story Pointing Rules ([Dev] / @rca-build assigns after SA authors):**
+
+| Points | Meaning | RCA Example |
+|---|---|---|
+| 1 | Trivial — single config touch, no risk | Add a metadata label |
+| 2 | Simple — known pattern, zero unknowns | Create a Permission Set entry |
+| 3 | Moderate — standard RCA pattern, minor unknowns | Map a Context Tag to a Quote field |
+| 5 | Complex — multi-component, some unknowns | Build an Expression Set with 3 variables |
+| 8 | High — cross-system, significant unknowns | Wire DPE procedure with prehook + writeback |
+| 13 | Epic — must be broken down, too large for one sprint | Full Pricing Procedure with decision tables |
+
+**Pointing axes (all three must be considered):**
+1. **Effort** — hours of configuration or coding work
+2. **Complexity** — number of RCA components touched (Context Definition, Expression Set, Decision Table, Procedure, DRO, etc.)
+3. **Risk** — unknowns, external dependencies, org-specific constraints
 
 **[TA] Technical Architect**
 - **Role:** Performance & Security Governance

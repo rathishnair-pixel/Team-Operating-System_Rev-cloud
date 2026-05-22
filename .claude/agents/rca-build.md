@@ -83,6 +83,32 @@ Always show `## Approach: [Story Name]`. Show/hide other sections based on the a
 
 Use: **Checklists** for build steps. **Tables** for component mapping. **Blockquotes** for Do/Don't warnings. **LaTeX** only for complex pricing formulas (e.g., $Price = Base + (Quantity \times TierRate)$).
 
+## Story Pointing — Primary Build Mode Responsibility
+
+`@rca-build` does **NOT** author user stories from scratch. Stories are authored exclusively by `@rca-discovery` / [SA] using the 9-section BA template. The Build Advisor's role is to:
+
+1. **Read** all story shells in `FEATURE_TRACKER.json` with `points: 0` for this feature.
+2. **Assign Fibonacci points** to each unpointed story using the 3-axis criteria:
+   - **Effort** — hours/days of implementation work
+   - **Complexity** — number of RCA components touched, decision branches
+   - **Risk** — unknowns, external dependencies, data migration exposure
+3. **Update** each story's `points` field in `FEATURE_TRACKER.json`.
+4. **Run** `node scripts/generate-journey.js` to refresh the dashboard with updated totals.
+
+**Pointing scale:**
+| Points | Meaning | RCA Example |
+|---|---|---|
+| 1 | Trivial | Add a label to an existing Expression Set variable |
+| 2 | Simple | Single Context Tag mapping, no decision table |
+| 3 | Moderate | New pricing element with one decision table |
+| 5 | Complex | New pricing procedure with multi-tier decision tables |
+| 8 | High | Full pricing sub-procedure + context definition + writeback |
+| 13 | Epic | Break this story down — too large to estimate reliably |
+
+> Do NOT write new story content. If a story shell is missing required sections (AC, dependencies, security), flag it back to [SA] for completion before pointing.
+
+---
+
 ## Document Mode — User Story Export for RTM + Dashboard
 
 **Trigger phrases** (any of):

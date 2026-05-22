@@ -102,7 +102,74 @@ When the full Discovery output is produced (REQUIREMENTS_BASELINE.md written, De
 ⏸ Waiting for approval. No Design work will begin until you respond.
 ```
 
-**On `approved` or `skip`:** Update `FEATURE_TRACKER.json` — set `discovery.status → complete`, `discovery.approval_status → approved/skipped`, add artifact path. Then run `node scripts/generate-journey.js`.
+**On `approved` or `skip`:** Do the following in order:
+
+1. Update `FEATURE_TRACKER.json` — set `discovery.status → complete`, `discovery.approval_status → approved/skipped`, add artifact path.
+
+2. **Generate user story shells** — [SA] must immediately produce a user story for every distinct requirement in `REQUIREMENTS_BASELINE.md` using the mandatory 9-section BA template below. Do NOT skip this step. Stories are shells — points will be assigned by `@rca-build` later.
+
+3. Populate `FEATURE_TRACKER.json` `userStories[]` for this feature — one entry per story:
+
+```json
+{
+  "id": "US-FTRxxx-001",
+  "title": "As a [role], I want [goal] so that [benefit]",
+  "points": 0,
+  "status": "todo",
+  "stage": "discovery"
+}
+```
+
+4. Run `node scripts/generate-journey.js` to refresh the dashboard.
+
+---
+
+### User Story Shell Template (mandatory — [SA] uses this for every story)
+
+```
+# Title: [Feature Name / Brief Summary]
+
+## 1. User Story Formula
+* **As a** [Specific User Role / Persona]
+* **I want to** [Actionable business requirement]
+* **So that** [Quantifiable business value or goal]
+
+## 2. Declarative vs. Programmatic Strategy
+* [Clicks (Flows, Validation Rules) or Code (Apex, LWC) — state which and why]
+
+## 3. Acceptance Criteria (Given-When-Then Format)
+* **Scenario 1: Happy Path**
+  * **Given** [Initial context and permissions]
+  * **When** [Action is triggered]
+  * **Then** [Expected successful outcome]
+* **Scenario 2: Negative/Error Path**
+  * **Given** [Context]
+  * **When** [Invalid action or error occurs]
+  * **Then** [Specific error message shown and block action]
+
+## 4. Security, Access & Permissions
+* **Profiles/Permission Sets Needed:** [Read/Write/Create/Delete per role]
+* **Field-Level Security:** [Visibility constraints]
+
+## 5. UI/UX & Accessibility Requirements
+* **Device Support:** [Desktop / Mobile / Experience Cloud]
+* **Screen Reader & Keyboard Nav:** [Aria-labels, Tab order, 4.5:1 contrast]
+
+## 6. Technical Scale & Dependencies
+* **Data Volume:** [Single record / Bulk Data Loader impact]
+* **Dependencies:** [Flows, Triggers, Apex classes, other stories]
+
+## 7. Story Points
+* [Leave as 0 — @rca-build assigns using Fibonacci: 1/2/3/5/8/13]
+
+## 8. Stage
+* [discovery | design | build | test | deploy]
+
+## 9. Story ID
+* [US-FTRxxx-NNN]
+```
+
+Story IDs follow `US-[FeatureCode]-[Seq]` (e.g., `US-FTR003-001`). Stage reflects the SDLC phase where the story is primarily delivered. Points stay `0` until `@rca-build` runs pointing.
 
 **On `revise [notes]`:** Set `discovery.approval_status → rejected`. Incorporate feedback and re-present the gate without advancing stage.
 
