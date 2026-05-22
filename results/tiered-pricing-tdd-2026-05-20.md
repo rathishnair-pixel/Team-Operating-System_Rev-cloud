@@ -1,0 +1,577 @@
+# Technical Design Document: Tiered Pricing Expression Sets
+## Revenue Cloud Advanced (RCA) — Salesforce Pricing Engine
+
+| Field | Value |
+|---|---|
+| Document ID | TDD-PRICING-TIERED-001 |
+| Version | 1.0 |
+| Date | 2026-05-20 |
+| Status | Draft for Architect Review |
+| Author | RCA Design Agent |
+| Pattern ID | `tiered-volume-pricing` |
+| Reviewer | Technical Architect |
+
+---
+
+## Table of Contents
+
+1. [Business and Technical Context](#1-business-and-technical-context)
+2. [Overall Architecture Strategy](#2-overall-architecture-strategy)
+3. [Architecture Diagram — Price Waterfall Flow](#3-architecture-diagram--price-waterfall-flow)
+4. [Context Definitions and Tag Mapping](#4-context-definitions-and-tag-mapping)
+5. [Expression Set Design](#5-expression-set-design)
+6. [Pricing Procedure Plan and Waterfall Sequence](#6-pricing-procedure-plan-and-waterfall-sequence)
+7. [Data Model Design](#7-data-model-design)
+8. [Entity Relationship Diagram](#8-entity-relationship-diagram)
+9. [Sequence Diagram — Pricing Execution Flow](#9-sequence-diagram--pricing-execution-flow)
+10. [Pricing Lineage Report](#10-pricing-lineage-report)
+11. [Automation and Orchestration](#11-automation-and-orchestration)
+12. [Scalability and Performance](#12-scalability-and-performance)
+13. [Risks and Mitigations](#13-risks-and-mitigations)
+14. [Assumptions and Open Questions](#14-assumptions-and-open-questions)
+15. [Appendix — Extraction Summary](#15-appendix--extraction-summary)
+
+---
+
+## 1. Business and Technical Context
+
+### Business Problem
+
+Enterprise customers purchasing software or services at scale expect volume-based price breaks as a commercial incentive. Flat list pricing does not reward high-volume buyers and creates manual negotiation overhead. The business requires an automated tiered pricing engine that applies bracket-based unit rates dynamically at quote and order time, without manual overrides or Apex logic.
+
+### Process Area
+
+Salesforce Pricing Engine (native on-core) — Quote-to-Order pricing for products sold via the Transaction Line Editor (TLE).
+
+### Scope
+
+| In Scope | Out of Scope |
+|---|---|
+| Tiered (stepped/slab) pricing via Expression Sets | Legacy CPQ `SBQQ__` objects — REJECTED |
+| Context Definition and Context Tag mapping | Manual price override flows |
+| Pricing Procedure Plan with waterfall | External ERP pricing integration |
+| PriceTier decision table lookup | Billing-time tiered rating (DPE/usage) |
+| SalesOrderProduct persistence | Tax calculation steps |
+
+### Canonical Pattern
+
+This design implements the **`tiered-volume-pricing`** canonical RCA pattern. Each quantity bracket maps to a specific unit rate. The rate is resolved by the Expression Set via a `PriceTier` decision table lookup keyed on quantity. The final `SalesPrice` written to `SalesOrderProduct` reflects the applicable tier rate multiplied by quantity.
+
+### Tier Model Assumption
+
+This TDD uses a **stepped slab** (also called "stairstep") model: the entire quantity falls into one bracket and receives that bracket's rate. This is distinct from the cumulative/graduated model where each unit is rated at the tier it falls into.
+
+> **Assumption A1:** Stepped slab is confirmed as the required model. If graduated (waterfall per unit) is required, the Expression Set formula and decision table structure must change. Flag this to the Solution Architect before build.
+
+---
+
+## 2. Overall Architecture Strategy
+
+The solution uses exclusively native RCA on-core engines:
+
+- **Product Catalog Management (PCM):** `Product2` records are associated with a `ProductSellingModel` that references a `PriceAdjustmentSchedule`. The schedule holds `PriceTier` records defining tier boundaries and rates.
+- **Context Service:** A `ContextDefinition` (Usage Type: Pricing) maps `SalesOrderProduct` fields — primarily `Quantity` and `ProductId` — into named context attributes. These attributes are the runtime inputs consumed by the Expression Set.
+- **Salesforce Pricing Engine (Expression Sets):** The `ExpressionSet` (Usage Type: Pricing) reads context attributes, queries the `PriceTier` decision table via a Lookup element, and calculates the final unit price. Output is mapped back to `SalesOrderProduct.SalesPrice` via a save/persistence mapping.
+- **Pricing Procedure Plan:** A `PricingProcedure` (Usage Type: Pricing) sequences the waterfall steps: List Price Fetch -> Tier Lookup -> Net Price Calculation -> Persistence.
+- **No Apex in the pricing path.** Pre-hooks, if used, prepare context only — no DML, no secondary pricing logic.
+
+---
+
+## 3. Architecture Diagram — Price Waterfall Flow
+
+```mermaid
+graph TD
+    A["Sales Rep / API Client"] -->|"Add product to cart"| B["Transaction Line Editor (TLE)"]
+    B -->|"Trigger pricing"| C["Pricing Procedure\n(UsageType: Pricing)"]
+    C -->|"Step 1: Fetch List Price"| D["Discovery Procedure\n(UsageType: Pricing Discovery)"]
+    D -->|"Reads PricebookEntry"| E["Pricebook2 / PricebookEntry"]
+    C -->|"Step 2: Load Context"| F["Context Service\nContextDefinition"]
+    F -->|"Maps fields to tags"| G["Context Attributes\nQty, ProductId, AccountTier"]
+    C -->|"Step 3: Tier Lookup"| H["Expression Set\n(Tiered Pricing ES v1)"]
+    H -->|"Decision Table lookup\nkey: ProductId + Qty range"| I["PriceTier Decision Table\n(PriceAdjustmentSchedule)"]
+    I -->|"Returns TierRate"| H
+    H -->|"Calculates SalesPrice\n= Qty x TierRate"| J["Output Variable\nSalesPrice"]
+    C -->|"Step 4: Persist"| K["Save Mapping\nSalesOrderProduct.SalesPrice"]
+    K --> L["SalesOrderProduct\nFinal priced line"]
+    L --> M["SalesOrder\nOrder confirmed"]
+    M --> N["Invoice\nBilling trigger"]
+
+    style A fill:#E8F4FD,stroke:#2196F3
+    style C fill:#FFF3E0,stroke:#FF9800
+    style F fill:#F3E5F5,stroke:#9C27B0
+    style H fill:#E8F5E9,stroke:#4CAF50
+    style I fill:#FCE4EC,stroke:#E91E63
+    style L fill:#E0F2F1,stroke:#009688
+```
+
+---
+
+## 4. Context Definitions and Tag Mapping
+
+### 4.1 Context Definition Record
+
+| Field | Value |
+|---|---|
+| Name | `Tiered_Pricing_Context` |
+| Developer Name | `Tiered_Pricing_Context` |
+| Usage Type | Pricing |
+| Base Object | `SalesOrderProduct` |
+| Active | true |
+
+### 4.2 Context Attributes
+
+Each attribute declared below must specify `fieldType` explicitly. Omitting `fieldType` is the leading cause of writeback failures.
+
+| Attribute Name | Source Field | fieldType | Notes |
+|---|---|---|---|
+| `qty` | `SalesOrderProduct.Quantity` | `input` | Drives tier bracket lookup key |
+| `productId` | `SalesOrderProduct.Product2Id` | `input` | Drives product-level tier table filter |
+| `listPrice` | `PricebookEntry.UnitPrice` | `input` | Base rate from Pricebook |
+| `accountTier` | `Account.CustomerTier__c` | `input` | Optional: enables account-class tier override |
+| `salesPrice` | `SalesOrderProduct.SalesPrice` | `inputoutput` | Must be `inputoutput` — read AND written back |
+| `tierRate` | _(computed)_ | `output` | Intermediate ES variable; not persisted directly |
+
+> **Critical Rule:** `salesPrice` MUST be declared as `inputoutput`, not `output`. If it is declared `output` only, the save mapping cannot read its initial value for audit purposes. If it is declared `input` only, the Expression Set cannot write back the computed value. This is the most common tiered pricing writeback failure mode.
+
+### 4.3 Context Mapping (Source-to-Tag)
+
+| Context Tag | Maps From | Mapping Type |
+|---|---|---|
+| `qty` | `SalesOrderProduct.Quantity` | Direct field mapping |
+| `productId` | `SalesOrderProduct.Product2Id` | Direct field mapping |
+| `listPrice` | `PricebookEntry.UnitPrice` | Related record mapping via `PricebookEntryId` |
+| `accountTier` | `Account.CustomerTier__c` | Related record mapping via `AccountId` on SalesOrder |
+| `salesPrice` | `SalesOrderProduct.SalesPrice` | Direct field mapping (read + write) |
+
+### 4.4 UI vs API Context Preparation
+
+> **Architect Alert — Channel Divergence:** The Transaction Line Editor (UI) prepares context interactively — it hydrates `qty` and `productId` from the live cart state as the user types. Headless API calls (e.g., DRO-driven order flows) prepare context from the request payload. If `accountTier` is not included in the API request payload, the tier override will silently fall back to the default bracket. Always validate pricing in both channels separately.
+
+---
+
+## 5. Expression Set Design
+
+### 5.1 Expression Set Record
+
+| Field | Value |
+|---|---|
+| Name | `Tiered_Pricing_ES` |
+| Developer Name | `Tiered_Pricing_ES` |
+| Usage Type | Pricing |
+| Version | 1 (Active) |
+| Status | Active |
+
+> **Versioning Rule:** Only one version may be Active at a time. When updating tier rates, clone the current version, update the decision table rows, activate the clone, and deactivate the prior version. Never edit an Active version in place.
+
+### 5.2 Expression Set Variables
+
+All variables must declare `input`/`output` flags explicitly. Missing flags cause the pricing engine to silently skip the variable.
+
+| Variable Name | Data Type | Input Flag | Output Flag | Description |
+|---|---|---|---|---|
+| `v_qty` | Number | true | false | Quantity from context attribute `qty` |
+| `v_productId` | Text | true | false | Product ID from context attribute `productId` |
+| `v_listPrice` | Currency | true | false | List price from context attribute `listPrice` |
+| `v_accountTier` | Text | true | false | Account tier class from context attribute `accountTier` |
+| `v_tierRate` | Currency | false | true | Resolved rate from decision table lookup |
+| `v_salesPrice` | Currency | true | true | Final calculated price; mapped to `salesPrice` context attribute |
+
+### 5.3 Expression Set Elements (Ordered)
+
+| Seq | Element Type | Name | Description |
+|---|---|---|---|
+| 10 | Lookup | `LookupTierRate` | Queries `PriceTier` decision table using `v_productId` and `v_qty`; returns `v_tierRate` |
+| 20 | Formula | `CalculateSalesPrice` | `v_salesPrice = v_qty * v_tierRate` |
+| 30 | Condition | `GuardZeroPrice` | If `v_tierRate = 0` then set `v_salesPrice = v_listPrice * v_qty` (fallback to list price) |
+
+### 5.4 Decision Table — PriceTier Lookup
+
+The decision table is backed by `PriceTier` records attached to a `PriceAdjustmentSchedule`. The Lookup element references it by Developer Name.
+
+| Input Column | Type | Description |
+|---|---|---|
+| `ProductId` | Text | Exact match on `Product2.Id` |
+| `MinQuantity` | Number | Lower bound of tier bracket (inclusive) |
+| `MaxQuantity` | Number | Upper bound of tier bracket (exclusive; use `9999999` for open-ended top tier) |
+
+| Output Column | Type | Description |
+|---|---|---|
+| `TierRate` | Currency | Unit rate for this bracket |
+
+**Sample Tier Table (illustrative):**
+
+| ProductId | MinQuantity | MaxQuantity | TierRate |
+|---|---|---|---|
+| `01t...001` | 1 | 10 | 100.00 |
+| `01t...001` | 10 | 50 | 90.00 |
+| `01t...001` | 50 | 200 | 75.00 |
+| `01t...001` | 200 | 9999999 | 60.00 |
+
+> **Duplicate Lookup Key Risk:** If `MinQuantity`/`MaxQuantity` ranges overlap for the same `ProductId`, the decision table will throw a duplicate lookup error at runtime. This appears as a "Decision table returned multiple rows" error in the Pricing Log. Ranges must be non-overlapping. The `MaxQuantity` boundary must be exclusive (the next tier's `MinQuantity` equals this tier's `MaxQuantity`).
+
+### 5.5 Save Mapping (Persistence)
+
+| Source ES Variable | Target Context Attribute | Target sObject Field |
+|---|---|---|
+| `v_salesPrice` | `salesPrice` | `SalesOrderProduct.SalesPrice` |
+
+> If the save mapping row for `SalesOrderProduct.SalesPrice` is absent, `v_salesPrice` will be calculated correctly in memory but will NOT be written to the record. The waterfall will show a computed value in the simulation view but the field remains null on the saved record. This is the most common "value calculated but not written back" failure mode.
+
+---
+
+## 6. Pricing Procedure Plan and Waterfall Sequence
+
+### 6.1 Pricing Procedure Record
+
+| Field | Value |
+|---|---|
+| Name | `Tiered_Pricing_Procedure` |
+| Developer Name | `Tiered_Pricing_Procedure` |
+| Usage Type | Pricing |
+| Status | Active |
+| Context Definition | `Tiered_Pricing_Context` |
+
+### 6.2 Procedure Plan Steps
+
+The 200-element limit applies to the total count of pricing elements across all procedure steps. This procedure uses 4 steps — well within limits. Establish a pricing budget if additional domains share this procedure.
+
+| Step Seq | Step Name | Element Type | Element Reference | Purpose |
+|---|---|---|---|---|
+| 10 | `FetchListPrice` | Pricing Element | `PricebookEntry` lookup | Populates `v_listPrice` from the active Pricebook |
+| 20 | `LoadContext` | Context Service | `Tiered_Pricing_Context` | Hydrates all input context attributes from `SalesOrderProduct` and related records |
+| 30 | `ApplyTieredPricing` | Expression Set | `Tiered_Pricing_ES` v1 | Resolves tier rate, calculates sales price |
+| 40 | `PersistPrice` | Save Mapping | `salesPrice -> SalesOrderProduct.SalesPrice` | Writes final price to the order line |
+
+### 6.3 Price Waterfall (Visual)
+
+```
++-----------------------------------------------------------+
+|  PRICE WATERFALL — SalesOrderProduct                      |
++-----------------------------------------------------------+
+|  Step 10  List Price        $100.00  (from PricebookEntry)|
+|  Step 20  Context Loaded    qty=25, accountTier=Gold      |
+|  Step 30  Tier Lookup       TierRate=$90.00 (10-50 range) |
+|           Formula           25 * $90.00 = $2,250.00       |
+|  Step 40  SalesPrice        $2,250.00  -> PERSISTED       |
++-----------------------------------------------------------+
+|  Net Price                  $2,250.00                     |
++-----------------------------------------------------------+
+```
+
+---
+
+## 7. Data Model Design
+
+### 7.1 Key Objects and Relationships
+
+| Object | Role | Key Fields |
+|---|---|---|
+| `Product2` | The sellable item | `Id`, `Name`, `IsActive`, `ProductCode` |
+| `Pricebook2` | Named price list | `Id`, `Name`, `IsActive`, `IsStandard` |
+| `PricebookEntry` | List price per product per pricebook | `Id`, `Product2Id`, `Pricebook2Id`, `UnitPrice`, `IsActive` |
+| `ProductSellingModel` | Defines how a product is sold (one-time, recurring) | `Id`, `Name`, `SellingModelType`, `PricingTermUnit` |
+| `PriceAdjustmentSchedule` | Container for tier bracket rules | `Id`, `Name`, `AdjustmentType`, `AdjustmentSource` |
+| `PriceTier` | Individual tier bracket row | `Id`, `PriceAdjustmentScheduleId`, `TierType`, `LowerBound`, `UpperBound`, `AdjustmentAmount`, `AdjustmentPercent` |
+| `SalesOrder` | The order header | `Id`, `AccountId`, `Pricebook2Id`, `Status` |
+| `SalesOrderProduct` | The order line | `Id`, `SalesOrderId`, `Product2Id`, `Quantity`, `UnitPrice`, `SalesPrice`, `PricebookEntryId` |
+| `ContextDefinition` | Pricing context schema | `Id`, `DeveloperName`, `UsageType` |
+| `ContextAttribute` | Individual tag within a Context Definition | `Id`, `ContextDefinitionId`, `DeveloperName`, `DataType`, `FieldType` |
+| `ExpressionSet` | Pricing calculation logic container | `Id`, `DeveloperName`, `UsageType` |
+| `ExpressionSetVersion` | Versioned instance of an Expression Set | `Id`, `ExpressionSetId`, `VersionNumber`, `Status` |
+
+### 7.2 Object Notes
+
+- `PriceAdjustmentSchedule.AdjustmentType` should be set to `Fixed Price` for absolute tier rates, or `Percentage` for percentage-based discount tiers. This TDD uses `Fixed Price`.
+- `PriceTier.LowerBound` and `UpperBound` map to `MinQuantity` and `MaxQuantity` in the decision table. The decision table is auto-generated from these records — do not manually edit the decision table rows outside the `PriceTier` record UI.
+- `SalesOrderProduct.SalesPrice` is the field the pricing engine writes to. It is distinct from `UnitPrice` (which holds the list price from the Pricebook). Downstream billing and invoicing read `SalesPrice`.
+
+---
+
+## 8. Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    Pricebook2 {
+        string Id PK
+        string Name
+        boolean IsActive
+        boolean IsStandard
+    }
+
+    Product2 {
+        string Id PK
+        string Name
+        string ProductCode
+        boolean IsActive
+    }
+
+    PricebookEntry {
+        string Id PK
+        string Pricebook2Id FK
+        string Product2Id FK
+        decimal UnitPrice
+        boolean IsActive
+    }
+
+    ProductSellingModel {
+        string Id PK
+        string Name
+        string SellingModelType
+        string PricingTermUnit
+        string PriceAdjustmentScheduleId FK
+    }
+
+    PriceAdjustmentSchedule {
+        string Id PK
+        string Name
+        string AdjustmentType
+        string AdjustmentSource
+    }
+
+    PriceTier {
+        string Id PK
+        string PriceAdjustmentScheduleId FK
+        string TierType
+        decimal LowerBound
+        decimal UpperBound
+        decimal AdjustmentAmount
+        decimal AdjustmentPercent
+    }
+
+    SalesOrder {
+        string Id PK
+        string AccountId FK
+        string Pricebook2Id FK
+        string Status
+    }
+
+    SalesOrderProduct {
+        string Id PK
+        string SalesOrderId FK
+        string Product2Id FK
+        string PricebookEntryId FK
+        decimal Quantity
+        decimal UnitPrice
+        decimal SalesPrice
+    }
+
+    ContextDefinition {
+        string Id PK
+        string DeveloperName
+        string UsageType
+    }
+
+    ContextAttribute {
+        string Id PK
+        string ContextDefinitionId FK
+        string DeveloperName
+        string DataType
+        string FieldType
+    }
+
+    ExpressionSet {
+        string Id PK
+        string DeveloperName
+        string UsageType
+    }
+
+    ExpressionSetVersion {
+        string Id PK
+        string ExpressionSetId FK
+        integer VersionNumber
+        string Status
+    }
+
+    Pricebook2 ||--o{ PricebookEntry : "contains"
+    Product2 ||--o{ PricebookEntry : "priced by"
+    Product2 ||--o{ ProductSellingModel : "sold via"
+    ProductSellingModel ||--o| PriceAdjustmentSchedule : "references"
+    PriceAdjustmentSchedule ||--o{ PriceTier : "has brackets"
+    SalesOrder ||--o{ SalesOrderProduct : "has lines"
+    SalesOrder }o--|| Pricebook2 : "uses"
+    SalesOrderProduct }o--|| Product2 : "sells"
+    SalesOrderProduct }o--|| PricebookEntry : "list price from"
+    ContextDefinition ||--o{ ContextAttribute : "declares"
+    ExpressionSet ||--o{ ExpressionSetVersion : "versioned by"
+    ExpressionSetVersion }o--|| ContextDefinition : "reads context from"
+```
+
+---
+
+## 9. Sequence Diagram — Pricing Execution Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Rep as Sales Rep / API Client
+    participant TLE as Transaction Line Editor
+    participant PP as Pricing Procedure
+    participant CS as Context Service
+    participant ES as Expression Set
+    participant DT as PriceTier Decision Table
+    participant SOP as SalesOrderProduct
+
+    Rep->>TLE: Add product with Quantity=25
+    TLE->>PP: Invoke Pricing Procedure (Tiered_Pricing_Procedure)
+    PP->>SOP: Step 10 - Read PricebookEntry.UnitPrice (ListPrice=100.00)
+    PP->>CS: Step 20 - Prepare Context (Tiered_Pricing_Context)
+    CS->>SOP: Read Quantity=25, Product2Id, SalesPrice
+    CS-->>PP: Context attributes hydrated (qty=25, productId=01t..., listPrice=100.00)
+    PP->>ES: Step 30 - Execute Expression Set (Tiered_Pricing_ES v1)
+    ES->>DT: Lookup TierRate WHERE ProductId=01t... AND 10<=qty<50
+    DT-->>ES: TierRate=90.00
+    ES->>ES: CalculateSalesPrice: v_salesPrice = 25 * 90.00 = 2250.00
+    ES-->>PP: Output v_salesPrice=2250.00
+    PP->>SOP: Step 40 - Save Mapping: SalesOrderProduct.SalesPrice=2250.00
+    SOP-->>TLE: Updated line: SalesPrice=2250.00
+    TLE-->>Rep: Waterfall displayed - Net Price $2,250.00
+```
+
+---
+
+## 10. Pricing Lineage Report
+
+This report satisfies the mandatory Technical Architect [TA] gate before any pricing build is approved.
+
+```
+## Pricing Lineage: Tiered Sales Price on SalesOrderProduct
+
+- sObject field:         SalesOrderProduct.SalesPrice
+- Context attribute/tag: salesPrice (FieldType: inputoutput)
+- Context mapping:       Tiered_Pricing_Context -> salesPrice -> SalesOrderProduct.SalesPrice
+- Expression set:        Tiered_Pricing_ES v1 (UsageType: Pricing, Status: Active)
+- Pricing element:       Step 30 in Tiered_Pricing_Procedure (sequenceNumber: 30)
+- Decision table:        PriceTier lookup (inputs: ProductId, Quantity range; output: TierRate)
+- Procedure plan seq:    10 (FetchListPrice) -> 20 (LoadContext) -> 30 (ApplyTieredPricing) -> 40 (PersistPrice)
+- Persistence path:      ExpressionSet output v_salesPrice -> Context Attribute salesPrice
+                         -> Save Mapping -> SalesOrderProduct.SalesPrice (committed on order save)
+
+## Failure Points
+
+1. SalesPrice not written back:
+   - Root cause: Context attribute salesPrice declared as "output" instead of "inputoutput"
+   - OR: Save mapping row for SalesOrderProduct.SalesPrice is absent from the procedure
+
+2. Decision table returns no row:
+   - Root cause: Runtime qty value falls outside all defined LowerBound/UpperBound ranges
+   - OR: ProductId context attribute not populated (null hydration — check context mapping)
+
+3. Duplicate lookup error:
+   - Root cause: Overlapping PriceTier ranges for the same ProductId
+   - Note: this is a data problem, not a duplicate row problem
+
+4. UI shows price but API returns list price:
+   - Root cause: API payload does not include accountTier — tier override falls back silently
+   - Validate headless context preparation separately from TLE interactive context
+
+5. Expression Set returns zero price:
+   - Root cause: v_tierRate lookup returned null; GuardZeroPrice fallback may not be present
+   - Check GuardZeroPrice condition element (Step 30) is active in the ES version
+
+## Next Checks (if evidence is incomplete)
+
+1. Run POST /services/data/v63.0/connect/business-rules/decision-table/lookup/<DT_ID>
+   with payload {"qty": 25, "productId": "01t...001"} — expect TierRate=90.00
+2. Confirm ExpressionSetVersion.Status = Active for Tiered_Pricing_ES v1
+3. Inspect Context Attribute salesPrice.FieldType = "inputoutput" in Setup
+4. Verify Save Mapping target field = SalesOrderProduct.SalesPrice (not UnitPrice)
+5. Check Pricing Log in Revenue Operations Console for any "null lookup key" warnings
+```
+
+---
+
+## 11. Automation and Orchestration
+
+### 11.1 Pre-Hook (if required)
+
+Pre-hooks in the pricing context are optional Apex invocations that run before the Expression Set. The following strict rules apply:
+
+- Pre-hooks MUST prepare context only — set attribute values for the Expression Set to consume.
+- Pre-hooks MUST NOT contain DML statements.
+- Pre-hooks MUST NOT perform secondary pricing calculations.
+- Pre-hooks MUST NOT be used if context mapping alone can populate the required attributes.
+
+For tiered pricing, `qty`, `productId`, and `listPrice` are all derivable via standard context mappings from `SalesOrderProduct` and `PricebookEntry`. A pre-hook is NOT required for this design.
+
+> **Assumption A2:** `accountTier` is assumed to be a custom field `Account.CustomerTier__c`. If account-level tier override is not a requirement, remove the `accountTier` context attribute and the corresponding decision table input column to simplify the lookup key and reduce duplicate-match risk.
+
+### 11.2 Discovery Procedure
+
+The Pricing Discovery Procedure (UsageType: Pricing Discovery) is responsible for fetching pricing rules and mapping products before the Pricing Procedure executes. It must include:
+
+- `Fetch Pricing Rules` element — loads active `PricebookEntry` records for the products in the transaction
+- `Map Products` element — associates `Product2` records with their `PriceAdjustmentSchedule`
+
+Both elements must be present. If `Map Products` is absent, the Expression Set will not resolve the correct `PriceAdjustmentSchedule` and the decision table lookup will fail silently.
+
+### 11.3 Decision Table Sync
+
+After creating or updating `PriceTier` records, the following decision tables must be manually refreshed (or auto-refreshed via the nightly sync job):
+
+- `Price Adjustment Schedules` decision table
+- `Price Book Entries V2` decision table
+
+If these are stale, the Expression Set will evaluate against out-of-date tier data at runtime.
+
+---
+
+## 12. Scalability and Performance
+
+| Concern | Guideline | Mitigation |
+|---|---|---|
+| Pricing Procedure element budget | 200-element limit per procedure | This procedure uses 4 steps. Reserve remaining budget for discount/promo steps. Decompose into sub-procedures if needed. |
+| Decision table row count | Large product catalogs with many tiers may produce wide decision tables | Index by `ProductId` first; keep tier rows per product under 20 for optimal lookup performance |
+| High-volume order lines | Synchronous pricing struggles above ~500 lines per order | For high-volume (telco, usage) use cases, offload batch pricing to DPE rather than synchronous procedure |
+| Concurrent pricing requests | Expression Set execution is stateless and parallelizable | No concern for standard B2B volumes; monitor at >1000 concurrent sessions |
+| Invoice line limit | Platform limit of ~2,000 invoice lines | Validate order line counts for high-volume customers before go-live |
+| Context preparation overhead | Complex multi-related-record mappings add latency | Keep context attributes to the minimum required; avoid chaining 3+ related-record hops |
+
+---
+
+## 13. Risks and Mitigations
+
+| ID | Risk | Severity | Mitigation |
+|---|---|---|---|
+| R1 | `salesPrice` context attribute declared with wrong `fieldType` causing silent writeback failure | High | Add a post-pricing automated assertion: compare `SalesOrderProduct.SalesPrice` to expected value in QA; add to regression suite |
+| R2 | Overlapping `PriceTier` range boundaries cause duplicate lookup errors at runtime | High | Add a pre-deployment data validation script: SELECT LowerBound, UpperBound FROM PriceTier WHERE ProductId = ? and assert no range overlaps |
+| R3 | Decision table not refreshed after PriceTier data update | Medium | Add decision table refresh to the deployment runbook; consider scheduling auto-refresh via Flow |
+| R4 | API headless pricing path omits `accountTier` context tag | Medium | Add explicit test case for headless context (separate from TLE context); document required API payload fields |
+| R5 | Single ExpressionSetVersion active constraint: accidental deactivation during hotfix | Medium | Gate version deactivation behind a change approval; never deactivate until replacement version is confirmed Active |
+| R6 | Pre-hook introduced later contains DML, creating a second pricing engine | High | [TA] must review all pre-hook Apex additions; enforce the "context-prepare only" rule via code review checklist |
+| R7 | 200-element pricing procedure budget exceeded as discount steps are added | Low-Medium | Establish a pricing element budget per domain at project kickoff; track element count in BACKLOG.md |
+
+---
+
+## 14. Assumptions and Open Questions
+
+| ID | Type | Description | Owner |
+|---|---|---|---|
+| A1 | Assumption | Stepped slab tier model confirmed (not graduated/cumulative) | Solution Architect |
+| A2 | Assumption | Account-level tier override (`CustomerTier__c`) is in scope | Product Owner |
+| A3 | Assumption | One active `Pricebook2` per org (Standard Pricebook) | Solution Architect |
+| A4 | Assumption | `PriceTier` records are managed via the RCA UI, not SFDX metadata | DevOps |
+| OQ1 | Open Question | Should tier rates be currency-per-unit (fixed) or percentage discount off list? | Product Owner |
+| OQ2 | Open Question | Is multi-currency support required? If yes, `CurrencyIsoCode` must be added as a context attribute and decision table input column | Technical Architect |
+| OQ3 | Open Question | Should the top tier have an open-ended upper bound, or a hard maximum quantity per order? | Business |
+| OQ4 | Open Question | Is a manual price override required alongside tiered pricing? If yes, an override condition element must be added to the Expression Set to check a `ManualOverridePrice` attribute before running the tier lookup | Solution Architect |
+
+> **RCA Data Deployment Note (DevOps Gate):** `PriceTier` and `PriceAdjustmentSchedule` records are **DATA**, not metadata. They will NOT be deployed via SFDX or change sets. Plan SFDMU or CLI data scripts to seed these records in every environment. Sandbox refresh will wipe all RCA data — a repeatable seeding script is mandatory.
+
+---
+
+## 15. Appendix — Extraction Summary
+
+| Source System | Document / Query | Used For |
+|---|---|---|
+| Local MCP — user-rca-advisor | RCA Design Gem — Instructions | Design mode persona, output format, Output Standard sections, design principles |
+| Local MCP — user-rca-advisor | RCA Build Gem — Instructions | Expression Set variable rules, Pricing Procedure step structure, Discovery Procedure element requirements, derived pricing build steps reference |
+| Local MCP — user-rca-advisor | RCA Test Gem — Instructions | Core object list confirmation (SalesOrder, SalesOrderProduct, PriceAdjustmentSchedule, PriceTier, ProductSellingModel, Pricebook2), data model integrity rules |
+| Google Drive (mcp-adaptor) | Queried `"tiered pricing Expression Sets pricing procedure waterfall"` — no relevant results | Applied RCA standard patterns |
+| Google Drive (mcp-adaptor) | Queried `"Context Service Context Definition tag mapping pricing"` — no relevant results | Applied RCA standard patterns |
+| Google Drive (mcp-adaptor) | Queried `"TDD template HLD design artifact Revenue Cloud"` — no relevant results | Applied RCA standard patterns |
+| Google Drive (mcp-adaptor) | Queried `"SalesOrderProduct PricebookEntry ProductSellingModel tiered volume pricing objects"` — no relevant results | Applied RCA standard patterns |
+| Google Drive (mcp-adaptor) | Queried `"PriceAdjustmentSchedule PriceTier tiered volume pricing data model"` — no relevant results | Applied RCA standard patterns |
+| Google Drive (mcp-adaptor) | Queried `"pricing lineage context attribute fieldType input output save mapping persistence writeback"` — no relevant results | Applied RCA standard patterns |
+| Google Drive (mcp-adaptor) | Queried `"Expression Set variable declaration pricing element sequence procedure plan"` — no relevant results | Applied RCA standard patterns |
+
+> No org-approved guidance found for tiered pricing Expression Sets via Google Drive (mcp-adaptor) — all design decisions apply RCA standard patterns grounded in the local MCP Gem instruction knowledge base.

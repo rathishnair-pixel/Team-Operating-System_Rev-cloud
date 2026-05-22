@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Team OS — Dashboard Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 24px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  .subtitle { color: #8b949e; font-size: 13px; margin-bottom: 32px; }
+  .section { margin-bottom: 48px; }
+  .section-title { font-size: 16px; font-weight: 600; color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 8px; margin-bottom: 20px; letter-spacing: 0.5px; }
+  .badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; display: inline-block; }
+  .badge-option { background: #1f3a5f; color: #58a6ff; margin-left: 8px; }
+
+  /* ── PIPELINE ── */
+  .pipeline-table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 10px; overflow: hidden; border: 1px solid #30363d; }
+  .pipeline-table th { background: #21262d; color: #8b949e; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 10px 14px; text-align: center; border-bottom: 1px solid #30363d; }
+  .pipeline-table th.feature-col { text-align: left; width: 220px; }
+  .pipeline-table td { padding: 12px 14px; border-bottom: 1px solid #21262d; text-align: center; font-size: 13px; }
+  .pipeline-table td.feature-name { text-align: left; font-weight: 500; color: #e6edf3; }
+  .pipeline-table td.feature-name .fid { font-size: 11px; color: #8b949e; display: block; }
+  .pipeline-table tr:last-child td { border-bottom: none; }
+  .stage-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .pill-complete  { background: #0d3321; color: #3fb950; border: 1px solid #238636; }
+  .pill-active    { background: #3d2200; color: #f0883e; border: 1px solid #9e6a03; }
+  .pill-pending   { background: #161b22; color: #484f58; border: 1px solid #30363d; }
+  .pill-blocked   { background: #3d0c0c; color: #f85149; border: 1px solid #6e1a1a; }
+  .pattern-tag { font-size: 10px; color: #8b949e; background: #21262d; padding: 2px 7px; border-radius: 10px; display: inline-block; margin-top: 3px; }
+
+  /* ── CARD ── */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 18px; position: relative; }
+  .card.active-card { border-color: #f0883e; box-shadow: 0 0 0 1px #f0883e22; }
+  .card.complete-card { border-color: #238636; }
+  .card-id { font-size: 11px; color: #8b949e; font-weight: 600; }
+  .card-name { font-size: 14px; font-weight: 700; color: #e6edf3; margin: 4px 0 12px; }
+  .card-stage { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #21262d; font-size: 13px; }
+  .card-stage:last-of-type { border-bottom: none; }
+  .stage-label { flex: 1; color: #c9d1d9; }
+  .stage-date { font-size: 11px; color: #484f58; }
+  .icon-complete { color: #3fb950; font-size: 15px; }
+  .icon-active    { color: #f0883e; font-size: 15px; }
+  .icon-pending   { color: #484f58; font-size: 15px; }
+  .icon-blocked   { color: #f85149; font-size: 15px; }
+  .card-pattern { font-size: 10px; color: #8b949e; background: #21262d; padding: 3px 8px; border-radius: 10px; display: inline-block; margin-top: 12px; }
+  .card-active-badge { position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 700; background: #3d2200; color: #f0883e; border: 1px solid #9e6a03; padding: 2px 8px; border-radius: 10px; }
+
+  /* ── SWIMLANE ── */
+  .swimlane { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; }
+  .swimlane-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .swimlane-id { font-size: 11px; color: #8b949e; font-weight: 600; }
+  .swimlane-name { font-size: 14px; font-weight: 700; color: #e6edf3; flex: 1; }
+  .swimlane-pattern { font-size: 10px; color: #8b949e; background: #21262d; padding: 2px 8px; border-radius: 10px; }
+  .pipeline-row { display: flex; align-items: center; gap: 0; }
+  .sw-stage { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  .sw-node { padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center; width: 100%; max-width: 110px; }
+  .sw-node-complete { background: #0d3321; color: #3fb950; border: 1px solid #238636; }
+  .sw-node-active   { background: #3d2200; color: #f0883e; border: 1px solid #9e6a03; animation: pulse 2s infinite; }
+  .sw-node-pending  { background: #161b22; color: #484f58; border: 1px solid #30363d; }
+  .sw-node-blocked  { background: #3d0c0c; color: #f85149; border: 1px solid #6e1a1a; }
+  .sw-artifact { font-size: 10px; color: #58a6ff; text-decoration: none; max-width: 100px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sw-artifact.none { color: transparent; }
+  .sw-arrow { color: #30363d; font-size: 18px; padding: 0 2px; margin-bottom: 18px; flex: 0; }
+  .sw-arrow.active-arrow { color: #f0883e; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 #f0883e44} 50%{box-shadow:0 0 0 6px #f0883e00} }
+
+  /* ── LEGEND ── */
+  .legend { display: flex; gap: 20px; margin-top: 12px; font-size: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<h1>Team OS — Feature Journey Dashboard</h1>
+<p class="subtitle">Preview of 3 layout options — pick the one you want built &nbsp;<span class="badge badge-option">PREVIEW ONLY</span></p>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- OPTION 1: PIPELINE -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Option A — Pipeline (horizontal table)</div>
+  <table class="pipeline-table">
+    <thead>
+      <tr>
+        <th class="feature-col">Feature</th>
+        <th>Discovery</th>
+        <th>Design</th>
+        <th>Build</th>
+        <th>Test</th>
+        <th>Deploy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="feature-name">
+          Tiered Pricing Expr. Sets
+          <span class="fid">FTR-001 &nbsp;·&nbsp; <span class="pattern-tag">tiered-volume-pricing</span></span>
+        </td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-active">⟳ Active</span></td>
+        <td><span class="stage-pill pill-pending">· Pending</span></td>
+        <td><span class="stage-pill pill-pending">· Pending</span></td>
+      </tr>
+      <tr>
+        <td class="feature-name">
+          Smart Product Swap
+          <span class="fid">FTR-002 &nbsp;·&nbsp; <span class="pattern-tag">guided-selling</span></span>
+        </td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+      </tr>
+      <tr>
+        <td class="feature-name">
+          Bundle Pricing Rules
+          <span class="fid">FTR-003 &nbsp;·&nbsp; <span class="pattern-tag">subscription-basic</span></span>
+        </td>
+        <td><span class="stage-pill pill-active">⟳ Active</span></td>
+        <td><span class="stage-pill pill-pending">· Pending</span></td>
+        <td><span class="stage-pill pill-pending">· Pending</span></td>
+        <td><span class="stage-pill pill-pending">· Pending</span></td>
+        <td><span class="stage-pill pill-pending">· Pending</span></td>
+      </tr>
+      <tr>
+        <td class="feature-name">
+          Multi-Entity Billing
+          <span class="fid">FTR-004 &nbsp;·&nbsp; <span class="pattern-tag">multi-entity-billing</span></span>
+        </td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-complete">✓ Done</span></td>
+        <td><span class="stage-pill pill-blocked">✗ Blocked</span></td>
+        <td><span class="stage-pill pill-pending">· Pending</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="legend">
+    <span class="legend-item"><span style="color:#3fb950">✓</span> Complete</span>
+    <span class="legend-item"><span style="color:#f0883e">⟳</span> In Progress</span>
+    <span class="legend-item"><span style="color:#484f58">·</span> Pending</span>
+    <span class="legend-item"><span style="color:#f85149">✗</span> Blocked</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- OPTION 2: CARD -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Option B — Cards (per-feature vertical detail)</div>
+  <div class="card-grid">
+
+    <div class="card active-card">
+      <div class="card-active-badge">⟳ IN PROGRESS</div>
+      <div class="card-id">FTR-001</div>
+      <div class="card-name">Tiered Pricing Expression Sets</div>
+      <div class="card-stage"><span class="icon-complete">✅</span><span class="stage-label">Discovery</span><span class="stage-date">May 20</span></div>
+      <div class="card-stage"><span class="icon-complete">✅</span><span class="stage-label">Design</span><span class="stage-date">May 20</span></div>
+      <div class="card-stage"><span class="icon-active">🔄</span><span class="stage-label">Build</span><span class="stage-date">May 21</span></div>
+      <div class="card-stage"><span class="icon-pending">⏳</span><span class="stage-label">Test</span><span class="stage-date">—</span></div>
+      <div class="card-stage"><span class="icon-pending">⏳</span><span class="stage-label">Deploy</span><span class="stage-date">—</span></div>
+      <div class="card-pattern">tiered-volume-pricing</div>
+    </div>
+
+    <div class="card complete-card">
+      <div class="card-id">FTR-002</div>
+      <div class="card-name">Smart Product Swap</div>
+      <div class="card-stage"><span class="icon-complete">✅</span><span class="stage-label">Discovery</span><span class="stage-date">May 12</span></div>
+      <div class="card-stage"><span class="icon-complete">✅</span><span class="stage-label">Design</span><span class="stage-date">May 13</span></div>
+      <div class="card-stage"><span class="icon-complete">✅</span><span class="stage-label">Build</span><span class="stage-date">May 14</span></div>
+      <div class="card-stage"><span class="icon-complete">✅</span><span class="stage-label">Test</span><span class="stage-date">May 15</span></div>
+      <div class="card-stage"><span class="icon-complete">✅</span><span class="stage-label">Deploy</span><span class="stage-date">May 15</span></div>
+      <div class="card-pattern">guided-selling</div>
+    </div>
+
+    <div class="card active-card">
+      <div class="card-active-badge">⟳ IN PROGRESS</div>
+      <div class="card-id">FTR-003</div>
+      <div class="card-name">Bundle Pricing Rules</div>
+      <div class="card-stage"><span class="icon-active">🔄</span><span class="stage-label">Discovery</span><span class="stage-date">May 21</span></div>
+      <div class="card-stage"><span class="icon-pending">⏳</span><span class="stage-label">Design</span><span class="stage-date">—</span></div>
+      <div class="card-stage"><span class="icon-pending">⏳</span><span class="stage-label">Build</span><span class="stage-date">—</span></div>
+      <div class="card-stage"><span class="icon-pending">⏳</span><span class="stage-label">Test</span><span class="stage-date">—</span></div>
+      <div class="card-stage"><span class="icon-pending">⏳</span><span class="stage-label">Deploy</span><span class="stage-date">—</span></div>
+      <div class="card-pattern">subscription-basic</div>
+    </div>
+
+  </div>
+  <div class="legend" style="margin-top:16px">
+    <span class="legend-item"><span style="color:#3fb950">✅</span> Complete</span>
+    <span class="legend-item"><span style="color:#f0883e">🔄</span> In Progress</span>
+    <span class="legend-item"><span style="color:#484f58">⏳</span> Pending</span>
+    <span class="legend-item"><span style="color:#f85149">🚫</span> Blocked</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- OPTION 3: SWIMLANE -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Option C — Swimlane (pipeline per feature with artifact links)</div>
+
+  <!-- FTR-001 -->
+  <div class="swimlane">
+    <div class="swimlane-header">
+      <span class="swimlane-id">FTR-001</span>
+      <span class="swimlane-name">Tiered Pricing Expression Sets</span>
+      <span class="swimlane-pattern">tiered-volume-pricing</span>
+    </div>
+    <div class="pipeline-row">
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Discovery</div>
+        <a class="sw-artifact" href="#">REVENUE_SPEC.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Design</div>
+        <a class="sw-artifact" href="#">tiered-pricing-tdd.md</a>
+      </div>
+      <div class="sw-arrow active-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-active">⟳ Build</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-pending">· Test</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-pending">· Deploy</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FTR-002 -->
+  <div class="swimlane">
+    <div class="swimlane-header">
+      <span class="swimlane-id">FTR-002</span>
+      <span class="swimlane-name">Smart Product Swap</span>
+      <span class="swimlane-pattern">guided-selling</span>
+    </div>
+    <div class="pipeline-row">
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Discovery</div>
+        <a class="sw-artifact" href="#">REVENUE_SPEC.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Design</div>
+        <a class="sw-artifact" href="#">smart-swap-hld.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Build</div>
+        <a class="sw-artifact" href="#">user-stories.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Test</div>
+        <a class="sw-artifact" href="#">test-plan.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Deploy</div>
+        <a class="sw-artifact" href="#">deploy-log.md</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FTR-003 -->
+  <div class="swimlane">
+    <div class="swimlane-header">
+      <span class="swimlane-id">FTR-003</span>
+      <span class="swimlane-name">Bundle Pricing Rules</span>
+      <span class="swimlane-pattern">subscription-basic</span>
+    </div>
+    <div class="pipeline-row">
+      <div class="sw-stage">
+        <div class="sw-node sw-node-active">⟳ Discovery</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-pending">· Design</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-pending">· Build</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-pending">· Test</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-pending">· Deploy</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FTR-004 blocked -->
+  <div class="swimlane">
+    <div class="swimlane-header">
+      <span class="swimlane-id">FTR-004</span>
+      <span class="swimlane-name">Multi-Entity Billing</span>
+      <span class="swimlane-pattern">multi-entity-billing</span>
+    </div>
+    <div class="pipeline-row">
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Discovery</div>
+        <a class="sw-artifact" href="#">REVENUE_SPEC.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Design</div>
+        <a class="sw-artifact" href="#">billing-hld.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-complete">✓ Build</div>
+        <a class="sw-artifact" href="#">stories.md</a>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-blocked">✗ Test</div>
+        <span class="sw-artifact" style="color:#f85149">CML missing</span>
+      </div>
+      <div class="sw-arrow">──▶</div>
+      <div class="sw-stage">
+        <div class="sw-node sw-node-pending">· Deploy</div>
+        <span class="sw-artifact none">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span style="color:#3fb950">✓</span> Complete</span>
+    <span class="legend-item"><span style="color:#f0883e">⟳</span> In Progress (animated)</span>
+    <span class="legend-item"><span style="color:#484f58">·</span> Pending</span>
+    <span class="legend-item"><span style="color:#f85149">✗</span> Blocked</span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "rca-ai-suite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Salesforce Revenue Cloud Advanced AI Suite — Cursor + Claude Code dual-IDE, dual-MCP architect assistant.",
+  "type": "commonjs",
+  "scripts": {
+    "html": "node .claude/wrap-md-to-html.js",
+    "docx": "bash scripts/md-to-docx.sh"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.15.0"
+  }
+}

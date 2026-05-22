@@ -2,3 +2,7 @@ eco-green-swap/
 prototype/
 dictation-agent/
 rc-pm-dashboard.html
+.context-cache/
+node_modules/
+.DS_Store
+.mermaid-cache/
