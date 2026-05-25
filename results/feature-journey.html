@@ -28,6 +28,9 @@
   --red-node:     #FF3B30;
   --purple:       #6B3FA0;
   --purple-bg:    #F3EEFF;
+  --teal:         #0B6E6E;
+  --teal-bg:      #E5F5F5;
+  --teal-node:    #30B0B0;
   --radius-lg:    20px;
   --radius-md:    12px;
   --radius-sm:    8px;
@@ -37,143 +40,167 @@
 }
 html, body { height: 100%; overflow: hidden; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text-1); -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; }
-
-/* ── NAV ── */
 nav {
   flex-shrink: 0; height: 52px;
-  background: rgba(245,245,247,0.88);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(245,245,247,0.88); backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid rgba(210,210,215,0.7);
   display: flex; align-items: center; padding: 0 24px; gap: 10px;
 }
 .nav-logo { width: 26px; height: 26px; background: var(--text-1); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .nav-logo svg { width: 16px; height: 16px; stroke: #fff; }
-.nav-title    { font-size: 15px; font-weight: 700; color: var(--text-1); letter-spacing: -0.2px; }
+.nav-title    { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
 .nav-subtitle { font-size: 13px; color: var(--text-2); }
 .nav-right    { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .nav-updated  { font-size: 11px; color: var(--text-3); }
 .nav-refresh  { font-size: 11px; font-weight: 500; background: var(--blue-light); color: var(--blue); padding: 3px 10px; border-radius: 20px; }
-
-/* ── MAIN LAYOUT ── */
 .app { flex: 1; display: flex; min-height: 0; }
-
-/* ── SIDEBAR ── */
 .sidebar {
-  width: 292px; flex-shrink: 0;
+  width: 300px; flex-shrink: 0;
   background: var(--surface); border-right: 1px solid var(--border);
   display: flex; flex-direction: column; overflow: hidden;
 }
-
-.sb-stats {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-  border-bottom: 1px solid var(--border); flex-shrink: 0;
-  background: var(--bg);
-}
-.sb-stat {
-  padding: 12px 14px; text-align: center;
-  border-right: 1px solid var(--border);
-}
-.sb-stat:nth-child(2n) { border-right: none; }
+.sb-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--bg); }
+.sb-stat { padding: 10px 12px; text-align: center; border-right: 1px solid var(--border); }
+.sb-stat:nth-child(2n)  { border-right: none; }
 .sb-stat:nth-child(n+3) { border-top: 1px solid var(--border); }
-.sb-stat-n { font-size: 22px; font-weight: 700; letter-spacing: -0.8px; line-height: 1; color: var(--text-1); }
+.sb-stat-n { font-size: 20px; font-weight: 700; letter-spacing: -0.8px; line-height: 1; }
 .sb-stat-l { font-size: 10px; color: var(--text-3); margin-top: 2px; }
 .sn-pts  .sb-stat-n { color: var(--purple); }
 .sn-done .sb-stat-n { color: var(--green); }
-.sn-gate .sb-stat-n { color: var(--blue); }
-.sn-dep  .sb-stat-n { color: var(--red); }
-
-.sb-filter {
-  display: flex; gap: 4px; padding: 10px 12px;
-  border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap;
-}
-.sb-filter-btn {
-  font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px;
-  border: 1px solid var(--border); background: var(--surface); color: var(--text-2); cursor: pointer; transition: all 0.12s;
-}
+.sn-kpi  .sb-stat-n { color: var(--teal); }
+.sn-wl   .sb-stat-n { color: var(--blue); }
+.sn-adr  .sb-stat-n { color: var(--orange); }
+.kpi-gauge-wrap { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 3px; }
+.kpi-gauge-bar  { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; max-width: 48px; }
+.kpi-gauge-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--teal-node), var(--teal)); }
+.kpi-gauge-pct  { font-size: 9px; color: var(--teal); font-weight: 700; }
+.sb-filter { display: flex; gap: 4px; padding: 8px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap; }
+.sb-filter-btn { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); cursor: pointer; transition: all 0.12s; }
 .sb-filter-btn:hover  { border-color: var(--blue); color: var(--blue); }
 .sb-filter-btn.active { background: var(--text-1); color: #fff; border-color: var(--text-1); }
-
 .sb-list { flex: 1; overflow-y: auto; }
 .sb-list::-webkit-scrollbar { width: 4px; }
 .sb-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-.sb-item {
-  padding: 12px 14px; cursor: pointer;
-  border-left: 3px solid transparent;
-  border-bottom: 1px solid var(--bg);
-  transition: background 0.1s;
-}
-.sb-item:hover   { background: #FAFAFA; }
-.sb-item.active  { background: var(--blue-light); border-left-color: var(--blue); }
-
+.sb-item { padding: 11px 13px; cursor: pointer; border-left: 3px solid transparent; border-bottom: 1px solid var(--bg); transition: background 0.1s; }
+.sb-item:hover  { background: #FAFAFA; }
+.sb-item.active { background: var(--blue-light); border-left-color: var(--blue); }
 .si-top    { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
 .si-id     { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.4px; }
 .si-badges { display: flex; gap: 3px; }
-.si-name   { font-size: 13px; font-weight: 500; color: var(--text-1); margin-bottom: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.si-pipe   { display: flex; align-items: center; gap: 3px; margin-bottom: 4px; }
+.si-name   { font-size: 13px; font-weight: 500; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.si-pipe   { display: flex; align-items: center; gap: 2px; margin-bottom: 3px; }
 .si-pct    { font-size: 10px; color: var(--text-3); margin-left: auto; }
-.si-bar    { height: 2px; background: var(--bg); border-radius: 1px; overflow: hidden; margin-bottom: 6px; }
+.si-bar    { height: 2px; background: var(--bg); border-radius: 1px; overflow: hidden; margin-bottom: 5px; }
 .si-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green-node), var(--blue)); border-radius: 1px; }
-.si-footer { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.si-footer { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .si-done-pts { font-size: 10px; color: var(--text-3); }
-
-/* ── DETAIL PANEL ── */
+.kpi-chip-sm { display: inline-flex; align-items: center; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 20px; }
+.wl-chip-sm  { display: inline-flex; align-items: center; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 20px; }
+.etom-chip-sm { display: inline-flex; align-items: center; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 20px; border: 1px solid; }
+.kpi-defined  { background: var(--teal-bg);   color: var(--teal); }
+.kpi-achieved { background: var(--green-bg);  color: var(--green); }
+.kpi-missing  { background: var(--bg);        color: var(--text-3); border: 1px solid var(--border); }
+.kpi-atrisk   { background: var(--orange-bg); color: var(--orange); }
+.wl-pass    { background: var(--green-bg);  color: var(--green); }
+.wl-fail    { background: var(--red-bg);    color: var(--red); }
+.wl-partial { background: var(--orange-bg); color: var(--orange); }
+.wl-unknown { background: var(--bg);        color: var(--text-3); border: 1px solid var(--border); }
 .detail-panel { flex: 1; overflow-y: auto; background: var(--bg); }
 .detail-panel::-webkit-scrollbar { width: 5px; }
 .detail-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-.detail-empty {
-  height: 100%; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 12px;
-  color: var(--text-3);
-}
+.detail-empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--text-3); }
 .detail-empty .de-arrow { font-size: 32px; }
 .detail-empty p { font-size: 14px; }
-
 .detail-card { padding: 28px 36px 48px; }
-
 .d-head  { margin-bottom: 22px; }
 .d-fid   { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); }
 .d-fname { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin: 4px 0 10px; line-height: 1.2; }
-.d-chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.d-chips { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
 .d-pattern  { font-size: 11px; color: var(--text-2); background: var(--surface); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
 .d-done-pts { font-size: 12px; color: var(--text-2); }
-.d-bar      { height: 4px; background: var(--border); border-radius: 2px; margin: 16px 0 22px; overflow: hidden; }
+.etom-badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
+.kpi-badge  { display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.adr-badge  { display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: var(--orange-bg); color: var(--orange); }
+.adr-none   { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
+.d-bar      { height: 4px; background: var(--border); border-radius: 2px; margin: 14px 0 20px; overflow: hidden; }
 .d-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green-node), var(--blue)); border-radius: 2px; }
-
-/* ── STAGE CARDS ── */
-.d-stages { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 28px; }
-.sc {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 14px 10px;
-  text-align: center; box-shadow: var(--shadow); transition: box-shadow 0.2s;
-}
+.d-stages { display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; margin-bottom: 24px; }
+.sc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 8px; text-align: center; box-shadow: var(--shadow); transition: box-shadow 0.2s; }
 .sc:hover { box-shadow: var(--shadow-hover); }
 .sc-complete { border-color: rgba(52,199,89,0.3); }
 .sc-active   { border-color: rgba(255,149,0,0.3); }
-.sc-node { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+.sc-node { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 7px; }
 .scn-complete { background: var(--green-node); color: #fff; }
 .scn-active   { background: var(--orange-node); color: #fff; animation: pulse-node 2s infinite; }
 .scn-pending  { background: var(--surface); border: 2px solid var(--border); color: var(--text-3); }
 .scn-blocked  { background: var(--red-node); color: #fff; }
-.node-dot     { width: 7px; height: 7px; border-radius: 50%; background: var(--border); display: inline-block; }
+.node-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); display: inline-block; }
 @keyframes pulse-node { 0%,100%{box-shadow:0 0 0 4px rgba(255,149,0,0.15)} 50%{box-shadow:0 0 0 8px rgba(255,149,0,0.04)} }
-.sc-label { font-size: 11px; font-weight: 600; color: var(--text-1); }
-.sc-date  { font-size: 10px; color: var(--text-3); margin-top: 2px; }
-.sc-pts   { margin-top: 5px; }
-.sc-gate  { margin-top: 5px; }
-.sc-arts  { margin-top: 5px; }
-.art-link { display: block; font-size: 10px; color: var(--blue); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; margin: 0 auto; }
+.sc-label { font-size: 10px; font-weight: 600; color: var(--text-1); }
+.sc-date  { font-size: 9px; color: var(--text-3); margin-top: 2px; }
+.sc-pts   { margin-top: 4px; }
+.sc-gate  { margin-top: 4px; }
+.sc-arts  { margin-top: 4px; }
+.art-link { display: block; font-size: 9px; color: var(--blue); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 72px; margin: 0 auto; }
 .art-link:hover { text-decoration: underline; }
-
-/* ── SECTION ── */
-.d-section { margin-bottom: 28px; }
+.d-section { margin-bottom: 24px; }
 .d-section-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
-.d-section-title { font-size: 14px; font-weight: 700; color: var(--text-1); }
+.d-section-title { font-size: 14px; font-weight: 700; }
 .d-section-meta  { font-size: 12px; color: var(--text-2); }
-
-/* ── STORIES TABLE ── */
+/* Prototype stage */
+.sc-prototype { border-color: rgba(107,63,160,0.35); }
+.proto-pending { background: var(--bg); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 16px 18px; display: flex; align-items: flex-start; gap: 12px; }
+.proto-pending-icon { font-size: 22px; color: var(--text-3); flex-shrink: 0; }
+.proto-pending-title { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+.proto-pending-sub   { font-size: 12px; color: var(--text-3); line-height: 1.4; }
+.proto-approval { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: var(--radius-md); margin-bottom: 12px; border: 1px solid; }
+.proto-approved { background: var(--green-bg);  border-color: rgba(52,199,89,0.3); }
+.proto-awaiting { background: var(--red-bg);    border-color: rgba(215,0,21,0.25); animation: proto-pulse 2.5s infinite; }
+@keyframes proto-pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+.proto-approval-icon  { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.proto-approval-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.proto-approval-sub   { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+.proto-artifacts   { padding: 10px 0 0; }
+.proto-art-label   { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); margin-bottom: 6px; }
+.proto-art-list    { display: flex; gap: 8px; flex-wrap: wrap; }
+.proto-art-link    { font-size: 12px; font-weight: 500; color: var(--purple); background: var(--purple-bg); padding: 3px 10px; border-radius: 20px; text-decoration: none; border: 1px solid rgba(107,63,160,0.2); }
+.proto-art-link:hover { text-decoration: underline; }
+/* eTOM L2 expandable */
+.etom-expandable { cursor: pointer; user-select: none; }
+.etom-expandable:hover { opacity: 0.85; }
+.etom-l2-panel { display: none; margin-top: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; }
+.etom-l2-panel.open { display: block; }
+.etom-l2-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); margin-bottom: 6px; }
+.etom-l2-row   { font-size: 12px; color: var(--text-2); line-height: 1.8; }
+/* White Label gate */
+.wl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.wl-row  { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); }
+.wl-row-pass    { border-color: rgba(52,199,89,0.3); background: var(--green-bg); }
+.wl-row-fail    { border-color: rgba(215,0,21,0.3);  background: var(--red-bg); }
+.wl-row-unknown { opacity: 0.65; }
+.wl-row-icon { font-size: 13px; flex-shrink: 0; }
+.wl-row-label { font-size: 12px; font-weight: 500; }
+/* ADR */
+.adr-list { display: flex; flex-direction: column; gap: 6px; }
+.adr-row  { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.adr-icon { font-size: 14px; flex-shrink: 0; }
+.adr-link { font-size: 12px; font-weight: 500; color: var(--orange); text-decoration: none; }
+.adr-link:hover { text-decoration: underline; }
+/* KPI */
+.kpi-card { background: var(--surface); border: 1px solid rgba(11,110,110,0.2); border-radius: var(--radius-md); padding: 16px 18px; box-shadow: var(--shadow); }
+.kpi-name { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.kpi-field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); margin-bottom: 3px; }
+.kpi-field-value { font-size: 13px; color: var(--text-1); line-height: 1.4; }
+.kpi-target      { font-weight: 600; color: var(--teal); }
+.kpi-empty { background: var(--bg); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 16px 18px; display: flex; align-items: flex-start; gap: 12px; }
+.kpi-empty-icon  { font-size: 20px; color: var(--text-3); line-height: 1; flex-shrink: 0; }
+.kpi-empty-title { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+.kpi-empty-sub   { font-size: 12px; color: var(--text-3); line-height: 1.4; }
+.kpi-empty-sub code { background: var(--border); border-radius: 3px; padding: 1px 4px; font-size: 11px; }
+/* Stories */
+.s-kpi        { font-size: 11px; color: var(--teal); line-height: 1.4; }
+.s-kpi-missing { font-size: 11px; color: var(--text-3); font-style: italic; }
 .stories-table { width: 100%; border-collapse: separate; border-spacing: 0 3px; }
 .stories-table thead th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); padding: 0 12px 6px; text-align: left; }
 .sg-header td { padding: 8px 12px 3px; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.4px; }
@@ -188,7 +215,7 @@ nav {
 .ss-progress { background: var(--orange-bg); color: var(--orange); }
 .ss-done     { background: var(--green-bg);  color: var(--green); }
 .ss-blocked  { background: var(--red-bg);    color: var(--red); }
-.sp-tag      { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 20px; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 0 5px; }
+.sp-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 20px; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 0 5px; }
 .sp-low  { background: var(--green-bg);  color: var(--green); }
 .sp-mid  { background: var(--orange-bg); color: var(--orange); }
 .sp-high { background: var(--red-bg);    color: var(--red); }
@@ -197,16 +224,9 @@ nav {
 .sg-total td { background: var(--bg); padding: 10px 12px; font-size: 12px; font-weight: 600; }
 .sg-total td:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
 .sg-total td:last-child  { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; text-align: center; }
-
-/* ── DEPENDENCIES ── */
+/* Dependencies */
 .dep-list { display: flex; flex-direction: column; gap: 8px; }
-.dep-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 14px 16px;
-  box-shadow: var(--shadow); cursor: pointer;
-  display: flex; align-items: flex-start; gap: 12px;
-  transition: box-shadow 0.15s, transform 0.15s;
-}
+.dep-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; box-shadow: var(--shadow); cursor: pointer; display: flex; align-items: flex-start; gap: 12px; transition: box-shadow 0.15s, transform 0.15s; }
 .dep-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
 .dep-open     { border-color: rgba(215,0,21,0.25); }
 .dep-resolved { border-color: rgba(52,199,89,0.25); opacity: 0.82; }
@@ -214,7 +234,7 @@ nav {
 .dep-icon-open     { background: var(--red-bg); }
 .dep-icon-resolved { background: var(--green-bg); }
 .dep-body  { flex: 1; min-width: 0; }
-.dep-title { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+.dep-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
 .dep-desc  { font-size: 12px; color: var(--text-2); line-height: 1.45; margin-bottom: 8px; }
 .dep-meta  { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .dep-type-tag { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 2px 7px; border-radius: 20px; background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
@@ -222,55 +242,37 @@ nav {
 .dsc-open     { background: var(--red-bg);   color: var(--red); }
 .dsc-resolved { background: var(--green-bg); color: var(--green); }
 .dep-blocked-by { font-size: 11px; color: var(--text-3); }
-.dep-jump-btn {
-  font-size: 11px; font-weight: 600; color: var(--blue);
-  background: var(--blue-light); border: none; border-radius: 20px;
-  padding: 2px 10px; cursor: pointer;
-}
+.dep-jump-btn { font-size: 11px; font-weight: 600; color: var(--blue); background: var(--blue-light); border: none; border-radius: 20px; padding: 2px 10px; cursor: pointer; }
 .dep-jump-btn:hover { background: #d0e8ff; }
 .dep-arrow { color: var(--text-3); font-size: 18px; flex-shrink: 0; padding-top: 2px; }
-
-/* ── BADGES ── */
+/* Badges */
 .badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
 .badge-active   { background: var(--orange-bg);  color: var(--orange); }
 .badge-done     { background: var(--green-bg);   color: var(--green); }
 .badge-pending  { background: var(--bg);         color: var(--text-3); border: 1px solid var(--border); }
 .badge-gate     { background: var(--blue-light); color: var(--blue); }
-.badge-approved { background: var(--green-bg);   color: var(--green); border: 1px solid rgba(29,125,58,0.2); }
 .gate-awaiting  { background: var(--blue-light); color: var(--blue); animation: gate-blink 2s infinite; }
 .gate-approved  { background: var(--green-bg);   color: var(--green); }
 .gate-rejected  { background: var(--red-bg);     color: var(--red); }
 .gate-skipped   { background: var(--bg);         color: var(--text-3); border: 1px solid var(--border); }
 @keyframes gate-blink { 0%,100%{opacity:1} 50%{opacity:.55} }
-
 .pts-chip { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(107,63,160,0.18); }
-.dep-chip-sm { display: inline-flex; align-items: center; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 20px; background: var(--red-bg); color: var(--red); }
-
-/* ── MINI PIPELINE (sidebar) ── */
-.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.dep-chip-sm { display: inline-flex; align-items: center; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 20px; background: var(--red-bg); color: var(--red); }
+/* Pipeline dots */
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
 .dot-complete { background: var(--green-node); }
 .dot-active   { background: var(--orange-node); animation: gate-blink 2s infinite; }
 .dot-pending  { background: var(--surface); border: 1.5px solid var(--border); }
 .dot-blocked  { background: var(--red-node); }
-.mini-conn { width: 10px; height: 2px; display: inline-block; border-radius: 1px; flex-shrink: 0; }
+.mini-conn { width: 8px; height: 2px; display: inline-block; border-radius: 1px; flex-shrink: 0; }
 .conn-complete     { background: var(--green-node); }
 .conn-active       { background: linear-gradient(90deg, var(--green-node), var(--orange-node)); }
 .conn-done-pending { background: linear-gradient(90deg, var(--green-node), var(--border)); }
 .conn-pending      { background: var(--border); }
-
-/* ── DEP MODAL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.36); backdrop-filter: blur(4px);
-  align-items: center; justify-content: center;
-}
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.36); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface); border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-modal); padding: 28px;
-  max-width: 480px; width: calc(100% - 48px); position: relative;
-  animation: modal-in 0.2s ease;
-}
+.modal { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-modal); padding: 28px; max-width: 480px; width: calc(100% - 48px); position: relative; animation: modal-in 0.2s ease; }
 @keyframes modal-in { from{opacity:0;transform:scale(0.96) translateY(8px)} to{opacity:1;transform:none} }
 .modal-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border-radius: 50%; border: none; background: var(--bg); cursor: pointer; font-size: 15px; color: var(--text-2); display: flex; align-items: center; justify-content: center; }
 .modal-close:hover { background: var(--border); }
@@ -279,32 +281,21 @@ nav {
 .modal-desc    { font-size: 14px; color: var(--text-2); line-height: 1.55; margin-bottom: 20px; }
 .modal-grid    { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin-bottom: 20px; }
 .modal-field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); display: block; margin-bottom: 3px; }
-.modal-field p     { font-size: 13px; font-weight: 500; color: var(--text-1); }
-.modal-jump {
-  width: 100%; padding: 11px; border: none; border-radius: var(--radius-sm);
-  background: var(--blue); color: #fff; font-size: 13px; font-weight: 600;
-  cursor: pointer; display: none;
-}
+.modal-field p { font-size: 13px; font-weight: 500; }
+.modal-jump { width: 100%; padding: 11px; border: none; border-radius: var(--radius-sm); background: var(--blue); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; display: none; }
 .modal-jump:hover { background: var(--blue-dark); }
-
-/* ── LEGEND ── */
-.legend {
-  flex-shrink: 0; height: 36px;
-  display: flex; align-items: center; gap: 16px; padding: 0 24px;
-  background: var(--surface); border-top: 1px solid var(--border);
-  font-size: 11px; color: var(--text-2);
-}
-.legend-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); margin-right: 2px; }
-.legend-item  { display: flex; align-items: center; gap: 5px; }
-.legend-dot   { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+/* Legend */
+.legend { flex-shrink: 0; height: 36px; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--surface); border-top: 1px solid var(--border); font-size: 11px; color: var(--text-2); overflow-x: auto; }
+.legend-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); white-space: nowrap; }
+.legend-item  { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.legend-dot   { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .ld-complete  { background: var(--green-node); }
 .ld-active    { background: var(--orange-node); }
 .ld-pending   { background: var(--surface); border: 1.5px solid var(--border); }
-.legend-sep   { width: 1px; height: 16px; background: var(--border); }
+.legend-sep   { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
 </style>
 </head>
 <body>
-
 <nav>
   <div class="nav-logo">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -312,72 +303,75 @@ nav {
     </svg>
   </div>
   <span class="nav-title">Team OS</span>
-  <span class="nav-subtitle">Feature Journey</span>
+  <span class="nav-subtitle">Feature Journey &mdash; v4.0</span>
   <div class="nav-right">
-    <span class="nav-updated">Updated 22 May 2026, 13:55</span>
+    <span class="nav-updated">Updated 25 May 2026, 17:29</span>
     <span class="nav-refresh">Auto-refresh 30s</span>
   </div>
 </nav>
-
 <div class="app">
-
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sb-stats">
       <div class="sb-stat"><div class="sb-stat-n">3</div><div class="sb-stat-l">Features</div></div>
       <div class="sb-stat sn-pts"><div class="sb-stat-n">55</div><div class="sb-stat-l">Total Pts</div></div>
       <div class="sb-stat sn-done"><div class="sb-stat-n">24</div><div class="sb-stat-l">Pts Done</div></div>
-      <div class="sb-stat sn-gate"><div class="sb-stat-n">2</div><div class="sb-stat-l">Active</div></div>
+      <div class="sb-stat sn-kpi">
+        <div class="sb-stat-n">67%</div>
+        <div class="sb-stat-l">KPI Coverage</div>
+        <div class="kpi-gauge-wrap">
+          <div class="kpi-gauge-bar"><div class="kpi-gauge-fill" style="width:67%"></div></div>
+          <span class="kpi-gauge-pct">85% stories</span>
+        </div>
+      </div>
+      <div class="sb-stat sn-wl"><div class="sb-stat-n">1/3</div><div class="sb-stat-l">WL Gate Pass</div></div>
+      <div class="sb-stat sn-adr"><div class="sb-stat-n">1</div><div class="sb-stat-l">ADRs</div></div>
     </div>
     <div class="sb-filter">
       <button class="sb-filter-btn active" onclick="filterSb('all',this)">All</button>
       <button class="sb-filter-btn" onclick="filterSb('active',this)">Active</button>
       <button class="sb-filter-btn" onclick="filterSb('complete',this)">Done</button>
-      <button class="sb-filter-btn" onclick="filterSb('pending',this)">Not Started</button>
+      <button class="sb-filter-btn" onclick="filterSb('kpi-missing',this)">No KPI</button>
+      <button class="sb-filter-btn" onclick="filterSb('wl-fail',this)">WL Blocked</button>
     </div>
     <div class="sb-list" id="sbList">
-      
       <div class="sb-item" id="sb-FTR-001" onclick="showDetail('FTR-001')">
         <div class="si-top"><span class="si-id">FTR-001</span><div class="si-badges"><span class="badge badge-active">Active</span></div></div>
         <div class="si-name">Tiered Pricing Expression Sets</div>
-        <div class="si-pipe"><span class="dot dot-complete" title="Discovery"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Design"></span><span class="mini-conn conn-active"></span><span class="dot dot-active" title="Build"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Test"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Deploy"></span><span class="si-pct">40%</span></div>
-        <div class="si-bar"><div class="si-bar-fill" style="width:40%"></div></div>
+        <div class="si-pipe"><span class="dot dot-complete" title="Presales"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Discovery"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Design"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Prototype"></span><span class="mini-conn conn-active"></span><span class="dot dot-active" title="Build"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Test"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Deploy"></span><span class="si-pct">57%</span></div>
+        <div class="si-bar"><div class="si-bar-fill" style="width:57%"></div></div>
         <div class="si-footer">
           <span class="pts-chip">34 pts</span>
           <span class="si-done-pts">8/34 done</span>
-          <span class="dep-chip-sm">⚠ Dep</span>
+          <span class="etom-chip-sm" style="background:#0066CC20;color:#0066CC;border-color:#0066CC40">R2A</span><span class="kpi-chip-sm kpi-defined">&#9650; KPI</span><span class="wl-chip-sm wl-fail">&#10007; WL</span><span class="dep-chip-sm">&#9888; Dep</span>
         </div>
       </div>
       <div class="sb-item" id="sb-FTR-002" onclick="showDetail('FTR-002')">
         <div class="si-top"><span class="si-id">FTR-002</span><div class="si-badges"><span class="badge badge-done">Done</span></div></div>
         <div class="si-name">Smart Product Swap</div>
-        <div class="si-pipe"><span class="dot dot-complete" title="Discovery"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Design"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Build"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Test"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Deploy"></span><span class="si-pct">100%</span></div>
+        <div class="si-pipe"><span class="dot dot-complete" title="Presales"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Discovery"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Design"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Prototype"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Build"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Test"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Deploy"></span><span class="si-pct">100%</span></div>
         <div class="si-bar"><div class="si-bar-fill" style="width:100%"></div></div>
         <div class="si-footer">
           <span class="pts-chip">16 pts</span>
           <span class="si-done-pts">16/16 done</span>
-          
+          <span class="etom-chip-sm" style="background:#0066CC20;color:#0066CC;border-color:#0066CC40">R2A</span><span class="kpi-chip-sm kpi-achieved">&#10003; KPI</span><span class="wl-chip-sm wl-pass">&#10003; WL</span>
         </div>
       </div>
       <div class="sb-item" id="sb-FTR-003" onclick="showDetail('FTR-003')">
         <div class="si-top"><span class="si-id">FTR-003</span><div class="si-badges"><span class="badge badge-active">Active</span><span class="badge badge-gate">Gate</span></div></div>
         <div class="si-name">Internet Commercial Offers (Fibre Broadband)</div>
-        <div class="si-pipe"><span class="dot dot-active" title="Discovery"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Design"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Build"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Test"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Deploy"></span><span class="si-pct">0%</span></div>
-        <div class="si-bar"><div class="si-bar-fill" style="width:0%"></div></div>
+        <div class="si-pipe"><span class="dot dot-complete" title="Presales"></span><span class="mini-conn conn-active"></span><span class="dot dot-active" title="Discovery"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Design"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Prototype"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Build"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Test"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Deploy"></span><span class="si-pct">14%</span></div>
+        <div class="si-bar"><div class="si-bar-fill" style="width:14%"></div></div>
         <div class="si-footer">
           <span class="pts-chip">5 pts</span>
           <span class="si-done-pts">0/5 done</span>
-          <span class="dep-chip-sm">⚠ Dep</span>
+          <span class="etom-chip-sm" style="background:#8E3A1020;color:#8E3A10;border-color:#8E3A1040">C2M</span><span class="kpi-chip-sm kpi-missing">&#9711; KPI</span><span class="wl-chip-sm wl-fail">&#10007; WL</span><span class="dep-chip-sm">&#9888; Dep</span>
         </div>
-      </div>
-    </div>
+      </div></div>
   </div>
-
-  <!-- DETAIL PANEL -->
   <div class="detail-panel" id="detailPanel">
     <div class="detail-empty">
       <div class="de-arrow">&#8592;</div>
-      <p>Select a feature to view its pipeline, stories &amp; dependencies</p>
+      <p>Select a feature to view its pipeline, White Label gate, KPI, ADRs, stories &amp; dependencies</p>
     </div>
     
       <div class="detail-card" id="dc-FTR-001" style="display:none">
@@ -386,18 +380,28 @@ nav {
           <h2 class="d-fname">Tiered Pricing Expression Sets</h2>
           <div class="d-chips">
             <span class="d-pattern">tiered-volume-pricing</span>
-            <span class="badge badge-active">In Progress</span>
+            <span class="etom-badge etom-expandable" style="background:#0066CC15;color:#0066CC;border-color:#0066CC35" onclick="toggleEtom('etom-FTR-001')" title="Click to expand L2 processes">R2A &mdash; Request-to-Answer &#9660;</span><div class="etom-l2-panel" id="etom-FTR-001"><div class="etom-l2-title">L2 Processes spanned</div><div class="etom-l2-row">&#8627; 1.1.1 CRM Support & Readiness</div><div class="etom-l2-row">&#8627; 1.1.3 Selling</div><div class="etom-l2-row">&#8627; 1.1.2 Order Handling (pre-order)</div></div><span class="badge badge-active">In Progress</span><span class="kpi-badge kpi-defined">Defined</span><span class="badge wl-fail">Blocked</span><span class="adr-badge">1 ADR</span>
             <span class="pts-chip">34 pts total</span>
             <span class="d-done-pts">8 pts done</span>
           </div>
-          <div class="d-bar"><div class="d-bar-fill" style="width:40%"></div></div>
+          <div class="d-bar"><div class="d-bar-fill" style="width:57%"></div></div>
         </div>
         <div class="d-stages">
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Presales</div>
+        <div class="sc-date">2026-05-19</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
       <div class="sc sc-complete">
         <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="sc-label">Discovery</div>
         <div class="sc-date">2026-05-20</div>
         <div class="sc-pts"><span class="pts-chip">5p</span></div>
+        
         <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
         <div class="sc-arts"><a class="art-link" href="../REQUIREMENTS_BASELINE.md" title="REQUIREMENTS_BASELINE.md">REQUIREMENTS_BASELINE.md</a></div>
       </div>
@@ -406,14 +410,29 @@ nav {
         <div class="sc-label">Design</div>
         <div class="sc-date">2026-05-20</div>
         <div class="sc-pts"><span class="pts-chip">3p</span></div>
+        
         <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
         <div class="sc-arts"><a class="art-link" href="tiered-pricing-tdd-2026-05-20.md" title="results/tiered-pricing-tdd-2026-05-20.md">tiered-pricing-tdd-2026-05-20.md</a><a class="art-link" href="tiered-pricing-tdd-2026-05-20.html" title="results/tiered-pricing-tdd-2026-05-20.html">tiered-pricing-tdd-2026-05-20.html</a></div>
+      </div>
+      <div class="sc sc-complete sc-prototype">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Prototype</div>
+        <div class="sc-date">2026-05-21</div>
+        
+        
+        <div style="margin-top:5px">
+          <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#6B3FA020;color:#6B3FA0;border:1px solid #6B3FA040">Process Walkthrough</span>
+        </div>
+        <div style="margin-top:4px"><span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#E8F8EE;color:#1D7D3A">&#10003; Customer OK</span></div>
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
       </div>
       <div class="sc sc-active">
         <div class="sc-node scn-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 11-6.2-8.56"/></svg></div>
         <div class="sc-label">Build</div>
         <div class="sc-date">2026-05-21</div>
         <div class="sc-pts"><span class="pts-chip">13p</span></div>
+        
         
         
       </div>
@@ -424,6 +443,7 @@ nav {
         <div class="sc-pts"><span class="pts-chip">8p</span></div>
         
         
+        
       </div>
       <div class="sc sc-pending">
         <div class="sc-node scn-pending"><span class="node-dot"></span></div>
@@ -432,60 +452,121 @@ nav {
         <div class="sc-pts"><span class="pts-chip">5p</span></div>
         
         
+        
       </div></div>
         
     <div class="d-section">
       <div class="d-section-head">
+        <span class="d-section-title">Prototype</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#6B3FA020;color:#6B3FA0;border:1px solid #6B3FA040">Process Walkthrough</span>
+          <span class="badge badge-done">Complete</span>
+        </div>
+      </div>
+      <div class="proto-approval proto-approved"><span class="proto-approval-icon">&#10003;</span><div><div class="proto-approval-title">Customer Approved</div><div class="proto-approval-sub">Build gate is open — scope is locked.</div></div></div>
+      <div class="proto-artifacts">
+        <div class="proto-art-label">Prototype Artifacts</div>
+        <div class="proto-art-list"><span style="font-size:12px;color:var(--text-3);font-style:italic">No artifacts linked yet</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">White Label Gate</span>
+        <span class="badge wl-fail">Blocked</span>
+      </div>
+      <div class="wl-grid">
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-1: KPIs mapped to eTOM process</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-2: Product model SID-compliant</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-3: CRM decoupled from legacy billing</span></div>
+        <div class="wl-row wl-row-fail"><span class="wl-row-icon">&#10007;</span><span class="wl-row-label">WL-4: Workflows agent-ready (AR-1 to AR-4)</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">KPI / Success Metric</span>
+        <span class="kpi-badge kpi-defined">Defined</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">Pricing Calculation Accuracy</div>
+        <div class="kpi-grid">
+          <div class="kpi-field"><div class="kpi-field-label">Baseline</div><div class="kpi-field-value">Manual pricing — 78% accuracy</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Target</div><div class="kpi-field-value kpi-target">99.5% automated accuracy within 30 days of deploy</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Measurement</div><div class="kpi-field-value">Salesforce Report: Quote Price Audit</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Review Cadence</div><div class="kpi-field-value">Sprint-end</div></div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Architecture Decision Records</span>
+        <span class="adr-badge">1 ADR</span>
+      </div>
+      <div class="adr-list"><div class="adr-row"><span class="adr-icon">&#128196;</span><a class="adr-link" href="../ADRs/ADR-001-native-first-expression-sets.md" title="ADRs/ADR-001-native-first-expression-sets.md">ADR-001-native-first-expression-sets</a></div></div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
         <span class="d-section-title">User Stories</span>
-        <span class="d-section-meta">7 stories &middot; 34 pts total &middot; 8 done</span>
+        <span class="d-section-meta">7 stories &middot; 34 pts &middot; 8 done &middot; 7/7 KPIs</span>
       </div>
       <table class="stories-table">
-        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
-        <tbody><tr class="sg-header"><td colspan="4">Discovery &mdash; 1 story &middot; 5 pts</td></tr>
+        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:200px">KPI</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
+        <tbody><tr class="sg-header"><td colspan="5">Discovery &mdash; 1 story &middot; 5 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR001-001</span></td>
           <td><span class="s-title">As a Pricing Manager, I want tiered rate lookup tables so prices auto-calculate by quantity band</span></td>
+          <td><span class="s-kpi" title="Decision table lookup returns correct tier price for all quantity bands">Decision table lookup returns correct tier pri...</span></td>
           <td><span class="s-status ss-done">Done</span></td>
           <td><span class="sp-tag sp-mid">5</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr><tr class="sg-header"><td colspan="4">Design &mdash; 1 story &middot; 3 pts</td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr><tr class="sg-header"><td colspan="5">Design &mdash; 1 story &middot; 3 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR001-002</span></td>
           <td><span class="s-title">As a Solution Architect, I want a Pricing Lineage Report so every price element is traceable to an sObject field</span></td>
+          <td><span class="s-kpi" title="100% of pricing fields traceable via Pricing Lineage Report">100% of pricing fields traceable via Pricing L...</span></td>
           <td><span class="s-status ss-done">Done</span></td>
           <td><span class="sp-tag sp-mid">3</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">3p</span></td></tr><tr class="sg-header"><td colspan="4">Build &mdash; 2 stories &middot; 13 pts</td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">3p</span></td></tr><tr class="sg-header"><td colspan="5">Build &mdash; 2 stories &middot; 13 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR001-003</span></td>
           <td><span class="s-title">As a Developer, I want Expression Set variables with input/output flags so writeback to Quote is explicit</span></td>
+          <td><span class="s-kpi" title="Expression Set writeback accuracy >= 99.5%">Expression Set writeback accuracy >= 99.5%</span></td>
           <td><span class="s-status ss-progress">In Progress</span></td>
           <td><span class="sp-tag sp-high">8</span></td>
         </tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR001-004</span></td>
           <td><span class="s-title">As a Developer, I want Context Tag mappings wired to Quote fields so pricing context resolves correctly at runtime</span></td>
+          <td><span class="s-kpi" title="Context tag resolution rate >= 99% at runtime">Context tag resolution rate >= 99% at runtime</span></td>
           <td><span class="s-status ss-progress">In Progress</span></td>
           <td><span class="sp-tag sp-mid">5</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">13p</span></td></tr><tr class="sg-header"><td colspan="4">Test &mdash; 2 stories &middot; 8 pts</td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">13p</span></td></tr><tr class="sg-header"><td colspan="5">Test &mdash; 2 stories &middot; 8 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR001-005</span></td>
           <td><span class="s-title">As a QA Engineer, I want decision table permutation tests covering all tier boundaries including edge quantities</span></td>
+          <td><span class="s-kpi" title="All tier boundary permutations pass automated test">All tier boundary permutations pass automated ...</span></td>
           <td><span class="s-status ss-todo">To Do</span></td>
           <td><span class="sp-tag sp-mid">5</span></td>
         </tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR001-006</span></td>
           <td><span class="s-title">As a QA Engineer, I want UI vs API context divergence test cases to catch channel-specific runtime differences</span></td>
+          <td><span class="s-kpi" title="Zero UI/API pricing divergence in regression suite">Zero UI/API pricing divergence in regression s...</span></td>
           <td><span class="s-status ss-todo">To Do</span></td>
           <td><span class="sp-tag sp-mid">3</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">8p</span></td></tr><tr class="sg-header"><td colspan="4">Deploy &mdash; 1 story &middot; 5 pts</td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">8p</span></td></tr><tr class="sg-header"><td colspan="5">Deploy &mdash; 1 story &middot; 5 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR001-007</span></td>
           <td><span class="s-title">As a Release Engineer, I want a SFDMU seeding script so tiered pricing data deploys repeatably to any sandbox</span></td>
+          <td><span class="s-kpi" title="Seeding script executes in < 60s on any sandbox">Seeding script executes in < 60s on any sandbox</span></td>
           <td><span class="s-status ss-todo">To Do</span></td>
           <td><span class="sp-tag sp-mid">5</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr>
     <tr class="sg-total">
       <td colspan="2" style="font-weight:700">Total Story Points</td>
+      <td style="font-size:12px;color:var(--text-2)">7/7 KPIs set</td>
       <td style="font-size:12px;color:var(--text-2)">8 pts done</td>
       <td><span class="pts-chip">34</span></td>
     </tr></tbody>
@@ -499,7 +580,7 @@ nav {
       </div>
       <div class="dep-list">
       <div class="dep-card dep-open" onclick="openDepModal('FTR-001','DEP-001')">
-        <div class="dep-icon dep-icon-open">⚠</div>
+        <div class="dep-icon dep-icon-open">&#9888;</div>
         <div class="dep-body">
           <div class="dep-title">Standard Pricebook must exist in target org</div>
           <div class="dep-desc">FTR-001 pricing procedures cannot activate until the Standard Pricebook record is seeded. This is a data dependency, not metadata.</div>
@@ -513,7 +594,7 @@ nav {
         <div class="dep-arrow">&#8250;</div>
       </div>
       <div class="dep-card dep-resolved" onclick="openDepModal('FTR-001','DEP-002')">
-        <div class="dep-icon dep-icon-resolved">✓</div>
+        <div class="dep-icon dep-icon-resolved">&#10003;</div>
         <div class="dep-body">
           <div class="dep-title">Context Tag schema approved by SA</div>
           <div class="dep-desc">Expression Set variables cannot be declared until the Solution Architect signs off the Context Tag schema from the Design gate.</div>
@@ -534,7 +615,7 @@ nav {
           <h2 class="d-fname">Smart Product Swap</h2>
           <div class="d-chips">
             <span class="d-pattern">guided-selling</span>
-            <span class="badge badge-done">Complete</span>
+            <span class="etom-badge etom-expandable" style="background:#0066CC15;color:#0066CC;border-color:#0066CC35" onclick="toggleEtom('etom-FTR-002')" title="Click to expand L2 processes">R2A &mdash; Request-to-Answer &#9660;</span><div class="etom-l2-panel" id="etom-FTR-002"><div class="etom-l2-title">L2 Processes spanned</div><div class="etom-l2-row">&#8627; 1.1.1 CRM Support & Readiness</div><div class="etom-l2-row">&#8627; 1.1.3 Selling</div><div class="etom-l2-row">&#8627; 1.1.2 Order Handling (pre-order)</div></div><span class="badge badge-done">Complete</span><span class="kpi-badge kpi-achieved">Achieved</span><span class="badge wl-pass">All Pass</span><span class="adr-badge adr-none">0 ADRs</span>
             <span class="pts-chip">16 pts total</span>
             <span class="d-done-pts">16 pts done</span>
           </div>
@@ -543,8 +624,18 @@ nav {
         <div class="d-stages">
       <div class="sc sc-complete">
         <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Presales</div>
+        <div class="sc-date">2026-05-11</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="sc-label">Discovery</div>
         <div class="sc-date">2026-05-12</div>
+        
         
         <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
         <div class="sc-arts"><a class="art-link" href="../REQUIREMENTS_BASELINE.md" title="REQUIREMENTS_BASELINE.md">REQUIREMENTS_BASELINE.md</a></div>
@@ -554,6 +645,20 @@ nav {
         <div class="sc-label">Design</div>
         <div class="sc-date">2026-05-13</div>
         
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-complete sc-prototype">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Prototype</div>
+        <div class="sc-date">2026-05-13</div>
+        
+        
+        <div style="margin-top:5px">
+          <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#0066CC20;color:#0066CC;border:1px solid #0066CC40">Figma Clickable</span>
+        </div>
+        <div style="margin-top:4px"><span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#E8F8EE;color:#1D7D3A">&#10003; Customer OK</span></div>
         <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
         
       </div>
@@ -562,6 +667,7 @@ nav {
         <div class="sc-label">Build</div>
         <div class="sc-date">2026-05-14</div>
         <div class="sc-pts"><span class="pts-chip">8p</span></div>
+        
         <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
         
       </div>
@@ -570,6 +676,7 @@ nav {
         <div class="sc-label">Test</div>
         <div class="sc-date">2026-05-15</div>
         <div class="sc-pts"><span class="pts-chip">5p</span></div>
+        
         <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
         
       </div>
@@ -578,44 +685,108 @@ nav {
         <div class="sc-label">Deploy</div>
         <div class="sc-date">2026-05-15</div>
         <div class="sc-pts"><span class="pts-chip">3p</span></div>
+        
         <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
         
       </div></div>
         
     <div class="d-section">
       <div class="d-section-head">
+        <span class="d-section-title">Prototype</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#0066CC20;color:#0066CC;border:1px solid #0066CC40">Figma Clickable</span>
+          <span class="badge badge-done">Complete</span>
+        </div>
+      </div>
+      <div class="proto-approval proto-approved"><span class="proto-approval-icon">&#10003;</span><div><div class="proto-approval-title">Customer Approved</div><div class="proto-approval-sub">Build gate is open — scope is locked.</div></div></div>
+      <div class="proto-artifacts">
+        <div class="proto-art-label">Prototype Artifacts</div>
+        <div class="proto-art-list"><span style="font-size:12px;color:var(--text-3);font-style:italic">No artifacts linked yet</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">White Label Gate</span>
+        <span class="badge wl-pass">All Pass</span>
+      </div>
+      <div class="wl-grid">
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-1: KPIs mapped to eTOM process</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-2: Product model SID-compliant</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-3: CRM decoupled from legacy billing</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-4: Workflows agent-ready (AR-1 to AR-4)</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">KPI / Success Metric</span>
+        <span class="kpi-badge kpi-achieved">Achieved</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">Quote-to-Order Conversion Rate</div>
+        <div class="kpi-grid">
+          <div class="kpi-field"><div class="kpi-field-label">Baseline</div><div class="kpi-field-value">42% conversion pre-swap feature</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Target</div><div class="kpi-field-value kpi-target">+12% (reach 54%) within 30 days of deploy</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Measurement</div><div class="kpi-field-value">Salesforce Report: Quote Pipeline Conversion</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Review Cadence</div><div class="kpi-field-value">Monthly</div></div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Architecture Decision Records</span>
+        <span class="adr-badge adr-none">None committed</span>
+      </div>
+      <div class="kpi-empty">
+        <span class="kpi-empty-icon">&#9711;</span>
+        <div>
+          <div class="kpi-empty-title">No ADRs committed for this feature</div>
+          <div class="kpi-empty-sub">Every standard vs custom decision requires an ADR in <code>ADRs/</code>. Use <code>ADRs/ADR-000-template.md</code>.</div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
         <span class="d-section-title">User Stories</span>
-        <span class="d-section-meta">4 stories &middot; 16 pts total &middot; 16 done</span>
+        <span class="d-section-meta">4 stories &middot; 16 pts &middot; 16 done &middot; 4/4 KPIs</span>
       </div>
       <table class="stories-table">
-        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
-        <tbody><tr class="sg-header"><td colspan="4">Build &mdash; 2 stories &middot; 8 pts</td></tr>
+        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:200px">KPI</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
+        <tbody><tr class="sg-header"><td colspan="5">Build &mdash; 2 stories &middot; 8 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR002-001</span></td>
           <td><span class="s-title">As a Sales Rep, I want swap eligibility auto-detected so I am never shown ineligible replacement products</span></td>
+          <td><span class="s-kpi" title="Zero ineligible products shown during swap">Zero ineligible products shown during swap</span></td>
           <td><span class="s-status ss-done">Done</span></td>
           <td><span class="sp-tag sp-mid">5</span></td>
         </tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR002-002</span></td>
           <td><span class="s-title">As a Sales Rep, I want margin delta displayed during swap so I can make an informed decision before confirming</span></td>
+          <td><span class="s-kpi" title="Margin delta display latency < 500ms">Margin delta display latency < 500ms</span></td>
           <td><span class="s-status ss-done">Done</span></td>
           <td><span class="sp-tag sp-mid">3</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">8p</span></td></tr><tr class="sg-header"><td colspan="4">Test &mdash; 1 story &middot; 5 pts</td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">8p</span></td></tr><tr class="sg-header"><td colspan="5">Test &mdash; 1 story &middot; 5 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR002-003</span></td>
           <td><span class="s-title">As a QA Engineer, I want regression coverage on swap logic so upstream pricing is not regressed by the new flow</span></td>
+          <td><span class="s-kpi" title="100% regression pass rate on swap flow">100% regression pass rate on swap flow</span></td>
           <td><span class="s-status ss-done">Done</span></td>
           <td><span class="sp-tag sp-mid">5</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr><tr class="sg-header"><td colspan="4">Deploy &mdash; 1 story &middot; 3 pts</td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr><tr class="sg-header"><td colspan="5">Deploy &mdash; 1 story &middot; 3 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR002-004</span></td>
           <td><span class="s-title">As a Release Engineer, I want a deployment runbook with rollback steps so swap data can be cleanly reversed in production</span></td>
+          <td><span class="s-kpi" title="Rollback completes in < 15 mins from runbook">Rollback completes in < 15 mins from runbook</span></td>
           <td><span class="s-status ss-done">Done</span></td>
           <td><span class="sp-tag sp-mid">3</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">3p</span></td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">3p</span></td></tr>
     <tr class="sg-total">
       <td colspan="2" style="font-weight:700">Total Story Points</td>
+      <td style="font-size:12px;color:var(--text-2)">4/4 KPIs set</td>
       <td style="font-size:12px;color:var(--text-2)">16 pts done</td>
       <td><span class="pts-chip">16</span></td>
     </tr></tbody>
@@ -629,18 +800,28 @@ nav {
           <h2 class="d-fname">Internet Commercial Offers (Fibre Broadband)</h2>
           <div class="d-chips">
             <span class="d-pattern">tbd — pending discovery</span>
-            <span class="badge badge-active">In Progress</span><span class="badge badge-gate">Gate Open</span>
+            <span class="etom-badge etom-expandable" style="background:#8E3A1015;color:#8E3A10;border-color:#8E3A1035" onclick="toggleEtom('etom-FTR-003')" title="Click to expand L2 processes">C2M &mdash; Concept-to-Market &#9660;</span><div class="etom-l2-panel" id="etom-FTR-003"><div class="etom-l2-title">L2 Processes spanned</div><div class="etom-l2-row">&#8627; 2.1.1 Product Portfolio Planning</div><div class="etom-l2-row">&#8627; 2.1.2 Product Capability Delivery</div><div class="etom-l2-row">&#8627; 2.1.3 Product & Offer Launch</div></div><span class="badge badge-active">In Progress</span><span class="badge badge-gate">Gate Open</span><span class="kpi-badge kpi-missing">Not Set</span><span class="badge wl-fail">Blocked</span><span class="adr-badge adr-none">0 ADRs</span>
             <span class="pts-chip">5 pts total</span>
             <span class="d-done-pts">0 pts done</span>
           </div>
-          <div class="d-bar"><div class="d-bar-fill" style="width:0%"></div></div>
+          <div class="d-bar"><div class="d-bar-fill" style="width:14%"></div></div>
         </div>
         <div class="d-stages">
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Presales</div>
+        <div class="sc-date">2026-05-20</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
       <div class="sc sc-active">
         <div class="sc-node scn-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 11-6.2-8.56"/></svg></div>
         <div class="sc-label">Discovery</div>
         <div class="sc-date">2026-05-21</div>
         <div class="sc-pts"><span class="pts-chip">5p</span></div>
+        
         <div class="sc-gate"><span class="badge gate-awaiting">Awaiting</span></div>
         
       </div>
@@ -651,10 +832,25 @@ nav {
         
         
         
+        
+      </div>
+      <div class="sc sc-pending sc-prototype">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Prototype</div>
+        
+        
+        
+        <div style="margin-top:5px">
+          <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#AEAEB220;color:#AEAEB2;border:1px solid #AEAEB240">Type TBD</span>
+        </div>
+        <div style="margin-top:4px"><span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#FFEBEC;color:#D70015">&#9711; Awaiting</span></div>
+        
+        
       </div>
       <div class="sc sc-pending">
         <div class="sc-node scn-pending"><span class="node-dot"></span></div>
         <div class="sc-label">Build</div>
+        
         
         
         
@@ -667,6 +863,7 @@ nav {
         
         
         
+        
       </div>
       <div class="sc sc-pending">
         <div class="sc-node scn-pending"><span class="node-dot"></span></div>
@@ -675,30 +872,89 @@ nav {
         
         
         
+        
       </div></div>
+        
+      <div class="d-section">
+        <div class="d-section-head">
+          <span class="d-section-title">Prototype</span>
+          <span class="badge badge-pending">Not Started</span>
+        </div>
+        <div class="proto-pending">
+          <div class="proto-pending-icon">&#9633;</div>
+          <div>
+            <div class="proto-pending-title">Prototype not yet started</div>
+            <div class="proto-pending-sub">Design must be approved before [XA] begins the prototype. Customer sign-off on the prototype is required before build can start.</div>
+          </div>
+        </div>
+      </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">White Label Gate</span>
+        <span class="badge wl-fail">Blocked</span>
+      </div>
+      <div class="wl-grid">
+        <div class="wl-row wl-row-fail"><span class="wl-row-icon">&#10007;</span><span class="wl-row-label">WL-1: KPIs mapped to eTOM process</span></div>
+        <div class="wl-row wl-row-unknown"><span class="wl-row-icon">&#9711;</span><span class="wl-row-label">WL-2: Product model SID-compliant</span></div>
+        <div class="wl-row wl-row-unknown"><span class="wl-row-icon">&#9711;</span><span class="wl-row-label">WL-3: CRM decoupled from legacy billing</span></div>
+        <div class="wl-row wl-row-unknown"><span class="wl-row-icon">&#9711;</span><span class="wl-row-label">WL-4: Workflows agent-ready (AR-1 to AR-4)</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">KPI / Success Metric</span>
+        <span class="kpi-badge kpi-missing">Not Set</span>
+      </div>
+      <div class="kpi-empty">
+        <span class="kpi-empty-icon">&#9711;</span>
+        <div>
+          <div class="kpi-empty-title">No KPI defined for this feature</div>
+          <div class="kpi-empty-sub">Add a <code>kpi</code> object to FEATURE_TRACKER.json. KPI is mandatory per SOUL R-07.</div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Architecture Decision Records</span>
+        <span class="adr-badge adr-none">None committed</span>
+      </div>
+      <div class="kpi-empty">
+        <span class="kpi-empty-icon">&#9711;</span>
+        <div>
+          <div class="kpi-empty-title">No ADRs committed for this feature</div>
+          <div class="kpi-empty-sub">Every standard vs custom decision requires an ADR in <code>ADRs/</code>. Use <code>ADRs/ADR-000-template.md</code>.</div>
+        </div>
+      </div>
+    </div>
         
     <div class="d-section">
       <div class="d-section-head">
         <span class="d-section-title">User Stories</span>
-        <span class="d-section-meta">2 stories &middot; 5 pts total &middot; 0 done</span>
+        <span class="d-section-meta">2 stories &middot; 5 pts &middot; 0 done &middot; 0/2 KPIs</span>
       </div>
       <table class="stories-table">
-        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
-        <tbody><tr class="sg-header"><td colspan="4">Discovery &mdash; 2 stories &middot; 5 pts</td></tr>
+        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:200px">KPI</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
+        <tbody><tr class="sg-header"><td colspan="5">Discovery &mdash; 2 stories &middot; 5 pts</td></tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR003-001</span></td>
           <td><span class="s-title">As a Product Owner, I want fibre speed tiers defined in the catalogue so reps configure them without code changes</span></td>
+          <td><span class="s-kpi-missing">Not set</span></td>
           <td><span class="s-status ss-progress">In Progress</span></td>
           <td><span class="sp-tag sp-mid">3</span></td>
         </tr>
         <tr class="story-row">
           <td><span class="s-id">US-FTR003-002</span></td>
           <td><span class="s-title">As a Product Owner, I want install fee rules captured so billing calculates the correct one-time charge at order activation</span></td>
+          <td><span class="s-kpi-missing">Not set</span></td>
           <td><span class="s-status ss-todo">To Do</span></td>
           <td><span class="sp-tag sp-low">2</span></td>
-        </tr><tr class="sg-sub"><td colspan="3"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">5p</span></td></tr>
     <tr class="sg-total">
       <td colspan="2" style="font-weight:700">Total Story Points</td>
+      <td style="font-size:12px;color:var(--text-2)">0/2 KPIs set</td>
       <td style="font-size:12px;color:var(--text-2)">0 pts done</td>
       <td><span class="pts-chip">5</span></td>
     </tr></tbody>
@@ -712,7 +968,7 @@ nav {
       </div>
       <div class="dep-list">
       <div class="dep-card dep-open" onclick="openDepModal('FTR-003','DEP-003')">
-        <div class="dep-icon dep-icon-open">⚠</div>
+        <div class="dep-icon dep-icon-open">&#9888;</div>
         <div class="dep-body">
           <div class="dep-title">Regulatory approval for broadband pricing tiers</div>
           <div class="dep-desc">Tier pricing structure requires legal sign-off before being coded into Expression Sets. This is blocking design start.</div>
@@ -726,7 +982,7 @@ nav {
         <div class="dep-arrow">&#8250;</div>
       </div>
       <div class="dep-card dep-open" onclick="openDepModal('FTR-003','DEP-004')">
-        <div class="dep-icon dep-icon-open">⚠</div>
+        <div class="dep-icon dep-icon-open">&#9888;</div>
         <div class="dep-body">
           <div class="dep-title">Fibre product SKUs loaded into org</div>
           <div class="dep-desc">FTR-003 discovery cannot complete until core fibre product SKUs are loaded into the org by the data team.</div>
@@ -742,29 +998,28 @@ nav {
     </div>
       </div>
   </div>
-
 </div>
-
-<!-- LEGEND -->
 <div class="legend">
   <span class="legend-title">Pipeline</span>
   <span class="legend-item"><span class="legend-dot ld-complete"></span>Complete</span>
   <span class="legend-item"><span class="legend-dot ld-active"></span>In Progress</span>
   <span class="legend-item"><span class="legend-dot ld-pending"></span>Pending</span>
   <span class="legend-sep"></span>
+  <span class="legend-title">White Label</span>
+  <span class="legend-item"><span class="badge wl-pass">All Pass</span></span>
+  <span class="legend-item"><span class="badge wl-fail">Blocked</span></span>
+  <span class="legend-item"><span class="badge wl-partial">Partial</span></span>
+  <span class="legend-sep"></span>
+  <span class="legend-title">KPI</span>
+  <span class="legend-item"><span class="kpi-badge kpi-achieved">Achieved</span></span>
+  <span class="legend-item"><span class="kpi-badge kpi-defined">Defined</span></span>
+  <span class="legend-item"><span class="kpi-badge kpi-missing">Not Set</span></span>
+  <span class="legend-sep"></span>
   <span class="legend-title">Points</span>
   <span class="legend-item"><span class="sp-tag sp-low">1-2</span>Low</span>
   <span class="legend-item"><span class="sp-tag sp-mid">3-5</span>Med</span>
   <span class="legend-item"><span class="sp-tag sp-high">8</span>High</span>
-  <span class="legend-item"><span class="sp-tag sp-epic">13</span>Epic</span>
-  <span class="legend-sep"></span>
-  <span class="legend-title">Gate</span>
-  <span class="legend-item"><span class="badge gate-approved">Approved</span></span>
-  <span class="legend-item"><span class="badge gate-awaiting">Awaiting</span></span>
-  <span class="legend-item"><span class="badge gate-rejected">Revise</span></span>
 </div>
-
-<!-- DEP MODAL -->
 <div class="modal-overlay" id="depModalOverlay" onclick="closeModal(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&#x2715;</button>
@@ -780,92 +1035,79 @@ nav {
     <button class="modal-jump" id="m-jump">&#8594; View Blocking Feature</button>
   </div>
 </div>
-
 <script>
 const DEP_DATA = {"FTR-001::DEP-001":{"dep":{"id":"DEP-001","title":"Standard Pricebook must exist in target org","desc":"FTR-001 pricing procedures cannot activate until the Standard Pricebook record is seeded. This is a data dependency, not metadata.","blockedBy":"FTR-002","blockedByName":"Smart Product Swap","type":"Data","status":"open","owner":"DevOps"},"featureId":"FTR-001"},"FTR-001::DEP-002":{"dep":{"id":"DEP-002","title":"Context Tag schema approved by SA","desc":"Expression Set variables cannot be declared until the Solution Architect signs off the Context Tag schema from the Design gate.","blockedBy":"FTR-001","blockedByName":"FTR-001 Design Gate","type":"Process","status":"resolved","owner":"SA Lead"},"featureId":"FTR-001"},"FTR-003::DEP-003":{"dep":{"id":"DEP-003","title":"Regulatory approval for broadband pricing tiers","desc":"Tier pricing structure requires legal sign-off before being coded into Expression Sets. This is blocking design start.","blockedBy":"Legal","blockedByName":"Legal / Regulatory Team","type":"External","status":"open","owner":"PM"},"featureId":"FTR-003"},"FTR-003::DEP-004":{"dep":{"id":"DEP-004","title":"Fibre product SKUs loaded into org","desc":"FTR-003 discovery cannot complete until core fibre product SKUs are loaded into the org by the data team.","blockedBy":"FTR-001","blockedByName":"Tiered Pricing Expression Sets","type":"Data","status":"open","owner":"DA"},"featureId":"FTR-003"}};
 let activeFeatureId = null;
-let jumpTarget      = null;
-
-// ── sidebar filter ────────────────────────────────────────────────────────────
-const featureStates = {
-  'FTR-001': 'active',
-  'FTR-002': 'complete',
-  'FTR-003': 'active'
-};
+let jumpTarget = null;
+const featureStates    = { 'FTR-001':'active','FTR-002':'complete','FTR-003':'active' };
+const featureKpiStates = { 'FTR-001':'defined','FTR-002':'achieved','FTR-003':'missing' };
+const featureWlStates  = { 'FTR-001':'fail','FTR-002':'pass','FTR-003':'fail' };
 function filterSb(filter, btn) {
   document.querySelectorAll('.sb-filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(el => {
-    const id = el.id.replace('sb-', '');
-    const s  = featureStates[id];
-    const show = filter === 'all'      ? true
-               : filter === 'active'   ? s === 'active'
-               : filter === 'complete' ? s === 'complete'
-               : filter === 'pending'  ? s === 'pending'
+    const id = el.id.replace('sb-','');
+    const show = filter === 'all'         ? true
+               : filter === 'active'      ? featureStates[id] === 'active'
+               : filter === 'complete'    ? featureStates[id] === 'complete'
+               : filter === 'kpi-missing' ? featureKpiStates[id] === 'missing'
+               : filter === 'wl-fail'     ? featureWlStates[id] === 'fail'
                : true;
     el.style.display = show ? '' : 'none';
   });
 }
-
-// ── show feature detail ───────────────────────────────────────────────────────
 function showDetail(id) {
-  // update sidebar active state
   document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
   const sbEl = document.getElementById('sb-' + id);
   if (sbEl) sbEl.classList.add('active');
-
-  // hide empty state, hide all cards, show selected
   document.querySelectorAll('.detail-empty').forEach(el => el.style.display = 'none');
   document.querySelectorAll('.detail-card').forEach(el => el.style.display = 'none');
   const card = document.getElementById('dc-' + id);
   if (card) card.style.display = 'block';
-
   activeFeatureId = id;
+  try { localStorage.setItem('teamos_selected_feature', id); } catch(e) {}
 }
-
-// ── sidebar jump (from dep modal jump button) ─────────────────────────────────
+(function restoreSelection() {
+  try {
+    const saved = localStorage.getItem('teamos_selected_feature');
+    if (saved && document.getElementById('dc-' + saved)) showDetail(saved);
+  } catch(e) {}
+})();
 function sidebarJump(id) {
   showDetail(id);
   const el = document.getElementById('sb-' + id);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-
-// ── dep modal ─────────────────────────────────────────────────────────────────
 function openDepModal(featureId, depId) {
-  const key  = featureId + '::' + depId;
+  const key = featureId + '::' + depId;
   const data = DEP_DATA[key];
   if (!data) return;
-  const dep  = data.dep;
+  const dep = data.dep;
   document.getElementById('m-eyebrow').textContent = 'Dependency  ·  ' + dep.type;
   document.getElementById('m-title').textContent   = dep.title;
   document.getElementById('m-desc').textContent    = dep.desc;
   document.getElementById('m-blocked').textContent = dep.blockedByName;
-  document.getElementById('m-status').textContent  = dep.status === 'open' ? '⚠ Open — Blocking' : '✓ Resolved';
+  document.getElementById('m-status').textContent  = dep.status === 'open' ? 'Open — Blocking' : 'Resolved';
   document.getElementById('m-type').textContent    = dep.type;
   document.getElementById('m-owner').textContent   = dep.owner;
   const jump = document.getElementById('m-jump');
-  const linked = Object.values(DEP_DATA).find(d => d.dep.id !== dep.id && d.featureId === dep.blockedBy || dep.blockedBy === d.featureId);
-  // check if blockedBy matches a feature ID
-  const linkedFeatureId = ["FTR-001","FTR-002","FTR-003"].find(id => id === dep.blockedBy);
-  if (linkedFeatureId) {
-    jump.style.display = 'block';
-    jump.textContent   = '→ View ' + linkedFeatureId;
-    jumpTarget = linkedFeatureId;
-  } else {
-    jump.style.display = 'none';
-    jumpTarget = null;
-  }
+  const linkedId = ["FTR-001","FTR-002","FTR-003"].find(id => id === dep.blockedBy);
+  if (linkedId) { jump.style.display = 'block'; jump.textContent = '\u2192 View ' + linkedId; jumpTarget = linkedId; }
+  else          { jump.style.display = 'none'; jumpTarget = null; }
   document.getElementById('depModalOverlay').classList.add('open');
 }
 function closeModal(e) {
-  if (!e || e.target.id === 'depModalOverlay' || e.target.classList.contains('modal-close')) {
+  if (!e || e.target.id === 'depModalOverlay' || e.target.classList.contains('modal-close'))
     document.getElementById('depModalOverlay').classList.remove('open');
-  }
 }
 document.getElementById('m-jump').onclick = function() {
   document.getElementById('depModalOverlay').classList.remove('open');
   if (jumpTarget) { showDetail(jumpTarget); sidebarJump(jumpTarget); }
 };
+function toggleEtom(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
 </script>
 </body>
 </html>
