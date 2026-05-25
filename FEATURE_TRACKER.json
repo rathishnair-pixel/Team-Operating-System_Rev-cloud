@@ -13,8 +13,30 @@
       "id": "FTR-001",
       "name": "Tiered Pricing Expression Sets",
       "pattern": "tiered-volume-pricing",
+      "etom_process": "R2A",
       "startDate": "2026-05-20",
+      "adrs": ["ADRs/ADR-001-native-first-expression-sets.md"],
+      "kpi": {
+        "name": "Pricing Calculation Accuracy",
+        "baseline": "Manual pricing — 78% accuracy",
+        "target": "99.5% automated accuracy within 30 days of deploy",
+        "measurement": "Salesforce Report: Quote Price Audit",
+        "cadence": "Sprint-end",
+        "status": "defined"
+      },
+      "whiteLabelGate": {
+        "wl1_kpi_mapped": true,
+        "wl2_sid_compliant": true,
+        "wl3_crm_decoupled": true,
+        "wl4_agent_ready": false
+      },
       "stages": {
+        "presales": {
+          "status": "complete",
+          "approval_status": "approved",
+          "date": "2026-05-19",
+          "artifacts": []
+        },
         "discovery": {
           "status": "complete",
           "approval_status": "approved",
@@ -26,6 +48,14 @@
           "approval_status": "approved",
           "date": "2026-05-20",
           "artifacts": ["results/tiered-pricing-tdd-2026-05-20.md", "results/tiered-pricing-tdd-2026-05-20.html"]
+        },
+        "prototype": {
+          "status": "complete",
+          "approval_status": "approved",
+          "date": "2026-05-21",
+          "artifacts": [],
+          "prototype_type": "process-walkthrough",
+          "customer_approved": true
         },
         "build": {
           "status": "in-progress",
@@ -47,13 +77,13 @@
         }
       },
       "userStories": [
-        { "id": "US-FTR001-001", "title": "As a Pricing Manager, I want tiered rate lookup tables so prices auto-calculate by quantity band", "points": 5, "status": "done", "stage": "discovery" },
-        { "id": "US-FTR001-002", "title": "As a Solution Architect, I want a Pricing Lineage Report so every price element is traceable to an sObject field", "points": 3, "status": "done", "stage": "design" },
-        { "id": "US-FTR001-003", "title": "As a Developer, I want Expression Set variables with input/output flags so writeback to Quote is explicit", "points": 8, "status": "progress", "stage": "build" },
-        { "id": "US-FTR001-004", "title": "As a Developer, I want Context Tag mappings wired to Quote fields so pricing context resolves correctly at runtime", "points": 5, "status": "progress", "stage": "build" },
-        { "id": "US-FTR001-005", "title": "As a QA Engineer, I want decision table permutation tests covering all tier boundaries including edge quantities", "points": 5, "status": "todo", "stage": "test" },
-        { "id": "US-FTR001-006", "title": "As a QA Engineer, I want UI vs API context divergence test cases to catch channel-specific runtime differences", "points": 3, "status": "todo", "stage": "test" },
-        { "id": "US-FTR001-007", "title": "As a Release Engineer, I want a SFDMU seeding script so tiered pricing data deploys repeatably to any sandbox", "points": 5, "status": "todo", "stage": "deploy" }
+        { "id": "US-FTR001-001", "title": "As a Pricing Manager, I want tiered rate lookup tables so prices auto-calculate by quantity band", "points": 5, "status": "done", "stage": "discovery", "kpi": "Decision table lookup returns correct tier price for all quantity bands" },
+        { "id": "US-FTR001-002", "title": "As a Solution Architect, I want a Pricing Lineage Report so every price element is traceable to an sObject field", "points": 3, "status": "done", "stage": "design", "kpi": "100% of pricing fields traceable via Pricing Lineage Report" },
+        { "id": "US-FTR001-003", "title": "As a Developer, I want Expression Set variables with input/output flags so writeback to Quote is explicit", "points": 8, "status": "progress", "stage": "build", "kpi": "Expression Set writeback accuracy >= 99.5%" },
+        { "id": "US-FTR001-004", "title": "As a Developer, I want Context Tag mappings wired to Quote fields so pricing context resolves correctly at runtime", "points": 5, "status": "progress", "stage": "build", "kpi": "Context tag resolution rate >= 99% at runtime" },
+        { "id": "US-FTR001-005", "title": "As a QA Engineer, I want decision table permutation tests covering all tier boundaries including edge quantities", "points": 5, "status": "todo", "stage": "test", "kpi": "All tier boundary permutations pass automated test" },
+        { "id": "US-FTR001-006", "title": "As a QA Engineer, I want UI vs API context divergence test cases to catch channel-specific runtime differences", "points": 3, "status": "todo", "stage": "test", "kpi": "Zero UI/API pricing divergence in regression suite" },
+        { "id": "US-FTR001-007", "title": "As a Release Engineer, I want a SFDMU seeding script so tiered pricing data deploys repeatably to any sandbox", "points": 5, "status": "todo", "stage": "deploy", "kpi": "Seeding script executes in < 60s on any sandbox" }
       ],
       "dependencies": [
         {
@@ -82,19 +112,37 @@
       "id": "FTR-002",
       "name": "Smart Product Swap",
       "pattern": "guided-selling",
+      "etom_process": "R2A",
       "startDate": "2026-05-12",
+      "adrs": [],
+      "kpi": {
+        "name": "Quote-to-Order Conversion Rate",
+        "baseline": "42% conversion pre-swap feature",
+        "target": "+12% (reach 54%) within 30 days of deploy",
+        "measurement": "Salesforce Report: Quote Pipeline Conversion",
+        "cadence": "Monthly",
+        "status": "achieved"
+      },
+      "whiteLabelGate": {
+        "wl1_kpi_mapped": true,
+        "wl2_sid_compliant": true,
+        "wl3_crm_decoupled": true,
+        "wl4_agent_ready": true
+      },
       "stages": {
+        "presales":  { "status": "complete", "approval_status": "approved", "date": "2026-05-11", "artifacts": [] },
         "discovery": { "status": "complete", "approval_status": "approved", "date": "2026-05-12", "artifacts": ["REQUIREMENTS_BASELINE.md"] },
         "design":    { "status": "complete", "approval_status": "approved", "date": "2026-05-13", "artifacts": [] },
+        "prototype": { "status": "complete", "approval_status": "approved", "date": "2026-05-13", "artifacts": [], "prototype_type": "figma-clickable", "customer_approved": true },
         "build":     { "status": "complete", "approval_status": "approved", "date": "2026-05-14", "artifacts": [] },
         "test":      { "status": "complete", "approval_status": "approved", "date": "2026-05-15", "artifacts": [] },
         "deploy":    { "status": "complete", "approval_status": "approved", "date": "2026-05-15", "artifacts": [] }
       },
       "userStories": [
-        { "id": "US-FTR002-001", "title": "As a Sales Rep, I want swap eligibility auto-detected so I am never shown ineligible replacement products", "points": 5, "status": "done", "stage": "build" },
-        { "id": "US-FTR002-002", "title": "As a Sales Rep, I want margin delta displayed during swap so I can make an informed decision before confirming", "points": 3, "status": "done", "stage": "build" },
-        { "id": "US-FTR002-003", "title": "As a QA Engineer, I want regression coverage on swap logic so upstream pricing is not regressed by the new flow", "points": 5, "status": "done", "stage": "test" },
-        { "id": "US-FTR002-004", "title": "As a Release Engineer, I want a deployment runbook with rollback steps so swap data can be cleanly reversed in production", "points": 3, "status": "done", "stage": "deploy" }
+        { "id": "US-FTR002-001", "title": "As a Sales Rep, I want swap eligibility auto-detected so I am never shown ineligible replacement products", "points": 5, "status": "done", "stage": "build", "kpi": "Zero ineligible products shown during swap" },
+        { "id": "US-FTR002-002", "title": "As a Sales Rep, I want margin delta displayed during swap so I can make an informed decision before confirming", "points": 3, "status": "done", "stage": "build", "kpi": "Margin delta display latency < 500ms" },
+        { "id": "US-FTR002-003", "title": "As a QA Engineer, I want regression coverage on swap logic so upstream pricing is not regressed by the new flow", "points": 5, "status": "done", "stage": "test", "kpi": "100% regression pass rate on swap flow" },
+        { "id": "US-FTR002-004", "title": "As a Release Engineer, I want a deployment runbook with rollback steps so swap data can be cleanly reversed in production", "points": 3, "status": "done", "stage": "deploy", "kpi": "Rollback completes in < 15 mins from runbook" }
       ],
       "dependencies": []
     },
@@ -102,17 +150,28 @@
       "id": "FTR-003",
       "name": "Internet Commercial Offers (Fibre Broadband)",
       "pattern": "tbd — pending discovery",
+      "etom_process": "C2M",
       "startDate": "2026-05-21",
+      "adrs": [],
+      "kpi": null,
+      "whiteLabelGate": {
+        "wl1_kpi_mapped": false,
+        "wl2_sid_compliant": null,
+        "wl3_crm_decoupled": null,
+        "wl4_agent_ready": null
+      },
       "stages": {
-        "discovery": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-21", "artifacts": [] },
-        "design":    { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] },
-        "build":     { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] },
-        "test":      { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] },
-        "deploy":    { "status": "pending", "approval_status": "pending", "date": null, "artifacts": [] }
+        "presales":  { "status": "complete",     "approval_status": "approved", "date": "2026-05-20", "artifacts": [] },
+        "discovery": { "status": "in-progress",  "approval_status": "awaiting", "date": "2026-05-21", "artifacts": [] },
+        "design":    { "status": "pending",       "approval_status": "pending",  "date": null, "artifacts": [] },
+        "prototype": { "status": "pending",       "approval_status": "pending",  "date": null, "artifacts": [], "prototype_type": null, "customer_approved": false },
+        "build":     { "status": "pending",       "approval_status": "pending",  "date": null, "artifacts": [] },
+        "test":      { "status": "pending",       "approval_status": "pending",  "date": null, "artifacts": [] },
+        "deploy":    { "status": "pending",       "approval_status": "pending",  "date": null, "artifacts": [] }
       },
       "userStories": [
-        { "id": "US-FTR003-001", "title": "As a Product Owner, I want fibre speed tiers defined in the catalogue so reps configure them without code changes", "points": 3, "status": "progress", "stage": "discovery" },
-        { "id": "US-FTR003-002", "title": "As a Product Owner, I want install fee rules captured so billing calculates the correct one-time charge at order activation", "points": 2, "status": "todo", "stage": "discovery" }
+        { "id": "US-FTR003-001", "title": "As a Product Owner, I want fibre speed tiers defined in the catalogue so reps configure them without code changes", "points": 3, "status": "progress", "stage": "discovery", "kpi": null },
+        { "id": "US-FTR003-002", "title": "As a Product Owner, I want install fee rules captured so billing calculates the correct one-time charge at order activation", "points": 2, "status": "todo", "stage": "discovery", "kpi": null }
       ],
       "dependencies": [
         {
