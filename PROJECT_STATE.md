@@ -10,7 +10,26 @@
 > - Owner: [PM] tracks, [TA] owns activation loop SLA
 
 ## Active Sprint
-Team OS v4.0 — Epic E-001 (5G Smart Office) decomposed into FTR-004/005/006. KPI baseline set. Pending ADR-002 + ADR-003 before FTR-006 build gate opens.
+Team OS v4.0 — Epic E-001 (5G Smart Office). All 4 ADRs committed (ADR-002 to ADR-005).
+Sprint HOLD: [TA] D-9 ruling — US-FTR005-002 (8pts) decomposed into 002a (4pts) + 002b (4pts).
+[DevOps] pre-flight required: Flow Orchestration feature flag + BusinessHours record in org before FTR-005 build.
+[Dev] blocked on application code until D-6 resolved: Context Definitions must wrap bundle before WL-4 gate clears.
+
+## [TA] Architecture Blocks — Active
+| Block | Feature | Resolution |
+|---|---|---|
+| D-6: WL-4 agent-readiness | FTR-004 | [Dev] must wrap bundle in Context Definitions before build gate opens |
+| D-7: Price Rule eval order | FTR-005 | Enforced: FTR-005 volume discount (Step 1) → FTR-001 tiered matrix (Step 2) |
+| D-9: 8pt story smell | FTR-005 | RESOLVED — US-FTR005-002 split into 002a + 002b (4pts each) |
+| Flow Orchestration flag | FTR-005 | [DevOps] must verify org has Flow Orchestration enabled before US-FTR005-002b build |
+
+## Pricing Budget — 5G Smart Office (D-4 Domain Budget)
+| Procedure | Scope | Element Budget |
+|---|---|---|
+| Procedure 1 — Core Pricing | Base Hardware + Data Plan pricing | Max 50 elements |
+| Procedure 2 — Dynamic Services | Fiber distance pricing matrix | Max 30 elements |
+| Procedure 3 — SLA Allocation | Telco Platinum SLA PoT calculation | Max 20 elements |
+| **Total** | | **Max 100 / 200 ceiling** |
 
 ## Team OS Protocol Status
 | # | Protocol | Status | Notes |
@@ -26,10 +45,12 @@ Team OS v4.0 — Epic E-001 (5G Smart Office) decomposed into FTR-004/005/006. K
 | 9 | Source Citation Appendix (MCP) | Active | |
 
 ## Pending ADRs (decisions made this session that need a commit)
-| ADR | Decision | Owner | Blocker For |
+| ADR | Decision | Owner | Status |
 |---|---|---|---|
-| ADR-002 | Telco Network Activation API — Named Credential pattern selection | [TA] | FTR-006 Track 2 build gate |
-| ADR-003 | ERP Hardware Routing — Platform Event vs Outbound Message | [TA] | FTR-006 Track 1 build gate |
+| ADR-002 | Async Queueable Apex for Telco Network Activation | [TA] | COMMITTED |
+| ADR-003 | Platform Events for ERP Hardware Routing | [TA] | COMMITTED |
+| ADR-004 | Declarative-First PoT Filter with Apex Pre-Hook Fallback | [TA] | COMMITTED |
+| ADR-005 | Flow Orchestrator for 4-Hour Approval SLA Escalation | [TA] | COMMITTED |
 
 ## Recent Decisions (The "Why")
 - **Standalone ContextDefinition**: Platform-managed `RLM_SalesTransactionContext` cannot be extended via metadata (all attributes are `inheritedFrom`). Created self-contained `EcoGreenSwapContext` with `EcoSwapLineItem` node (`transposable=true`) instead.
