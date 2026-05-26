@@ -18,10 +18,20 @@ Sprint HOLD: [TA] D-9 ruling — US-FTR005-002 (8pts) decomposed into 002a (4pts
 ## [TA] Architecture Blocks — Active
 | Block | Feature | Resolution |
 |---|---|---|
-| D-6: WL-4 agent-readiness | FTR-004 | [Dev] must wrap bundle in Context Definitions before build gate opens |
+| D-6: WL-4 agent-readiness | FTR-004 | **CLEARED** — ADR-006 committed: SmartOfficeBundleContext + ConfigureTelcoBundle__apex. WL-4 = true |
 | D-7: Price Rule eval order | FTR-005 | Enforced: FTR-005 volume discount (Step 1) → FTR-001 tiered matrix (Step 2) |
 | D-9: 8pt story smell | FTR-005 | RESOLVED — US-FTR005-002 split into 002a + 002b (4pts each) |
 | Flow Orchestration flag | FTR-005 | [DevOps] must verify org has Flow Orchestration enabled before US-FTR005-002b build |
+| BusinessHours record | FTR-005 | [DevOps] must verify BusinessHours configured in org |
+| FSL license check | FTR-006 | [DevOps] must verify Field Service Lightning enabled in org |
+| DEP-008: FTR-004 products in org | FTR-006 | Prototype blocked until FTR-004 product records seeded |
+
+## Prototype Stage — Current Status (2026-05-26)
+| Feature | Prototype Status | Type | Customer Approved |
+|---|---|---|---|
+| FTR-004 | In Progress | salesforce-sandbox (headless JSON payload) | Awaiting |
+| FTR-005 | In Progress | process-walkthrough | Awaiting |
+| FTR-006 | Pending | process-walkthrough | Blocked — DEP-008 open |
 
 ## Pricing Budget — 5G Smart Office (D-4 Domain Budget)
 | Procedure | Scope | Element Budget |

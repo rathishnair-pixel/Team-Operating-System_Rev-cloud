@@ -230,7 +230,7 @@
       "pattern": "subscription-usage-hybrid",
       "etom_process": "C2M",
       "startDate": "2026-05-26",
-      "adrs": ["ADRs/ADR-004-pot-expression-set-filter-declarative-first.md"],
+      "adrs": ["ADRs/ADR-004-pot-expression-set-filter-declarative-first.md", "ADRs/ADR-006-smartoffice-context-definition-agentforce.md"],
       "kpi": {
         "name": "Quote-to-Activation Time",
         "baseline": "14 days",
@@ -243,13 +243,13 @@
         "wl1_kpi_mapped": true,
         "wl2_sid_compliant": true,
         "wl3_crm_decoupled": true,
-        "wl4_agent_ready": false
+        "wl4_agent_ready": true
       },
       "stages": {
         "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
-        "design":    { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [] },
-        "prototype": { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [], "prototype_type": null, "customer_approved": false },
+        "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-004-pot-expression-set-filter-declarative-first.md", "ADRs/ADR-006-smartoffice-context-definition-agentforce.md"] },
+        "prototype": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [], "prototype_type": "salesforce-sandbox", "customer_approved": false },
         "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
         "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
@@ -282,13 +282,13 @@
         "wl1_kpi_mapped": true,
         "wl2_sid_compliant": true,
         "wl3_crm_decoupled": true,
-        "wl4_agent_ready": false
+        "wl4_agent_ready": true
       },
       "stages": {
         "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
-        "design":    { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [] },
-        "prototype": { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [], "prototype_type": null, "customer_approved": false },
+        "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-005-approval-sla-escalation-flow-orchestrator.md"] },
+        "prototype": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": false },
         "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
         "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
