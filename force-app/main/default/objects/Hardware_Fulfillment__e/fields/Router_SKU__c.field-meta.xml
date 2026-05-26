@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Router_SKU__c</fullName>
+    <description>Product SKU for the router being fulfilled. Always ROUTER_5G_ENT for this bundle. Included for ERP inventory system lookup.</description>
+    <label>Router SKU</label>
+    <length>50</length>
+    <type>Text</type>
+</CustomField>

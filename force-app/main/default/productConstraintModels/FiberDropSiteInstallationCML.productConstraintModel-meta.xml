@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductConstraintModel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Constraint model for the Fiber Drop and Site Installation product (Track 3 fulfillment). Enforces: FIBER_INSTALL line is excluded from SLA PoT pricing calculation (see ADR-004 declarative-first Expression Set filter). Fiber_Meters__c is mandatory and must be greater than 0 at order activation. Cannot be sold without a Router on the same quote. See ADR-003, ADR-004.</description>
+    <isActive>true</isActive>
+    <masterLabel>Fiber Drop Site Installation CML</masterLabel>
+    <constraints>
+        <constraint>
+            <constraintType>Requires</constraintType>
+            <description>Fiber installation requires at least one Router on the same quote — fiber is a site prerequisite, not a standalone offering.</description>
+            <isActive>true</isActive>
+            <masterLabel>Fiber Install Requires Router</masterLabel>
+            <relatedProductCode>EDGE_5G_ROUTER</relatedProductCode>
+            <targetProductCode>FIBER_INSTALL</targetProductCode>
+        </constraint>
+        <constraint>
+            <constraintType>MaxQuantity</constraintType>
+            <description>Maximum 1 fiber installation line per site.</description>
+            <isActive>true</isActive>
+            <masterLabel>Fiber Install Max One Per Site</masterLabel>
+            <maxQuantity>1</maxQuantity>
+            <targetProductCode>FIBER_INSTALL</targetProductCode>
+        </constraint>
+    </constraints>
+</ProductConstraintModel>

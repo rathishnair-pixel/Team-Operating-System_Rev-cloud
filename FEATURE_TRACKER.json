@@ -250,7 +250,7 @@
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-004-pot-expression-set-filter-declarative-first.md", "ADRs/ADR-006-smartoffice-context-definition-agentforce.md"] },
         "prototype": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [], "prototype_type": "salesforce-sandbox", "customer_approved": false },
-        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": ["force-app/main/default/productConstraintModels/Edge5GEnterpriseRouterCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/Unlimited5GCoreDataPlanCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/TelcoPlatinumSLACML.productConstraintModel-meta.xml", "force-app/main/default/classes/ConfigureTelcoBundle.cls"] },
         "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
       },
@@ -289,7 +289,7 @@
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-005-approval-sla-escalation-flow-orchestrator.md"] },
         "prototype": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": false },
-        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": ["force-app/main/default/classes/SubmitForTelcoApproval.cls", "force-app/main/default/classes/EscalateTelcoApproval.cls"] },
         "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
       },
@@ -339,8 +339,8 @@
         "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-002-async-telco-network-activation-api.md", "ADRs/ADR-003-erp-hardware-routing-platform-event.md"] },
-        "prototype": { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": false },
-        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "prototype": { "status": "in-progress",  "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": false },
+        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": ["force-app/main/default/classes/TelcoNetworkActivationQueueable.cls", "force-app/main/default/classes/CreateFieldServiceWorkOrder.cls", "force-app/main/default/objects/Hardware_Fulfillment__e/Hardware_Fulfillment__e.object-meta.xml", "force-app/main/default/productConstraintModels/FiberDropSiteInstallationCML.productConstraintModel-meta.xml"] },
         "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
       },

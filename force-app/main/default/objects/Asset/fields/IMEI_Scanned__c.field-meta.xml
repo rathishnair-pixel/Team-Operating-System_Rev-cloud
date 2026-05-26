@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IMEI_Scanned__c</fullName>
+    <description>Set to true by technician via Field Service mobile app when router IMEI is physically scanned at site. This field change triggers TelcoNetworkActivationQueueable to enqueue the Track 2 API activation call. 24-hour escalation timer starts on WorkOrder completion.</description>
+    <label>IMEI Scanned</label>
+    <defaultValue>false</defaultValue>
+    <type>Checkbox</type>
+</CustomField>

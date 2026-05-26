@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductConstraintModel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Constraint model for the 5G Smart Office edge router. Enforces: Router cannot be sold standalone — requires at least one active Unlimited 5G Core Data Plan on the same quote. Maximum 1 router per site. IMEI slot reference is mandatory at order activation. See ADR-006.</description>
+    <isActive>true</isActive>
+    <masterLabel>Edge 5G Enterprise Router CML</masterLabel>
+    <constraints>
+        <constraint>
+            <constraintType>Requires</constraintType>
+            <description>Router requires at least one Data Plan line item on the same quote.</description>
+            <isActive>true</isActive>
+            <masterLabel>Router Requires Data Plan</masterLabel>
+            <relatedProductCode>UNLIMITED_5G_DATA</relatedProductCode>
+            <targetProductCode>EDGE_5G_ROUTER</targetProductCode>
+        </constraint>
+        <constraint>
+            <constraintType>MaxQuantity</constraintType>
+            <description>Maximum 1 router unit per site — enforced per OrderItem site grouping.</description>
+            <isActive>true</isActive>
+            <masterLabel>Router Max Quantity Per Site</masterLabel>
+            <maxQuantity>1</maxQuantity>
+            <targetProductCode>EDGE_5G_ROUTER</targetProductCode>
+        </constraint>
+    </constraints>
+</ProductConstraintModel>

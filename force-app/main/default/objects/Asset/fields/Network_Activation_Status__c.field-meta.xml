@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Network_Activation_Status__c</fullName>
+    <description>Current network provisioning status for this asset. Updated by TelcoNetworkActivationQueueable. Pending_Activation = waiting for IMEI scan; Active = network live; Failed = 3 retry attempts exhausted, Case created. See ADR-002.</description>
+    <label>Network Activation Status</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Pending_Activation</fullName><default>true</default><label>Pending Activation</label></value>
+            <value><fullName>Active</fullName><default>false</default><label>Active</label></value>
+            <value><fullName>Failed</fullName><default>false</default><label>Failed</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

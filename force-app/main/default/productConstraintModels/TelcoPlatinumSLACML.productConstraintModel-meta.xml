@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductConstraintModel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Constraint model for the Telco Platinum SLA add-on. Enforces: SLA upgrade cannot be sold without both a Router and a Data Plan on the same quote (CML_REQUIRED_COMPONENT_MISSING error surfaced by ConfigureTelcoBundle Invocable Action). Only one SLA tier may be active per site — Platinum is mutually exclusive with any other SLA tier. Triggers 15% PoT pricing premium via Procedure 3 (see ADR-004). See ADR-006.</description>
+    <isActive>true</isActive>
+    <masterLabel>Telco Platinum SLA CML</masterLabel>
+    <constraints>
+        <constraint>
+            <constraintType>Requires</constraintType>
+            <description>Platinum SLA requires a Router — SLA guarantee is meaningless without the managed hardware.</description>
+            <isActive>true</isActive>
+            <masterLabel>Platinum SLA Requires Router</masterLabel>
+            <relatedProductCode>EDGE_5G_ROUTER</relatedProductCode>
+            <targetProductCode>TELCO_PLATINUM_SLA</targetProductCode>
+        </constraint>
+        <constraint>
+            <constraintType>Requires</constraintType>
+            <description>Platinum SLA requires an active Data Plan — SLA covers the connectivity service, not hardware alone.</description>
+            <isActive>true</isActive>
+            <masterLabel>Platinum SLA Requires Data Plan</masterLabel>
+            <relatedProductCode>UNLIMITED_5G_DATA</relatedProductCode>
+            <targetProductCode>TELCO_PLATINUM_SLA</targetProductCode>
+        </constraint>
+        <constraint>
+            <constraintType>MaxQuantity</constraintType>
+            <description>Maximum 1 SLA tier per site — Platinum is mutually exclusive with other SLA products.</description>
+            <isActive>true</isActive>
+            <masterLabel>Platinum SLA Max One Per Site</masterLabel>
+            <maxQuantity>1</maxQuantity>
+            <targetProductCode>TELCO_PLATINUM_SLA</targetProductCode>
+        </constraint>
+    </constraints>
+</ProductConstraintModel>

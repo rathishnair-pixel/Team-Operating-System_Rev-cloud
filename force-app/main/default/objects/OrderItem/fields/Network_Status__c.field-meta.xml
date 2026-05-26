@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Network_Status__c</fullName>
+    <description>Network provisioning status on the OrderItem for the Data Plan line. Set to Pending_Activation on Order activation to trigger TelcoNetworkActivationQueueable. Updated to Active on successful API callback.</description>
+    <label>Network Status</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Pending_Activation</fullName><default>false</default><label>Pending Activation</label></value>
+            <value><fullName>Active</fullName><default>false</default><label>Active</label></value>
+            <value><fullName>Failed</fullName><default>false</default><label>Failed</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

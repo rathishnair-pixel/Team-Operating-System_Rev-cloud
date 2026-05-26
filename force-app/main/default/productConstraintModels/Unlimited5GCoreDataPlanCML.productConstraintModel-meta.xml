@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductConstraintModel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Constraint model for the Unlimited 5G Core Data Plan. Enforces: Data Plan cannot be sold without a Router on the same quote (mutual dependency). Minimum quantity of 1 per site. Cannot co-exist with a legacy SBQQ product line — rejected at CML validation. See ADR-006.</description>
+    <isActive>true</isActive>
+    <masterLabel>Unlimited 5G Core Data Plan CML</masterLabel>
+    <constraints>
+        <constraint>
+            <constraintType>Requires</constraintType>
+            <description>Data Plan requires at least one Edge Router on the same quote.</description>
+            <isActive>true</isActive>
+            <masterLabel>Data Plan Requires Router</masterLabel>
+            <relatedProductCode>EDGE_5G_ROUTER</relatedProductCode>
+            <targetProductCode>UNLIMITED_5G_DATA</targetProductCode>
+        </constraint>
+        <constraint>
+            <constraintType>MinQuantity</constraintType>
+            <description>Minimum 1 Data Plan unit required per site.</description>
+            <isActive>true</isActive>
+            <masterLabel>Data Plan Min Quantity Per Site</masterLabel>
+            <minQuantity>1</minQuantity>
+            <targetProductCode>UNLIMITED_5G_DATA</targetProductCode>
+        </constraint>
+    </constraints>
+</ProductConstraintModel>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IMEI_Slot_Reference__c</fullName>
+    <description>IMEI registration slot reference for Track 2 handoff. When technician scans IMEI at site, this reference links the physical device to the Asset record for network activation.</description>
+    <label>IMEI Slot Reference</label>
+    <length>50</length>
+    <type>Text</type>
+</CustomField>
