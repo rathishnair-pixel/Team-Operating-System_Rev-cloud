@@ -9,6 +9,26 @@
     "cadence": "Sprint-end + 30/60/90 day post-deploy",
     "owner": "[PM] tracks, [TA] owns activation loop SLA"
   },
+  "epics": [
+    {
+      "id": "E-001",
+      "name": "5G Smart Office — Managed Branch Connectivity",
+      "description": "Full O2P lifecycle for a managed enterprise 5G branch office solution: catalog, pricing, order decomposition into 3 fulfillment tracks.",
+      "etom_process": "O2P",
+      "totalPtsEstimate": 60,
+      "status": "in-progress",
+      "features": ["FTR-004", "FTR-005", "FTR-006"]
+    },
+    {
+      "id": "E-000",
+      "name": "Team OS Foundation",
+      "description": "Core Revenue Cloud patterns: tiered pricing, smart product swap, internet commercial offers.",
+      "etom_process": "R2A",
+      "totalPtsEstimate": 76,
+      "status": "in-progress",
+      "features": ["FTR-001", "FTR-002", "FTR-003"]
+    }
+  ],
   "approvalGateVocabulary": {
     "approved": "Human accepted — stage complete, next stage may begin",
     "skipped": "Human bypassed gate — stage marked skipped, next stage may begin",

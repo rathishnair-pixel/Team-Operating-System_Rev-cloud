@@ -118,6 +118,7 @@ function wlCls(s) { return { pass:'wl-pass', fail:'wl-fail', partial:'wl-partial
 function wlLabel(s) { return { pass:'All Pass', fail:'Blocked', partial:'Partial', unknown:'Not Set' }[s] || 'Not Set'; }
 
 // ── global stats ──────────────────────────────────────────────────────────────
+const allEpics      = tracker.epics || [];
 const allFeatures   = tracker.features;
 const gTotalPts     = allFeatures.reduce((a,f) => a + totalPts(f), 0);
 const gDonePts      = allFeatures.reduce((a,f) => a + donePts(f), 0);
@@ -129,35 +130,84 @@ const storiesKpiPct = allStories.length ? Math.round(allStories.filter(s => s.kp
 const gWlPass       = allFeatures.filter(f => wlScore(f) === 'pass').length;
 const gAdrCount     = allFeatures.reduce((a,f) => a + (f.adrs||[]).length, 0);
 
-// ── sidebar items ─────────────────────────────────────────────────────────────
+// ── sidebar feature card ──────────────────────────────────────────────────────
+function sbFeatureCard(f) {
+  const p  = pct(f); const tp = totalPts(f); const dp = donePts(f);
+  const st = getState(f);
+  const ks = kpiStatus(f);
+  const ws = wlScore(f);
+  const etom = f.etom_process || '';
+  const etomColor = ETOM_COLORS[etom] || '#AEAEB2';
+  const stateBadge = st === 'active'   ? '<span class="badge badge-active">Active</span>' :
+                     st === 'complete' ? '<span class="badge badge-done">Done</span>'   : '';
+  const gateBadge  = hasGate(f)    ? '<span class="badge badge-gate">Gate</span>' : '';
+  const depBadge   = hasOpenDep(f) ? '<span class="dep-chip-sm">&#9888; Dep</span>' : '';
+  const kpiBadge   = `<span class="kpi-chip-sm ${kpiStatusCls(ks)}">${ks === 'missing' ? '&#9711; KPI' : ks === 'achieved' ? '&#10003; KPI' : '&#9650; KPI'}</span>`;
+  const wlBadge    = `<span class="wl-chip-sm ${wlCls(ws)}">${ws === 'pass' ? '&#10003;' : ws === 'fail' ? '&#10007;' : '~'} WL</span>`;
+  const etomBadge  = etom ? `<span class="etom-chip-sm" style="background:${etomColor}20;color:${etomColor};border-color:${etomColor}40">${etom}</span>` : '';
+  return `
+    <div class="sb-item" id="sb-${f.id}" onclick="showDetail('${f.id}')">
+      <div class="si-top"><span class="si-id">${f.id}</span><div class="si-badges">${stateBadge}${gateBadge}</div></div>
+      <div class="si-name">${f.name}</div>
+      <div class="si-pipe">${miniPipe(f)}<span class="si-pct">${p}%</span></div>
+      <div class="si-bar"><div class="si-bar-fill" style="width:${p}%"></div></div>
+      <div class="si-footer">
+        <span class="pts-chip">${tp} pts</span>
+        <span class="si-done-pts">${dp}/${tp} done</span>
+        ${etomBadge}${kpiBadge}${wlBadge}${depBadge}
+      </div>
+    </div>`;
+}
+
+// ── sidebar items (Epic-grouped) ──────────────────────────────────────────────
 function sidebarItems() {
-  return allFeatures.map(f => {
-    const p  = pct(f); const tp = totalPts(f); const dp = donePts(f);
-    const st = getState(f);
-    const ks = kpiStatus(f);
-    const ws = wlScore(f);
-    const etom = f.etom_process || '';
-    const etomColor = ETOM_COLORS[etom] || '#AEAEB2';
-    const stateBadge = st === 'active'   ? '<span class="badge badge-active">Active</span>' :
-                       st === 'complete' ? '<span class="badge badge-done">Done</span>'   : '';
-    const gateBadge  = hasGate(f)    ? '<span class="badge badge-gate">Gate</span>' : '';
-    const depBadge   = hasOpenDep(f) ? '<span class="dep-chip-sm">&#9888; Dep</span>' : '';
-    const kpiBadge   = `<span class="kpi-chip-sm ${kpiStatusCls(ks)}">${ks === 'missing' ? '&#9711; KPI' : ks === 'achieved' ? '&#10003; KPI' : '&#9650; KPI'}</span>`;
-    const wlBadge    = `<span class="wl-chip-sm ${wlCls(ws)}">${ws === 'pass' ? '&#10003;' : ws === 'fail' ? '&#10007;' : '~'} WL</span>`;
-    const etomBadge  = etom ? `<span class="etom-chip-sm" style="background:${etomColor}20;color:${etomColor};border-color:${etomColor}40">${etom}</span>` : '';
-    return `
-      <div class="sb-item" id="sb-${f.id}" onclick="showDetail('${f.id}')">
-        <div class="si-top"><span class="si-id">${f.id}</span><div class="si-badges">${stateBadge}${gateBadge}</div></div>
-        <div class="si-name">${f.name}</div>
-        <div class="si-pipe">${miniPipe(f)}<span class="si-pct">${p}%</span></div>
-        <div class="si-bar"><div class="si-bar-fill" style="width:${p}%"></div></div>
-        <div class="si-footer">
-          <span class="pts-chip">${tp} pts</span>
-          <span class="si-done-pts">${dp}/${tp} done</span>
-          ${etomBadge}${kpiBadge}${wlBadge}${depBadge}
+  // Build a map of featureId → epic
+  const featureEpicMap = {};
+  allEpics.forEach(e => (e.features||[]).forEach(fid => featureEpicMap[fid] = e.id));
+
+  // Features not assigned to any epic
+  const ungrouped = allFeatures.filter(f => !featureEpicMap[f.id]);
+
+  let html = '';
+
+  // Render each epic as a collapsible group
+  allEpics.forEach(e => {
+    const epicFeatures = allFeatures.filter(f => (e.features||[]).includes(f.id));
+    if (!epicFeatures.length) return;
+    const epicPts    = epicFeatures.reduce((a,f) => a + totalPts(f), 0);
+    const epicDone   = epicFeatures.reduce((a,f) => a + donePts(f), 0);
+    const epicPct    = Math.round(epicFeatures.filter(f => getState(f) === 'complete').length / epicFeatures.length * 100);
+    const etomColor  = ETOM_COLORS[e.etom_process] || '#AEAEB2';
+    const statusCls  = e.status === 'complete' ? 'epic-complete' : e.status === 'in-progress' ? 'epic-active' : 'epic-pending';
+    html += `
+      <div class="epic-group" id="epic-group-${e.id}">
+        <div class="epic-header" onclick="toggleEpic('${e.id}')">
+          <div class="epic-header-top">
+            <span class="epic-id">${e.id}</span>
+            <span class="epic-chevron" id="epic-chev-${e.id}">&#9660;</span>
+          </div>
+          <div class="epic-name">${e.name}</div>
+          <div class="epic-meta">
+            <span class="epic-status ${statusCls}">${epicFeatures.filter(f=>getState(f)==='complete').length}/${epicFeatures.length} features</span>
+            <span class="pts-chip">${epicPts} pts</span>
+            <span style="font-size:10px;color:var(--text-3)">${epicDone}p done</span>
+            <span class="etom-chip-sm" style="background:${etomColor}20;color:${etomColor};border-color:${etomColor}40">${e.etom_process}</span>
+          </div>
+          <div class="epic-prog-bar"><div class="epic-prog-fill" style="width:${epicPct}%"></div></div>
+        </div>
+        <div class="epic-features" id="epic-feat-${e.id}">
+          ${epicFeatures.map(f => sbFeatureCard(f)).join('')}
         </div>
       </div>`;
-  }).join('');
+  });
+
+  // Render ungrouped features (no epic) at the bottom
+  if (ungrouped.length) {
+    html += `<div class="epic-group-label">Standalone Features</div>`;
+    html += ungrouped.map(f => sbFeatureCard(f)).join('');
+  }
+
+  return html;
 }
 
 // ── prototype section ─────────────────────────────────────────────────────────
@@ -429,6 +479,10 @@ function depsSection(f) {
 
 // ── detail cards ──────────────────────────────────────────────────────────────
 function detailCards() {
+  // Build feature → epic lookup
+  const featureEpicMap = {};
+  allEpics.forEach(e => (e.features||[]).forEach(fid => featureEpicMap[fid] = e));
+
   return allFeatures.map(f => {
     const p  = pct(f); const tp = totalPts(f); const dp = donePts(f);
     const st = getState(f);
@@ -443,13 +497,23 @@ function detailCards() {
     const gateBadge = hasGate(f)  ? '<span class="badge badge-gate">Gate Open</span>' : '';
     const kpiBadge  = `<span class="kpi-badge ${kpiStatusCls(ks)}">${kpiStatusLabel(ks)}</span>`;
     const wlBadge   = `<span class="badge ${wlCls(ws)}">${wlLabel(ws)}</span>`;
-    const etomL2List = (ETOM_L2[etom]||[]).join(' | ');
     const etomBadge = etom ? `<span class="etom-badge etom-expandable" style="background:${etomColor}15;color:${etomColor};border-color:${etomColor}35" onclick="toggleEtom('etom-${f.id}')" title="Click to expand L2 processes">${etom} &mdash; ${etomFull} &#9660;</span><div class="etom-l2-panel" id="etom-${f.id}"><div class="etom-l2-title">L2 Processes spanned</div>${(ETOM_L2[etom]||[]).map(p=>`<div class="etom-l2-row">&#8627; ${p}</div>`).join('')}</div>` : '';
     const adrCount  = (f.adrs||[]).length;
     const adrBadge  = `<span class="adr-badge${adrCount ? '' : ' adr-none'}">${adrCount} ADR${adrCount !== 1 ? 's' : ''}</span>`;
+
+    // Epic banner — show which epic this feature belongs to
+    const parentEpic = featureEpicMap[f.id];
+    const epicBanner = parentEpic ? `
+      <div class="d-epic-banner">
+        <span class="d-epic-banner-id">${parentEpic.id}</span>
+        <span class="d-epic-banner-name">${parentEpic.name}</span>
+        <span class="d-epic-banner-link" onclick="showEpicDetail('${parentEpic.id}')">View Epic &#8599;</span>
+      </div>` : '';
+
     return `
       <div class="detail-card" id="dc-${f.id}" style="display:none">
         <div class="d-head">
+          ${epicBanner}
           <div class="d-fid">${f.id}</div>
           <h2 class="d-fname">${f.name}</h2>
           <div class="d-chips">
@@ -467,6 +531,60 @@ function detailCards() {
         ${adrSection(f)}
         ${storiesSection(f)}
         ${depsSection(f)}
+      </div>`;
+  }).join('');
+}
+
+// ── epic overview cards ───────────────────────────────────────────────────────
+function epicDetailCards() {
+  return allEpics.map(e => {
+    const epicFeatures = allFeatures.filter(f => (e.features||[]).includes(f.id));
+    const epicPts    = epicFeatures.reduce((a,f) => a + totalPts(f), 0);
+    const epicDone   = epicFeatures.reduce((a,f) => a + donePts(f), 0);
+    const epicPct    = epicPts ? Math.round(epicDone / epicPts * 100) : 0;
+    const etomColor  = ETOM_COLORS[e.etom_process] || '#AEAEB2';
+    const totalAdrs  = epicFeatures.reduce((a,f) => a + (f.adrs||[]).length, 0);
+    const allStagesComplete = epicFeatures.length > 0 && epicFeatures.every(f => getState(f) === 'complete');
+    const statusBadge = allStagesComplete
+      ? '<span class="badge badge-done">Complete</span>'
+      : '<span class="badge badge-active">In Progress</span>';
+
+    const featureRows = epicFeatures.map(f => {
+      const fp  = pct(f); const ftp = totalPts(f); const fst = getState(f);
+      const fStCls = fst === 'complete' ? 'badge-done' : fst === 'active' ? 'badge-active' : 'badge-pending';
+      const fStLbl = fst === 'complete' ? 'Done' : fst === 'active' ? 'Active' : 'Pending';
+      return `
+        <div class="epic-feat-row" onclick="showDetail('${f.id}')">
+          <span class="ef-id">${f.id}</span>
+          <span class="ef-name">${f.name}</span>
+          <div class="ef-mini-bar"><div class="ef-mini-fill" style="width:${fp}%"></div></div>
+          <span class="ef-pct">${fp}%</span>
+          <span class="badge ${fStCls}" style="font-size:9px">${fStLbl}</span>
+          <span class="pts-chip" style="font-size:9px">${ftp}p</span>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="detail-card" id="dc-epic-${e.id}" style="display:none">
+        <div class="d-head">
+          <div class="d-fid" style="color:var(--purple)">${e.id} &mdash; EPIC</div>
+          <h2 class="d-fname">${e.name}</h2>
+          <div class="d-chips">
+            <span class="etom-badge" style="background:${etomColor}15;color:${etomColor};border-color:${etomColor}35">${e.etom_process} &mdash; ${ETOM_LABELS[e.etom_process]||''}</span>
+            ${statusBadge}
+            <span class="pts-chip">${epicPts} pts total</span>
+            <span class="d-done-pts">${epicDone} pts done</span>
+            <span class="adr-badge${totalAdrs ? '' : ' adr-none'}">${totalAdrs} ADR${totalAdrs!==1?'s':''}</span>
+          </div>
+          <div class="d-bar"><div class="d-bar-fill" style="width:${epicPct}%"></div></div>
+        </div>
+        <div class="d-section">
+          <div class="d-section-head">
+            <span class="d-section-title">Features in this Epic</span>
+            <span class="d-section-meta">${epicFeatures.length} features &middot; ${epicPts} pts &middot; ${epicDone} done</span>
+          </div>
+          <div class="epic-feat-list">${featureRows}</div>
+        </div>
       </div>`;
   }).join('');
 }
@@ -537,6 +655,31 @@ nav {
 .nav-updated  { font-size: 11px; color: var(--text-3); }
 .nav-refresh  { font-size: 11px; font-weight: 500; background: var(--blue-light); color: var(--blue); padding: 3px 10px; border-radius: 20px; }
 .nsm-chip     { font-size: 11px; color: var(--teal); background: var(--teal-bg); border: 1px solid rgba(11,110,110,0.2); padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+/* Epic grouping */
+.epic-group         { border-bottom: 1px solid var(--bg); }
+.epic-header        { padding: 10px 13px 8px; cursor: pointer; background: var(--bg); transition: background 0.1s; border-left: 3px solid transparent; }
+.epic-header:hover  { background: #EDEDF0; }
+.epic-header-top    { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+.epic-id            { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--purple); }
+.epic-chevron       { font-size: 9px; color: var(--text-3); transition: transform 0.2s; }
+.epic-chevron.collapsed { transform: rotate(-90deg); }
+.epic-name          { font-size: 12px; font-weight: 700; color: var(--text-1); margin-bottom: 5px; line-height: 1.3; }
+.epic-meta          { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-bottom: 5px; }
+.epic-status        { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 20px; }
+.epic-active        { background: var(--orange-bg); color: var(--orange); }
+.epic-complete      { background: var(--green-bg);  color: var(--green); }
+.epic-pending       { background: var(--bg);        color: var(--text-3); border: 1px solid var(--border); }
+.epic-prog-bar      { height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
+.epic-prog-fill     { height: 100%; background: linear-gradient(90deg, var(--purple), var(--blue)); border-radius: 1px; transition: width 0.3s; }
+.epic-features      { transition: none; }
+.epic-features.collapsed { display: none; }
+.epic-features .sb-item { border-left: 3px solid var(--purple-bg); padding-left: 16px; }
+.epic-group-label   { padding: 8px 13px 4px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-3); background: var(--bg); }
+/* Epic banner in detail panel */
+.d-epic-banner      { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--purple-bg); border: 1px solid rgba(107,63,160,0.2); border-radius: var(--radius-sm); margin-bottom: 14px; }
+.d-epic-banner-id   { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--purple); }
+.d-epic-banner-name { font-size: 12px; font-weight: 600; color: var(--purple); flex: 1; }
+.d-epic-banner-link { font-size: 10px; color: var(--purple); cursor: pointer; text-decoration: underline; }
 .app { flex: 1; display: flex; min-height: 0; }
 .sidebar {
   width: 300px; flex-shrink: 0;
@@ -769,6 +912,15 @@ nav {
 .modal-jump { width: 100%; padding: 11px; border: none; border-radius: var(--radius-sm); background: var(--blue); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; display: none; }
 .modal-jump:hover { background: var(--blue-dark); }
 /* Legend */
+/* Epic feature rows in detail panel */
+.epic-feat-list  { display: flex; flex-direction: column; gap: 6px; }
+.epic-feat-row   { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: box-shadow 0.15s; }
+.epic-feat-row:hover { box-shadow: var(--shadow-hover); }
+.ef-id    { font-size: 9px; font-weight: 800; text-transform: uppercase; color: var(--purple); width: 56px; flex-shrink: 0; }
+.ef-name  { font-size: 12px; font-weight: 500; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ef-mini-bar { width: 60px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; flex-shrink: 0; }
+.ef-mini-fill { height: 100%; background: linear-gradient(90deg, var(--green-node), var(--blue)); border-radius: 2px; }
+.ef-pct   { font-size: 10px; color: var(--text-3); width: 28px; text-align: right; flex-shrink: 0; }
 .legend { flex-shrink: 0; height: 36px; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--surface); border-top: 1px solid var(--border); font-size: 11px; color: var(--text-2); overflow-x: auto; }
 .legend-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-3); white-space: nowrap; }
 .legend-item  { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
@@ -825,6 +977,7 @@ nav {
       <div class="de-arrow">&#8592;</div>
       <p>Select a feature to view its pipeline, White Label gate, KPI, ADRs, stories &amp; dependencies</p>
     </div>
+    ${epicDetailCards()}
     ${detailCards()}
   </div>
 </div>
@@ -899,7 +1052,9 @@ function showDetail(id) {
 (function restoreSelection() {
   try {
     const saved = localStorage.getItem('teamos_selected_feature');
-    if (saved && document.getElementById('dc-' + saved)) showDetail(saved);
+    if (!saved) return;
+    if (saved.startsWith('epic-')) { showEpicDetail(saved.replace('epic-','')); }
+    else if (document.getElementById('dc-' + saved)) { showDetail(saved); }
   } catch(e) {}
 })();
 function sidebarJump(id) {
@@ -937,6 +1092,33 @@ function toggleEtom(id) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle('open');
 }
+function toggleEpic(epicId) {
+  const feat = document.getElementById('epic-feat-' + epicId);
+  const chev = document.getElementById('epic-chev-' + epicId);
+  if (feat) feat.classList.toggle('collapsed');
+  if (chev) chev.classList.toggle('collapsed');
+  try { localStorage.setItem('epic-collapsed-' + epicId, feat.classList.contains('collapsed')); } catch(e) {}
+}
+function showEpicDetail(epicId) {
+  document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.detail-empty').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.detail-card').forEach(el => el.style.display = 'none');
+  const card = document.getElementById('dc-epic-' + epicId);
+  if (card) card.style.display = 'block';
+  try { localStorage.setItem('teamos_selected_feature', 'epic-' + epicId); } catch(e) {}
+}
+// Restore epic collapse states from localStorage
+(function restoreEpicStates() {
+  try {
+    ${allEpics.map(e => `
+    if (localStorage.getItem('epic-collapsed-${e.id}') === 'true') {
+      const f = document.getElementById('epic-feat-${e.id}');
+      const c = document.getElementById('epic-chev-${e.id}');
+      if (f) f.classList.add('collapsed');
+      if (c) c.classList.add('collapsed');
+    }`).join('')}
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>`;
