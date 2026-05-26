@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FTR-004 Prototype — 5G Smart Office Bundle Configuration</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #1a1f2e 0%, #12161f 100%); border-bottom: 1px solid #2d3748; padding: 24px 40px; display: flex; align-items: center; gap: 16px; }
+  .header-badge { background: #6366f1; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+  .header-title { font-size: 20px; font-weight: 700; color: #f7fafc; }
+  .header-sub { font-size: 13px; color: #718096; margin-left: auto; }
+  .etom-chip { background: #1a2744; border: 1px solid #3b5998; color: #90cdf4; font-size: 11px; padding: 3px 8px; border-radius: 4px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+  .section { margin-bottom: 40px; }
+  .section-title { font-size: 13px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ""; flex: 1; height: 1px; background: #2d3748; }
+  .scenario-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #2d3748; background: #1a1f2e; color: #718096; transition: all 0.15s; }
+  .tab.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+  .tab:hover:not(.active) { border-color: #4a5568; color: #a0aec0; }
+  .scenario-panel { display: none; }
+  .scenario-panel.active { display: block; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px; padding: 20px; }
+  .card-title { font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+  pre { background: #0d1117; border: 1px solid #1e2736; border-radius: 8px; padding: 16px; font-size: 12px; line-height: 1.7; overflow-x: auto; color: #e2e8f0; white-space: pre-wrap; }
+  .key { color: #79c0ff; }
+  .str { color: #a5d6ff; }
+  .num { color: #f0883e; }
+  .bool-true { color: #56d364; }
+  .bool-false { color: #f85149; }
+  .outcome { border-radius: 8px; padding: 16px 20px; margin-top: 16px; font-size: 13px; line-height: 1.6; }
+  .outcome.pass { background: #0d2818; border: 1px solid #238636; }
+  .outcome.fail { background: #2d1212; border: 1px solid #da3633; }
+  .outcome.warn { background: #2a1f00; border: 1px solid #d29922; }
+  .outcome-label { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .outcome.pass .outcome-label { color: #56d364; }
+  .outcome.fail .outcome-label { color: #f85149; }
+  .outcome.warn .outcome-label { color: #f0883e; }
+  .bundle-visual { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px; padding: 24px; }
+  .bundle-root { border: 2px solid #6366f1; border-radius: 8px; padding: 14px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+  .bundle-root-label { font-size: 15px; font-weight: 700; color: #c3b1e1; }
+  .bundle-children { padding-left: 32px; display: flex; flex-direction: column; gap: 8px; }
+  .bundle-child { border: 1px solid #2d3748; border-radius: 6px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+  .bundle-child.required { border-left: 3px solid #6366f1; }
+  .bundle-child.optional { border-left: 3px solid #d29922; }
+  .bundle-child.addon { border-left: 3px solid #56d364; }
+  .product-code { font-size: 11px; font-family: monospace; color: #718096; background: #0d1117; padding: 2px 6px; border-radius: 3px; }
+  .product-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+  .product-price { font-size: 12px; color: #a0aec0; margin-left: auto; }
+  .tag { font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+  .tag-req { background: #1a1f44; color: #818cf8; }
+  .tag-opt { background: #2a1f00; color: #f0883e; }
+  .tag-add { background: #0d2818; color: #56d364; }
+  .tag-excl { background: #2d1212; color: #f85149; }
+  .step-list { display: flex; flex-direction: column; gap: 12px; }
+  .step { display: flex; gap: 16px; align-items: flex-start; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: #6366f1; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-body { flex: 1; }
+  .step-title { font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
+  .step-desc { font-size: 12px; color: #718096; line-height: 1.5; }
+  .kpi-row { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+  .kpi-card { background: #0d1117; border: 1px solid #2d3748; border-radius: 8px; padding: 14px 18px; flex: 1; min-width: 160px; }
+  .kpi-label { font-size: 11px; color: #718096; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
+  .kpi-val { font-size: 22px; font-weight: 800; color: #6366f1; }
+  .kpi-sub { font-size: 11px; color: #4a5568; margin-top: 2px; }
+  .approval-gate { background: #1a2744; border: 1px solid #3b5998; border-radius: 10px; padding: 20px; margin-top: 24px; }
+  .approval-gate-title { font-size: 13px; font-weight: 700; color: #90cdf4; margin-bottom: 12px; }
+  .gate-row { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #1e2d4a; }
+  .gate-row:last-child { border: none; }
+  .gate-yes { color: #56d364; font-weight: 700; }
+  .gate-no { color: #f85149; font-weight: 700; }
+  .cml-violation { background: #2d1212; border: 1px solid #da3633; border-radius: 8px; padding: 14px 18px; margin-top: 12px; }
+  .cml-violation-title { font-size: 12px; font-weight: 700; color: #f85149; margin-bottom: 6px; }
+  .cml-violation-body { font-size: 12px; color: #fc8181; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-badge">PROTOTYPE</span>
+  <span class="header-title">FTR-004 — 5G Smart Office Bundle Configuration</span>
+  <span class="etom-chip">eTOM C2M</span>
+  <span class="header-sub">Type: salesforce-sandbox &nbsp;|&nbsp; ConfigureTelcoBundle Invocable Action &nbsp;|&nbsp; 2026-05-26</span>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Bundle Hierarchy</div>
+    <div class="bundle-visual">
+      <div class="bundle-root">
+        <span class="product-code">5G_SMART_OFFICE_BUNDLE</span>
+        <span class="bundle-root-label">5G Smart Office Bundle</span>
+        <span class="tag tag-req">ROOT</span>
+      </div>
+      <div class="bundle-children">
+        <div class="bundle-child required">
+          <span class="product-code">EDGE_5G_ROUTER</span>
+          <span class="product-name">Edge 5G Enterprise Router</span>
+          <span class="tag tag-req">REQUIRED</span>
+          <span class="product-price">$1,200 / unit</span>
+        </div>
+        <div class="bundle-child required">
+          <span class="product-code">UNLIMITED_5G_DATA</span>
+          <span class="product-name">Unlimited 5G Core Data Plan</span>
+          <span class="tag tag-req">REQUIRED</span>
+          <span class="product-price">$350 / month</span>
+        </div>
+        <div class="bundle-child optional">
+          <span class="product-code">FIBER_INSTALL</span>
+          <span class="product-name">Fiber Drop &amp; Site Installation</span>
+          <span class="tag tag-opt">OPTIONAL</span>
+          <span class="product-price">$500 + ($250 × floor(m/100))</span>
+        </div>
+        <div class="bundle-child addon">
+          <span class="product-code">TELCO_PLATINUM_SLA</span>
+          <span class="product-name">Telco Platinum SLA</span>
+          <span class="tag tag-add">ADD-ON</span>
+          <span class="product-price">15% of Router + Data Net Price</span>
+        </div>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <span style="font-size:11px;color:#718096;">CML rules enforced at save:</span>
+        <span class="tag tag-req">Router ↔ Data Plan (mutual)</span>
+        <span class="tag tag-add">SLA requires Router + Data Plan</span>
+        <span class="tag tag-excl">Max 1 Router per site</span>
+        <span class="tag tag-excl">Max 1 SLA tier per site</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Test Scenarios</div>
+    <div class="scenario-tabs">
+      <div class="tab active" onclick="switchTab(0)">Scenario 1 — Happy Path</div>
+      <div class="tab" onclick="switchTab(1)">Scenario 2 — SLA without Router</div>
+      <div class="tab" onclick="switchTab(2)">Scenario 3 — Volume Discount</div>
+      <div class="tab" onclick="switchTab(3)">Scenario 4 — Fiber Distance Pricing</div>
+    </div>
+
+    <!-- Scenario 1 -->
+    <div class="scenario-panel active">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Request Payload — ConfigureTelcoBundle</div>
+          <pre><span class="key">"quoteId"</span>: <span class="str">"0Q05g000004xABCEAA"</span>,
+<span class="key">"pricebookId"</span>: <span class="str">"01s5g000000xPBKAA2"</span>,
+<span class="key">"totalSiteCount"</span>: <span class="num">3</span>,
+<span class="key">"bundleLines"</span>: [
+  {
+    <span class="key">"productCode"</span>: <span class="str">"EDGE_5G_ROUTER"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">1200.00</span>
+  },
+  {
+    <span class="key">"productCode"</span>: <span class="str">"UNLIMITED_5G_DATA"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">350.00</span>
+  },
+  {
+    <span class="key">"productCode"</span>: <span class="str">"TELCO_PLATINUM_SLA"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">0</span>
+  }
+],
+<span class="key">"bundleAttributes"</span>: [
+  { <span class="key">"name"</span>: <span class="str">"SiteAddress"</span>, <span class="key">"value"</span>: <span class="str">"10 Tech Park, Sydney"</span> }
+]</pre>
+        </div>
+        <div class="card">
+          <div class="card-title">Response — WorkOrderResult</div>
+          <pre><span class="key">"success"</span>: <span class="bool-true">true</span>,
+<span class="key">"quoteLineIds"</span>: [
+  <span class="str">"0a05g000000ROUTERAA"</span>,
+  <span class="str">"0a05g000000DATAPLAN"</span>,
+  <span class="str">"0a05g000000PLATSLAA"</span>
+],
+<span class="key">"validationMessages"</span>: [],
+<span class="key">"slaUnitPrice"</span>: <span class="num">232.50</span>,
+<span class="key">"slaCalculation"</span>: <span class="str">"15% × ($1,200 + $350) = $232.50"</span>,
+<span class="key">"discountNote"</span>: <span class="str">null</span>,
+<span class="key">"errorMessage"</span>: <span class="str">null</span></pre>
+          <div class="outcome pass">
+            <div class="outcome-label">Pass — CML Valid</div>
+            Router + Data Plan present. SLA PoT auto-calculated at 15% of net price = <strong>$232.50/month</strong>. No approval required — discount &lt; 20%.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario 2 -->
+    <div class="scenario-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Request Payload — SLA without Router</div>
+          <pre><span class="key">"quoteId"</span>: <span class="str">"0Q05g000004xDEFEAA"</span>,
+<span class="key">"pricebookId"</span>: <span class="str">"01s5g000000xPBKAA2"</span>,
+<span class="key">"totalSiteCount"</span>: <span class="num">1</span>,
+<span class="key">"bundleLines"</span>: [
+  {
+    <span class="key">"productCode"</span>: <span class="str">"UNLIMITED_5G_DATA"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">350.00</span>
+  },
+  {
+    <span class="key">"productCode"</span>: <span class="str">"TELCO_PLATINUM_SLA"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">0</span>
+  }
+],
+<span class="key">"bundleAttributes"</span>: []</pre>
+        </div>
+        <div class="card">
+          <div class="card-title">Response — CML Violation</div>
+          <pre><span class="key">"success"</span>: <span class="bool-false">false</span>,
+<span class="key">"quoteLineIds"</span>: [],
+<span class="key">"validationMessages"</span>: [
+  <span class="str">"CML_REQUIRED_COMPONENT_MISSING"</span>
+],
+<span class="key">"errorMessage"</span>: <span class="str">"Platinum SLA requires an active
+Edge 5G Router on the same quote.
+Please add EDGE_5G_ROUTER before
+adding a SLA upgrade."</span></pre>
+          <div class="cml-violation">
+            <div class="cml-violation-title">CML Constraint Fired — TelcoPlatinumSLACML</div>
+            <div class="cml-violation-body">Quote save blocked. The Platinum SLA Constraint Model requires <code>EDGE_5G_ROUTER</code> to be present on the same quote. Agent surfaces <code>CML_REQUIRED_COMPONENT_MISSING</code> error to the Sales Rep with a remediation prompt.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario 3 -->
+    <div class="scenario-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Request Payload — 30-Site Order (Volume Discount)</div>
+          <pre><span class="key">"quoteId"</span>: <span class="str">"0Q05g000004xGHIEAA"</span>,
+<span class="key">"pricebookId"</span>: <span class="str">"01s5g000000xPBKAA2"</span>,
+<span class="key">"totalSiteCount"</span>: <span class="num">30</span>,
+<span class="key">"bundleLines"</span>: [
+  {
+    <span class="key">"productCode"</span>: <span class="str">"EDGE_5G_ROUTER"</span>,
+    <span class="key">"quantity"</span>: <span class="num">30</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">1200.00</span>
+  },
+  {
+    <span class="key">"productCode"</span>: <span class="str">"UNLIMITED_5G_DATA"</span>,
+    <span class="key">"quantity"</span>: <span class="num">30</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">350.00</span>
+  }
+],
+<span class="key">"bundleAttributes"</span>: []</pre>
+        </div>
+        <div class="card">
+          <div class="card-title">Response — Volume Discount Applied</div>
+          <pre><span class="key">"success"</span>: <span class="bool-true">true</span>,
+<span class="key">"quoteLineIds"</span>: [
+  <span class="str">"0a05g000000ROUTER30"</span>,
+  <span class="str">"0a05g000000DATA30AA"</span>
+],
+<span class="key">"discountNote"</span>: <span class="str">"Volume discount of 15% applied
+to Data Plan — 30 sites qualifies
+for the multi-site rate (threshold: 25+).
+Requires Finance Director approval if
+total discount exceeds 20%."</span>,
+<span class="key">"effectiveDataPlanPrice"</span>: <span class="num">297.50</span>,
+<span class="key">"errorMessage"</span>: <span class="str">null</span></pre>
+          <div class="outcome warn">
+            <div class="outcome-label">Pass — Approval May Be Required</div>
+            15% volume discount applied. Effective Data Plan price: <strong>$297.50/month × 30 sites</strong>. If rep applies an additional manual discount (total &gt;20%), Flow Orchestrator routes to Finance Director approval (FTR-005 US-FTR005-002a).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario 4 -->
+    <div class="scenario-panel">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Request Payload — Fiber Install (350m run)</div>
+          <pre><span class="key">"quoteId"</span>: <span class="str">"0Q05g000004xJKLEAA"</span>,
+<span class="key">"pricebookId"</span>: <span class="str">"01s5g000000xPBKAA2"</span>,
+<span class="key">"totalSiteCount"</span>: <span class="num">1</span>,
+<span class="key">"bundleLines"</span>: [
+  {
+    <span class="key">"productCode"</span>: <span class="str">"EDGE_5G_ROUTER"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">1200.00</span>
+  },
+  {
+    <span class="key">"productCode"</span>: <span class="str">"UNLIMITED_5G_DATA"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">350.00</span>
+  },
+  {
+    <span class="key">"productCode"</span>: <span class="str">"FIBER_INSTALL"</span>,
+    <span class="key">"quantity"</span>: <span class="num">1</span>,
+    <span class="key">"unitPrice"</span>: <span class="num">0</span>,
+    <span class="key">"fiberMeters"</span>: <span class="num">350</span>
+  }
+],
+<span class="key">"bundleAttributes"</span>: [
+  { <span class="key">"name"</span>: <span class="str">"SiteAddress"</span>,
+    <span class="key">"value"</span>: <span class="str">"42 Harbour St, Brisbane"</span> }
+]</pre>
+        </div>
+        <div class="card">
+          <div class="card-title">Response — Fiber Distance Pricing</div>
+          <pre><span class="key">"success"</span>: <span class="bool-true">true</span>,
+<span class="key">"quoteLineIds"</span>: [
+  <span class="str">"0a05g000000ROUTER01"</span>,
+  <span class="str">"0a05g000000DATA01AA"</span>,
+  <span class="str">"0a05g000000FIBER01A"</span>
+],
+<span class="key">"fiberInstallPrice"</span>: <span class="num">1375.00</span>,
+<span class="key">"fiberCalculation"</span>: <span class="str">"$500 base + ($250 × floor(350/100))
+= $500 + ($250 × 3) = $1,375 one-time"</span>,
+<span class="key">"potExcluded"</span>: <span class="bool-true">true</span>,
+<span class="key">"discountNote"</span>: <span class="str">null</span>,
+<span class="key">"errorMessage"</span>: <span class="str">null</span></pre>
+          <div class="outcome pass">
+            <div class="outcome-label">Pass — Fiber Price Auto-Calculated</div>
+            350m run: $500 base + (3 × $250) = <strong>$1,375 one-time fee</strong>. <code>potExcluded: true</code> confirms FIBER_INSTALL is excluded from SLA 15% PoT calculation per ADR-004.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Agent Walkthrough — Agentforce Conversation Steps</div>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Sales Rep asks Agentforce: "Configure a 5G Smart Office for 3 sites in Sydney with the Platinum SLA"</div>
+          <div class="step-desc">Agent invokes <code>ConfigureTelcoBundle</code> (AR-1: atomic). The 20-word+ description tells the agent exactly when and why to call this action.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">SmartOfficeBundleContext tree hydrates 3 context nodes</div>
+          <div class="step-desc">BundleConfiguration (root) → ProductLineConfiguration (per line) → PricingContext (per line). Headless channel prepares context from request body — no UI interaction needed (AR-3).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">CML validates bundle — all 4 constraints checked server-side</div>
+          <div class="step-desc">Router ↔ Data Plan mutual dependency confirmed. SLA requires Router + Data Plan confirmed. Max-1-per-site enforced. Pricing Procedure runs: Base → Fiber Distance → SLA PoT.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Agent returns structured result to Sales Rep</div>
+          <div class="step-desc">Quote lines created, SLA price auto-set to $232.50/month. Agent confirms: "Your 3-site 5G Smart Office quote is ready. Platinum SLA is included at $232.50/month per site."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">KPI Measurement</div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Quote-to-Activation Baseline</div>
+        <div class="kpi-val">14 days</div>
+        <div class="kpi-sub">Current state — manual bundle configuration</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Target (North Star)</div>
+        <div class="kpi-val">3 days</div>
+        <div class="kpi-sub">Within 60 days of deploy</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Bundle Config Time</div>
+        <div class="kpi-val">&lt;2s</div>
+        <div class="kpi-sub">Agentforce API response vs 15min manual</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">CML Block Rate</div>
+        <div class="kpi-val">100%</div>
+        <div class="kpi-sub">Invalid bundles blocked at save (target)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="approval-gate">
+    <div class="approval-gate-title">Approval Gate — FTR-004 Prototype Complete</div>
+    <div class="gate-row"><span>WL-1: KPIs mapped to eTOM C2M process?</span><span class="gate-yes">YES</span></div>
+    <div class="gate-row"><span>WL-2: Product model SID-compliant? (BundledProductOffering, ProductCharacteristic)</span><span class="gate-yes">YES</span></div>
+    <div class="gate-row"><span>WL-3: CRM decoupled from legacy billing?</span><span class="gate-yes">YES</span></div>
+    <div class="gate-row"><span>WL-4: Workflows agent-ready? (AR-1 to AR-4 satisfied)</span><span class="gate-yes">YES</span></div>
+    <div style="margin-top:14px; font-size:13px; color:#718096; line-height:1.7;">
+      Review the 4 test scenarios above, then respond with:<br>
+      <strong style="color:#e2e8f0;">approved</strong> — accept and advance to Build &nbsp;|&nbsp;
+      <strong style="color:#e2e8f0;">revise [notes]</strong> — send back for changes<br>
+      Build is BLOCKED until <code>customer_approved = true</code> is set in FEATURE_TRACKER.json.
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(idx) {
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  document.querySelectorAll('.scenario-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+}
+</script>
+</body>
+</html>

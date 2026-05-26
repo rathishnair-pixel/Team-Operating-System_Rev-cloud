@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FTR-005 Prototype — 5G Smart Office Pricing Rules &amp; Approvals</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #1a1f2e 0%, #12161f 100%); border-bottom: 1px solid #2d3748; padding: 24px 40px; display: flex; align-items: center; gap: 16px; }
+  .header-badge { background: #f59e0b; color: #1a1200; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+  .header-title { font-size: 20px; font-weight: 700; color: #f7fafc; }
+  .header-sub { font-size: 13px; color: #718096; margin-left: auto; }
+  .etom-chip { background: #1a2744; border: 1px solid #3b5998; color: #90cdf4; font-size: 11px; padding: 3px 8px; border-radius: 4px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+  .section { margin-bottom: 40px; }
+  .section-title { font-size: 13px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ""; flex: 1; height: 1px; background: #2d3748; }
+  .card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px; padding: 20px; }
+  .card-title { font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+  pre { background: #0d1117; border: 1px solid #1e2736; border-radius: 8px; padding: 16px; font-size: 12px; line-height: 1.7; overflow-x: auto; color: #e2e8f0; white-space: pre-wrap; }
+  .key { color: #79c0ff; }
+  .str { color: #a5d6ff; }
+  .num { color: #f0883e; }
+  .bool-true { color: #56d364; }
+  .bool-false { color: #f85149; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .outcome { border-radius: 8px; padding: 16px 20px; margin-top: 16px; font-size: 13px; line-height: 1.6; }
+  .outcome.pass { background: #0d2818; border: 1px solid #238636; }
+  .outcome.warn { background: #2a1f00; border: 1px solid #d29922; }
+  .outcome.escalate { background: #1a1244; border: 1px solid #6366f1; }
+  .outcome-label { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .outcome.pass .outcome-label { color: #56d364; }
+  .outcome.warn .outcome-label { color: #f0883e; }
+  .outcome.escalate .outcome-label { color: #818cf8; }
+  .flow-diagram { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px; padding: 24px; }
+  .flow-row { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .flow-node { background: #0d1117; border: 1px solid #2d3748; border-radius: 8px; padding: 10px 16px; font-size: 12px; font-weight: 600; text-align: center; min-width: 120px; }
+  .flow-node.trigger { border-color: #f59e0b; color: #f59e0b; }
+  .flow-node.decision { border-color: #6366f1; color: #c3b1e1; border-radius: 0; transform: rotate(0deg); }
+  .flow-node.action { border-color: #3b82f6; color: #93c5fd; }
+  .flow-node.escalate { border-color: #ef4444; color: #fca5a5; }
+  .flow-node.done { border-color: #10b981; color: #6ee7b7; }
+  .flow-arrow { color: #4a5568; font-size: 18px; padding: 0 8px; }
+  .flow-label { font-size: 10px; color: #718096; text-align: center; margin-top: 4px; }
+  .flow-branch { display: flex; flex-direction: column; gap: 8px; }
+  .flow-branch-row { display: flex; align-items: center; gap: 0; }
+  .discount-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .discount-table th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 700; color: #718096; text-transform: uppercase; border-bottom: 1px solid #2d3748; }
+  .discount-table td { padding: 10px 14px; border-bottom: 1px solid #1e2636; }
+  .discount-table tr:last-child td { border: none; }
+  .discount-table tr:hover td { background: #1e2536; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 3px; }
+  .badge-green { background: #0d2818; color: #56d364; border: 1px solid #238636; }
+  .badge-yellow { background: #2a1f00; color: #f0883e; border: 1px solid #d29922; }
+  .badge-red { background: #2d1212; color: #f85149; border: 1px solid #da3633; }
+  .badge-blue { background: #1a1244; color: #818cf8; border: 1px solid #6366f1; }
+  .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+  .timeline::before { content: ""; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: #2d3748; }
+  .tl-item { display: flex; gap: 20px; align-items: flex-start; padding: 0 0 20px 0; position: relative; }
+  .tl-dot { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; z-index: 1; border: 2px solid; }
+  .tl-dot.submit { background: #0d2818; border-color: #238636; color: #56d364; }
+  .tl-dot.route { background: #1a1244; border-color: #6366f1; color: #818cf8; }
+  .tl-dot.timer { background: #2a1f00; border-color: #d29922; color: #f0883e; }
+  .tl-dot.escalate { background: #2d1212; border-color: #da3633; color: #f85149; }
+  .tl-dot.close { background: #0d2818; border-color: #238636; color: #56d364; }
+  .tl-body { flex: 1; padding-top: 8px; }
+  .tl-title { font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
+  .tl-desc { font-size: 12px; color: #718096; line-height: 1.6; }
+  .tl-time { font-size: 11px; color: #4a5568; margin-top: 4px; }
+  .kpi-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .kpi-card { background: #0d1117; border: 1px solid #2d3748; border-radius: 8px; padding: 14px 18px; flex: 1; min-width: 160px; }
+  .kpi-label { font-size: 11px; color: #718096; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
+  .kpi-val { font-size: 22px; font-weight: 800; color: #f59e0b; }
+  .kpi-sub { font-size: 11px; color: #4a5568; margin-top: 2px; }
+  .approval-gate { background: #1a2744; border: 1px solid #3b5998; border-radius: 10px; padding: 20px; margin-top: 24px; }
+  .approval-gate-title { font-size: 13px; font-weight: 700; color: #90cdf4; margin-bottom: 12px; }
+  .gate-row { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #1e2d4a; }
+  .gate-row:last-child { border: none; }
+  .gate-yes { color: #56d364; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-badge">PROTOTYPE</span>
+  <span class="header-title">FTR-005 — 5G Smart Office Pricing Rules &amp; Advanced Approvals</span>
+  <span class="etom-chip">eTOM R2A</span>
+  <span class="header-sub">Type: process-walkthrough &nbsp;|&nbsp; Flow Orchestrator + Apex &nbsp;|&nbsp; 2026-05-26</span>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Pricing Decision Matrix</div>
+    <div class="card">
+      <table class="discount-table">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Site Count</th>
+            <th>Discount Applied</th>
+            <th>Volume Auto-Discount</th>
+            <th>Total Effective Discount</th>
+            <th>Approval Required?</th>
+            <th>Routing</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Standard quote, no override</td>
+            <td>3</td>
+            <td>0%</td>
+            <td>—</td>
+            <td>0%</td>
+            <td><span class="badge badge-green">NO</span></td>
+            <td>Direct to Order</td>
+          </tr>
+          <tr>
+            <td>Rep applies 15% manual discount</td>
+            <td>3</td>
+            <td>15%</td>
+            <td>—</td>
+            <td>15%</td>
+            <td><span class="badge badge-green">NO</span></td>
+            <td>Direct to Order</td>
+          </tr>
+          <tr>
+            <td>Rep applies 21% manual discount</td>
+            <td>3</td>
+            <td>21%</td>
+            <td>—</td>
+            <td>21%</td>
+            <td><span class="badge badge-yellow">YES — Finance</span></td>
+            <td>Finance Director → NetOps VP</td>
+          </tr>
+          <tr>
+            <td>30 sites (volume), no additional discount</td>
+            <td>30</td>
+            <td>0%</td>
+            <td>15% Data Plan</td>
+            <td>15%</td>
+            <td><span class="badge badge-green">NO</span></td>
+            <td>Direct to Order</td>
+          </tr>
+          <tr>
+            <td>30 sites + rep applies 10% on top</td>
+            <td>30</td>
+            <td>10%</td>
+            <td>15% Data Plan</td>
+            <td>~23.5%</td>
+            <td><span class="badge badge-yellow">YES — Finance</span></td>
+            <td>Finance Director → NetOps VP</td>
+          </tr>
+          <tr>
+            <td>Approver does not act in 4 business hours</td>
+            <td>any</td>
+            <td>any</td>
+            <td>any</td>
+            <td>any</td>
+            <td><span class="badge badge-red">ESCALATE</span></td>
+            <td>Auto-escalates to Approver's Manager</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">US-FTR005-002a — Sequential Approval Routing</div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">SubmitForTelcoApproval — Request</div>
+        <pre><span class="key">"quoteId"</span>: <span class="str">"0Q05g000004xABCEAA"</span>,
+<span class="key">"discountPercent"</span>: <span class="num">21.0</span>,
+<span class="key">"submittedByUserId"</span>: <span class="str">"0055g000003xREPAAA"</span>,
+<span class="key">"comments"</span>: <span class="str">"Customer requested 21% off
+for 5-year commitment on 3 sites.
+CFO approval already obtained
+verbally — formalising here."</span></pre>
+      </div>
+      <div class="card">
+        <div class="card-title">SubmitForTelcoApproval — Response</div>
+        <pre><span class="key">"submitted"</span>: <span class="bool-true">true</span>,
+<span class="key">"approvalStep"</span>: <span class="str">"Step 1 of 2: Finance Director"</span>,
+<span class="key">"assignedTo"</span>: <span class="str">"Finance Director — J. Walsh"</span>,
+<span class="key">"processName"</span>: <span class="str">"TelcoDiscount_ApprovalProcess"</span>,
+<span class="key">"quoteLocked"</span>: <span class="bool-true">true</span>,
+<span class="key">"errorMessage"</span>: <span class="str">null</span></pre>
+        <div class="outcome warn">
+          <div class="outcome-label">Approval Initiated</div>
+          Quote is now locked. Finance Director (Step 1 of 2) has been assigned. NetOps VP (Step 2) will only be notified after Finance Director approves.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">US-FTR005-002b — 4-Hour SLA Escalation (Flow Orchestrator)</div>
+
+    <div class="flow-diagram" style="margin-bottom:20px;">
+      <div style="font-size:12px; color:#718096; margin-bottom:16px; font-weight:600;">FLOW ORCHESTRATOR — TelcoApprovalEscalationOrchestration</div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div class="flow-node trigger" style="min-width:100px;">Quote Submitted<br><span style="font-size:10px;font-weight:400;">Approval Step Assigned</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node action">Wait Step<br><span style="font-size:10px;font-weight:400;">4 Business Hours</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node decision">Approved?</div>
+        <div class="flow-arrow">→ YES</div>
+        <div class="flow-node done">Advance to<br>Step 2 / Close</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:8px; padding-left:364px; flex-wrap:wrap;">
+        <div class="flow-arrow" style="transform:rotate(90deg);">↓ NO</div>
+        <div class="flow-node escalate">EscalateTelcoApproval<br><span style="font-size:10px;font-weight:400;">Reassign to Manager</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node action">Post Chatter<br><span style="font-size:10px;font-weight:400;">FeedItem</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node action">Update<br>Last_Escalated__c</div>
+      </div>
+      <div style="margin-top:12px; font-size:11px; color:#4a5568;">BusinessHours: Telco_Business_Hours__c &nbsp;|&nbsp; Fallback queue: Telco_Approval_Fallback_Queue (Custom Metadata) if manager is null</div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">EscalateTelcoApproval — Request</div>
+        <pre><span class="key">"quoteId"</span>: <span class="str">"0Q05g000004xABCEAA"</span>,
+<span class="key">"approvalStepId"</span>: <span class="str">"04i5g000000STEP1AA"</span>,
+<span class="key">"currentApproverId"</span>: <span class="str">"0055g000003xFINAAA"</span>,
+<span class="key">"escalationReason"</span>: <span class="str">"4-business-hour SLA breached.
+No response from Finance Director.
+Auto-escalating to manager."</span></pre>
+      </div>
+      <div class="card">
+        <div class="card-title">EscalateTelcoApproval — Response</div>
+        <pre><span class="key">"escalated"</span>: <span class="bool-true">true</span>,
+<span class="key">"newApprover"</span>: <span class="str">"VP Finance — R. Patel"</span>,
+<span class="key">"newApproverId"</span>: <span class="str">"0055g000003xVPFAAA"</span>,
+<span class="key">"chatterPosted"</span>: <span class="bool-true">true</span>,
+<span class="key">"chatterMessage"</span>: <span class="str">"Approval escalated to VP Finance
+(R. Patel) — SLA of 4 business hours
+exceeded. Please action immediately."</span>,
+<span class="key">"usedFallbackQueue"</span>: <span class="bool-false">false</span>,
+<span class="key">"errorMessage"</span>: <span class="str">null</span></pre>
+        <div class="outcome escalate">
+          <div class="outcome-label">Escalated — SLA Enforced</div>
+          Approval reassigned to VP Finance. Chatter notification posted. <code>Last_Escalated_DateTime__c</code> stamped on Quote. Quote remains locked — escalation does not bypass approval.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">End-to-End Approval Timeline — 21% Discount Quote</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot submit">1</div>
+        <div class="tl-body">
+          <div class="tl-title">Quote submitted for approval</div>
+          <div class="tl-desc">Sales Rep calls <code>SubmitForTelcoApproval</code>. Quote locked. Approval process <code>TelcoDiscount_ApprovalProcess</code> activated. Step 1 assigned to Finance Director.</div>
+          <div class="tl-time">T+0:00 — business hours start</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot route">2</div>
+        <div class="tl-body">
+          <div class="tl-title">Flow Orchestrator wait step begins</div>
+          <div class="tl-desc">Orchestration waits up to 4 business hours. BusinessHours record <code>Telco_Business_Hours__c</code> governs the timer — weekends and after-hours are excluded.</div>
+          <div class="tl-time">T+0:01</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot timer">3</div>
+        <div class="tl-body">
+          <div class="tl-title">4-hour SLA window expires — no response</div>
+          <div class="tl-desc">Flow Orchestrator resumes. Checks if approval step is still open. Finance Director has not acted.</div>
+          <div class="tl-time">T+4:00 business hours</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot escalate">4</div>
+        <div class="tl-body">
+          <div class="tl-title">EscalateTelcoApproval fires</div>
+          <div class="tl-desc">Invocable Action resolves <code>User.ManagerId</code> for Finance Director. Reassigns <code>ProcessInstanceWorkItem.ActorId</code> to VP Finance. Posts Chatter alert. Stamps <code>Last_Escalated_DateTime__c</code>.</div>
+          <div class="tl-time">T+4:01</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot close">5</div>
+        <div class="tl-body">
+          <div class="tl-title">VP Finance approves — Step 2 triggered</div>
+          <div class="tl-desc">Step 1 closed. Step 2 assigned to NetOps VP. Upon approval, quote unlocked, Order can be created. Quote-to-Activation clock continues.</div>
+          <div class="tl-time">T+4:45 (est.)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">KPI Measurement</div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Approval SLA Target</div>
+        <div class="kpi-val">4 hrs</div>
+        <div class="kpi-sub">Max business-hours before escalation fires</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Threshold</div>
+        <div class="kpi-val">&gt;20%</div>
+        <div class="kpi-sub">Manual discount that triggers sequential approval</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Volume Discount Auto</div>
+        <div class="kpi-val">15%</div>
+        <div class="kpi-sub">Applied to Data Plan when 25+ sites — no approval</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Escalation Coverage</div>
+        <div class="kpi-val">100%</div>
+        <div class="kpi-sub">All unanswered steps escalated (target)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="approval-gate">
+    <div class="approval-gate-title">Approval Gate — FTR-005 Prototype Complete</div>
+    <div class="gate-row"><span>WL-1: KPIs mapped to eTOM R2A process?</span><span class="gate-yes">YES</span></div>
+    <div class="gate-row"><span>WL-2: Product model SID-compliant?</span><span class="gate-yes">YES</span></div>
+    <div class="gate-row"><span>WL-3: CRM decoupled from legacy billing? (no blng__ namespace)</span><span class="gate-yes">YES</span></div>
+    <div class="gate-row"><span>WL-4: Workflows agent-ready? (SubmitForTelcoApproval is AR-4 gate)</span><span class="gate-yes">YES</span></div>
+    <div class="gate-row"><span>ADR-005 committed? (Flow Orchestrator over Schedulable Apex)</span><span class="gate-yes">YES</span></div>
+    <div style="margin-top:14px; font-size:13px; color:#718096; line-height:1.7;">
+      Review the pricing matrix, approval routing, and escalation timeline above, then respond with:<br>
+      <strong style="color:#e2e8f0;">approved</strong> — accept and advance to Build &nbsp;|&nbsp;
+      <strong style="color:#e2e8f0;">revise [notes]</strong> — send back for changes<br>
+      Build is BLOCKED until <code>customer_approved = true</code> is set in FEATURE_TRACKER.json.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
