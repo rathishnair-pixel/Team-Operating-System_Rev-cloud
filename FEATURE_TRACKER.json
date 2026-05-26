@@ -1,6 +1,14 @@
 {
   "project": "Team OS",
-  "lastUpdated": "2026-05-22",
+  "lastUpdated": "2026-05-26",
+  "northStarMetric": {
+    "name": "Reduce Quote-to-Activation Time",
+    "baseline": "14 days",
+    "target": "3 days",
+    "measurement": "Order.ActivatedDate minus Quote.SignedDate per order — Salesforce Report",
+    "cadence": "Sprint-end + 30/60/90 day post-deploy",
+    "owner": "[PM] tracks, [TA] owns activation loop SLA"
+  },
   "approvalGateVocabulary": {
     "approved": "Human accepted — stage complete, next stage may begin",
     "skipped": "Human bypassed gate — stage marked skipped, next stage may begin",
@@ -193,6 +201,163 @@
           "type": "Data",
           "status": "open",
           "owner": "DA"
+        }
+      ]
+    },
+    {
+      "id": "FTR-004",
+      "name": "5G Smart Office — Product Catalog & Bundle Structure",
+      "pattern": "subscription-usage-hybrid",
+      "etom_process": "C2M",
+      "startDate": "2026-05-26",
+      "adrs": [],
+      "kpi": {
+        "name": "Quote-to-Activation Time",
+        "baseline": "14 days",
+        "target": "Reduce to 3 days within 60 days of deploy",
+        "measurement": "Order.ActivatedDate minus Quote.SignedDate — Salesforce Report",
+        "cadence": "Sprint-end",
+        "status": "defined"
+      },
+      "whiteLabelGate": {
+        "wl1_kpi_mapped": true,
+        "wl2_sid_compliant": true,
+        "wl3_crm_decoupled": true,
+        "wl4_agent_ready": false
+      },
+      "stages": {
+        "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
+        "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
+        "design":    { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [] },
+        "prototype": { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [], "prototype_type": null, "customer_approved": false },
+        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
+      },
+      "userStories": [
+        { "id": "US-FTR004-001", "title": "As a Catalog Admin, I want the 5G Smart Office bundle hierarchy defined so products are structured 3 levels deep in RCA", "points": 3, "status": "todo", "stage": "build", "kpi": "Bundle hierarchy activates without validation errors in org" },
+        { "id": "US-FTR004-002", "title": "As a Pricing Manager, I want a Consumption Schedule on the Data Plan so tiered overage charges apply when bandwidth limits are breached", "points": 5, "status": "todo", "stage": "build", "kpi": "Overage pricing calculates correctly for all 3 consumption tiers" },
+        { "id": "US-FTR004-003", "title": "As a Sales Rep, I want fiber install price auto-calculated from Fiber_Meters__c so I never need to manually compute the site fee", "points": 5, "status": "todo", "stage": "build", "kpi": "Install price = $500 + ($250 x FLOOR(meters/100)) with zero manual overrides needed" },
+        { "id": "US-FTR004-004", "title": "As a Pricing Manager, I want the Telco Platinum SLA priced at exactly 15% of Router + Data Plan net price so SLA revenue is always accurate", "points": 5, "status": "todo", "stage": "build", "kpi": "SLA PoT calculation variance = 0% vs manual calculation in 100% of test cases" },
+        { "id": "US-FTR004-005", "title": "As a Sales Rep, I want a validation rule blocking SLA selection without a Router so invalid bundles cannot be quoted", "points": 3, "status": "todo", "stage": "build", "kpi": "100% of SLA-without-Router quote attempts blocked at save" }
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "FTR-005",
+      "name": "5G Smart Office — Pricing Rules & Advanced Approvals",
+      "pattern": "tiered-volume-pricing",
+      "etom_process": "R2A",
+      "startDate": "2026-05-26",
+      "adrs": [],
+      "kpi": {
+        "name": "Quote-to-Activation Time",
+        "baseline": "14 days",
+        "target": "Approval cycle completes within 4 business hours for >20% discount quotes",
+        "measurement": "Approval.CreatedDate to Approval.LastModifiedDate — Salesforce Approval History Report",
+        "cadence": "Sprint-end",
+        "status": "defined"
+      },
+      "whiteLabelGate": {
+        "wl1_kpi_mapped": true,
+        "wl2_sid_compliant": true,
+        "wl3_crm_decoupled": true,
+        "wl4_agent_ready": false
+      },
+      "stages": {
+        "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
+        "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
+        "design":    { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [] },
+        "prototype": { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [], "prototype_type": null, "customer_approved": false },
+        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
+      },
+      "userStories": [
+        { "id": "US-FTR005-001", "title": "As a Pricing Manager, I want a volume discount price rule so customers buying 25+ routers automatically receive 15% off the Data Plan", "points": 5, "status": "todo", "stage": "build", "kpi": "Volume discount applies to 100% of qualifying multi-site quotes with zero manual intervention" },
+        { "id": "US-FTR005-002", "title": "As a Finance Director, I want sequential approval routing for discounts over 20% so financial risk is reviewed before quotes are sent", "points": 8, "status": "todo", "stage": "build", "kpi": "Approval cycle time under 4 business hours for 90% of escalated quotes" }
+      ],
+      "dependencies": [
+        {
+          "id": "DEP-005",
+          "title": "FTR-004 bundle products must exist before price rules can reference them",
+          "desc": "Volume discount Price Rule targets the Data Plan product — product record must be seeded in org before FTR-005 build can start.",
+          "blockedBy": "FTR-004",
+          "blockedByName": "5G Smart Office — Product Catalog & Bundle Structure",
+          "type": "Data",
+          "status": "open",
+          "owner": "DevOps"
+        }
+      ]
+    },
+    {
+      "id": "FTR-006",
+      "name": "5G Smart Office — Order Decomposition (3 Fulfillment Tracks)",
+      "pattern": "subscription-usage-hybrid",
+      "etom_process": "O2P",
+      "startDate": "2026-05-26",
+      "adrs": [
+        "ADRs/ADR-002-async-telco-network-activation-api.md",
+        "ADRs/ADR-003-erp-hardware-routing-platform-event.md"
+      ],
+      "kpi": {
+        "name": "Quote-to-Activation Time",
+        "baseline": "14 days",
+        "target": "3 days — all 3 tracks complete within 72 hours of Order activation",
+        "measurement": "Asset.Activated_DateTime__c minus Order.ActivatedDate — Salesforce Report",
+        "cadence": "Sprint-end + 30/60/90 day post-deploy",
+        "status": "defined"
+      },
+      "whiteLabelGate": {
+        "wl1_kpi_mapped": true,
+        "wl2_sid_compliant": true,
+        "wl3_crm_decoupled": true,
+        "wl4_agent_ready": false
+      },
+      "stages": {
+        "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
+        "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
+        "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-002-async-telco-network-activation-api.md", "ADRs/ADR-003-erp-hardware-routing-platform-event.md"] },
+        "prototype": { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": false },
+        "build":     { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "test":      { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] },
+        "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
+      },
+      "userStories": [
+        { "id": "US-FTR006-001", "title": "As a Warehouse Ops Manager, I want hardware fulfillment events published to the ERP on Order activation so routers are picked and shipped on Day 1", "points": 5, "status": "todo", "stage": "build", "kpi": "ERP_Confirmed__c stamped within 2 hours of Order activation for 99% of orders" },
+        { "id": "US-FTR006-002", "title": "As a Network Engineer, I want async network activation triggered on IMEI scan so provisioning completes without blocking the Order transaction", "points": 8, "status": "todo", "stage": "build", "kpi": "Network activation confirmed within 24 hours of IMEI scan for 99% of sites" },
+        { "id": "US-FTR006-003", "title": "As a Field Service Dispatcher, I want a Work Order auto-created on Order activation with SLA window so technicians are dispatched within 4 hours", "points": 8, "status": "todo", "stage": "build", "kpi": "Work Order assigned within 4 hours for 95% of activations; fiber splice complete by Day 2" }
+      ],
+      "dependencies": [
+        {
+          "id": "DEP-006",
+          "title": "ADR-002 committed before Track 2 build starts",
+          "desc": "Async Queueable Apex pattern for Telco Network Controller API must be architecturally approved before any code is written for Track 2.",
+          "blockedBy": "FTR-006",
+          "blockedByName": "ADR-002 — Async Network Activation",
+          "type": "Process",
+          "status": "resolved",
+          "owner": "TA"
+        },
+        {
+          "id": "DEP-007",
+          "title": "ADR-003 committed before Track 1 build starts",
+          "desc": "Platform Event schema for Hardware_Fulfillment__e must be approved and deployed before Track 1 Flow can reference it.",
+          "blockedBy": "FTR-006",
+          "blockedByName": "ADR-003 — ERP Hardware Routing",
+          "type": "Process",
+          "status": "resolved",
+          "owner": "TA"
+        },
+        {
+          "id": "DEP-008",
+          "title": "FTR-004 Order products must exist before decomposition flows can route by ProductCode",
+          "desc": "Track 1 and Track 2 flows filter OrderItems by ProductCode — product records must be seeded before FTR-006 build starts.",
+          "blockedBy": "FTR-004",
+          "blockedByName": "5G Smart Office — Product Catalog & Bundle Structure",
+          "type": "Data",
+          "status": "open",
+          "owner": "DevOps"
         }
       ]
     }

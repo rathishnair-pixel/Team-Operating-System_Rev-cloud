@@ -53,6 +53,7 @@ nav {
 .nav-right    { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .nav-updated  { font-size: 11px; color: var(--text-3); }
 .nav-refresh  { font-size: 11px; font-weight: 500; background: var(--blue-light); color: var(--blue); padding: 3px 10px; border-radius: 20px; }
+.nsm-chip     { font-size: 11px; color: var(--teal); background: var(--teal-bg); border: 1px solid rgba(11,110,110,0.2); padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
 .app { flex: 1; display: flex; min-height: 0; }
 .sidebar {
   width: 300px; flex-shrink: 0;
@@ -305,26 +306,27 @@ nav {
   <span class="nav-title">Team OS</span>
   <span class="nav-subtitle">Feature Journey &mdash; v4.0</span>
   <div class="nav-right">
-    <span class="nav-updated">Updated 25 May 2026, 17:29</span>
+    <span class="nsm-chip" title="Order.ActivatedDate minus Quote.SignedDate per order — Salesforce Report">&#127919; Reduce Quote-to-Activation Time: 14 days &rarr; <strong>3 days</strong></span>
+    <span class="nav-updated">Updated 26 May 2026, 17:44</span>
     <span class="nav-refresh">Auto-refresh 30s</span>
   </div>
 </nav>
 <div class="app">
   <div class="sidebar">
     <div class="sb-stats">
-      <div class="sb-stat"><div class="sb-stat-n">3</div><div class="sb-stat-l">Features</div></div>
-      <div class="sb-stat sn-pts"><div class="sb-stat-n">55</div><div class="sb-stat-l">Total Pts</div></div>
+      <div class="sb-stat"><div class="sb-stat-n">6</div><div class="sb-stat-l">Features</div></div>
+      <div class="sb-stat sn-pts"><div class="sb-stat-n">110</div><div class="sb-stat-l">Total Pts</div></div>
       <div class="sb-stat sn-done"><div class="sb-stat-n">24</div><div class="sb-stat-l">Pts Done</div></div>
       <div class="sb-stat sn-kpi">
-        <div class="sb-stat-n">67%</div>
+        <div class="sb-stat-n">83%</div>
         <div class="sb-stat-l">KPI Coverage</div>
         <div class="kpi-gauge-wrap">
-          <div class="kpi-gauge-bar"><div class="kpi-gauge-fill" style="width:67%"></div></div>
-          <span class="kpi-gauge-pct">85% stories</span>
+          <div class="kpi-gauge-bar"><div class="kpi-gauge-fill" style="width:83%"></div></div>
+          <span class="kpi-gauge-pct">91% stories</span>
         </div>
       </div>
-      <div class="sb-stat sn-wl"><div class="sb-stat-n">1/3</div><div class="sb-stat-l">WL Gate Pass</div></div>
-      <div class="sb-stat sn-adr"><div class="sb-stat-n">1</div><div class="sb-stat-l">ADRs</div></div>
+      <div class="sb-stat sn-wl"><div class="sb-stat-n">1/6</div><div class="sb-stat-l">WL Gate Pass</div></div>
+      <div class="sb-stat sn-adr"><div class="sb-stat-n">3</div><div class="sb-stat-l">ADRs</div></div>
     </div>
     <div class="sb-filter">
       <button class="sb-filter-btn active" onclick="filterSb('all',this)">All</button>
@@ -365,6 +367,39 @@ nav {
           <span class="pts-chip">5 pts</span>
           <span class="si-done-pts">0/5 done</span>
           <span class="etom-chip-sm" style="background:#8E3A1020;color:#8E3A10;border-color:#8E3A1040">C2M</span><span class="kpi-chip-sm kpi-missing">&#9711; KPI</span><span class="wl-chip-sm wl-fail">&#10007; WL</span><span class="dep-chip-sm">&#9888; Dep</span>
+        </div>
+      </div>
+      <div class="sb-item" id="sb-FTR-004" onclick="showDetail('FTR-004')">
+        <div class="si-top"><span class="si-id">FTR-004</span><div class="si-badges"><span class="badge badge-active">Active</span><span class="badge badge-gate">Gate</span></div></div>
+        <div class="si-name">5G Smart Office — Product Catalog & Bundle Structure</div>
+        <div class="si-pipe"><span class="dot dot-complete" title="Presales"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Discovery"></span><span class="mini-conn conn-active"></span><span class="dot dot-active" title="Design"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Prototype"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Build"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Test"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Deploy"></span><span class="si-pct">29%</span></div>
+        <div class="si-bar"><div class="si-bar-fill" style="width:29%"></div></div>
+        <div class="si-footer">
+          <span class="pts-chip">21 pts</span>
+          <span class="si-done-pts">0/21 done</span>
+          <span class="etom-chip-sm" style="background:#8E3A1020;color:#8E3A10;border-color:#8E3A1040">C2M</span><span class="kpi-chip-sm kpi-defined">&#9650; KPI</span><span class="wl-chip-sm wl-fail">&#10007; WL</span>
+        </div>
+      </div>
+      <div class="sb-item" id="sb-FTR-005" onclick="showDetail('FTR-005')">
+        <div class="si-top"><span class="si-id">FTR-005</span><div class="si-badges"><span class="badge badge-active">Active</span><span class="badge badge-gate">Gate</span></div></div>
+        <div class="si-name">5G Smart Office — Pricing Rules & Advanced Approvals</div>
+        <div class="si-pipe"><span class="dot dot-complete" title="Presales"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Discovery"></span><span class="mini-conn conn-active"></span><span class="dot dot-active" title="Design"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Prototype"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Build"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Test"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Deploy"></span><span class="si-pct">29%</span></div>
+        <div class="si-bar"><div class="si-bar-fill" style="width:29%"></div></div>
+        <div class="si-footer">
+          <span class="pts-chip">13 pts</span>
+          <span class="si-done-pts">0/13 done</span>
+          <span class="etom-chip-sm" style="background:#0066CC20;color:#0066CC;border-color:#0066CC40">R2A</span><span class="kpi-chip-sm kpi-defined">&#9650; KPI</span><span class="wl-chip-sm wl-fail">&#10007; WL</span><span class="dep-chip-sm">&#9888; Dep</span>
+        </div>
+      </div>
+      <div class="sb-item" id="sb-FTR-006" onclick="showDetail('FTR-006')">
+        <div class="si-top"><span class="si-id">FTR-006</span><div class="si-badges"></div></div>
+        <div class="si-name">5G Smart Office — Order Decomposition (3 Fulfillment Tracks)</div>
+        <div class="si-pipe"><span class="dot dot-complete" title="Presales"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Discovery"></span><span class="mini-conn conn-complete"></span><span class="dot dot-complete" title="Design"></span><span class="mini-conn conn-done-pending"></span><span class="dot dot-pending" title="Prototype"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Build"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Test"></span><span class="mini-conn conn-pending"></span><span class="dot dot-pending" title="Deploy"></span><span class="si-pct">43%</span></div>
+        <div class="si-bar"><div class="si-bar-fill" style="width:43%"></div></div>
+        <div class="si-footer">
+          <span class="pts-chip">21 pts</span>
+          <span class="si-done-pts">0/21 done</span>
+          <span class="etom-chip-sm" style="background:#1D7D3A20;color:#1D7D3A;border-color:#1D7D3A40">O2P</span><span class="kpi-chip-sm kpi-defined">&#9650; KPI</span><span class="wl-chip-sm wl-fail">&#10007; WL</span><span class="dep-chip-sm">&#9888; Dep</span>
         </div>
       </div></div>
   </div>
@@ -997,6 +1032,608 @@ nav {
       </div></div>
     </div>
       </div>
+      <div class="detail-card" id="dc-FTR-004" style="display:none">
+        <div class="d-head">
+          <div class="d-fid">FTR-004</div>
+          <h2 class="d-fname">5G Smart Office — Product Catalog & Bundle Structure</h2>
+          <div class="d-chips">
+            <span class="d-pattern">subscription-usage-hybrid</span>
+            <span class="etom-badge etom-expandable" style="background:#8E3A1015;color:#8E3A10;border-color:#8E3A1035" onclick="toggleEtom('etom-FTR-004')" title="Click to expand L2 processes">C2M &mdash; Concept-to-Market &#9660;</span><div class="etom-l2-panel" id="etom-FTR-004"><div class="etom-l2-title">L2 Processes spanned</div><div class="etom-l2-row">&#8627; 2.1.1 Product Portfolio Planning</div><div class="etom-l2-row">&#8627; 2.1.2 Product Capability Delivery</div><div class="etom-l2-row">&#8627; 2.1.3 Product & Offer Launch</div></div><span class="badge badge-active">In Progress</span><span class="badge badge-gate">Gate Open</span><span class="kpi-badge kpi-defined">Defined</span><span class="badge wl-fail">Blocked</span><span class="adr-badge adr-none">0 ADRs</span>
+            <span class="pts-chip">21 pts total</span>
+            <span class="d-done-pts">0 pts done</span>
+          </div>
+          <div class="d-bar"><div class="d-bar-fill" style="width:29%"></div></div>
+        </div>
+        <div class="d-stages">
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Presales</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Discovery</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-active">
+        <div class="sc-node scn-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 11-6.2-8.56"/></svg></div>
+        <div class="sc-label">Design</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-awaiting">Awaiting</span></div>
+        
+      </div>
+      <div class="sc sc-pending sc-prototype">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Prototype</div>
+        
+        
+        
+        <div style="margin-top:5px">
+          <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#AEAEB220;color:#AEAEB2;border:1px solid #AEAEB240">Type TBD</span>
+        </div>
+        <div style="margin-top:4px"><span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#FFEBEC;color:#D70015">&#9711; Awaiting</span></div>
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Build</div>
+        
+        <div class="sc-pts"><span class="pts-chip">21p</span></div>
+        
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Test</div>
+        
+        
+        
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Deploy</div>
+        
+        
+        
+        
+        
+      </div></div>
+        
+      <div class="d-section">
+        <div class="d-section-head">
+          <span class="d-section-title">Prototype</span>
+          <span class="badge badge-pending">Not Started</span>
+        </div>
+        <div class="proto-pending">
+          <div class="proto-pending-icon">&#9633;</div>
+          <div>
+            <div class="proto-pending-title">Prototype not yet started</div>
+            <div class="proto-pending-sub">Design must be approved before [XA] begins the prototype. Customer sign-off on the prototype is required before build can start.</div>
+          </div>
+        </div>
+      </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">White Label Gate</span>
+        <span class="badge wl-fail">Blocked</span>
+      </div>
+      <div class="wl-grid">
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-1: KPIs mapped to eTOM process</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-2: Product model SID-compliant</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-3: CRM decoupled from legacy billing</span></div>
+        <div class="wl-row wl-row-fail"><span class="wl-row-icon">&#10007;</span><span class="wl-row-label">WL-4: Workflows agent-ready (AR-1 to AR-4)</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">KPI / Success Metric</span>
+        <span class="kpi-badge kpi-defined">Defined</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">Quote-to-Activation Time</div>
+        <div class="kpi-grid">
+          <div class="kpi-field"><div class="kpi-field-label">Baseline</div><div class="kpi-field-value">14 days</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Target</div><div class="kpi-field-value kpi-target">Reduce to 3 days within 60 days of deploy</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Measurement</div><div class="kpi-field-value">Order.ActivatedDate minus Quote.SignedDate — Salesforce Report</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Review Cadence</div><div class="kpi-field-value">Sprint-end</div></div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Architecture Decision Records</span>
+        <span class="adr-badge adr-none">None committed</span>
+      </div>
+      <div class="kpi-empty">
+        <span class="kpi-empty-icon">&#9711;</span>
+        <div>
+          <div class="kpi-empty-title">No ADRs committed for this feature</div>
+          <div class="kpi-empty-sub">Every standard vs custom decision requires an ADR in <code>ADRs/</code>. Use <code>ADRs/ADR-000-template.md</code>.</div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">User Stories</span>
+        <span class="d-section-meta">5 stories &middot; 21 pts &middot; 0 done &middot; 5/5 KPIs</span>
+      </div>
+      <table class="stories-table">
+        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:200px">KPI</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
+        <tbody><tr class="sg-header"><td colspan="5">Build &mdash; 5 stories &middot; 21 pts</td></tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR004-001</span></td>
+          <td><span class="s-title">As a Catalog Admin, I want the 5G Smart Office bundle hierarchy defined so products are structured 3 levels deep in RCA</span></td>
+          <td><span class="s-kpi" title="Bundle hierarchy activates without validation errors in org">Bundle hierarchy activates without validation ...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-mid">3</span></td>
+        </tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR004-002</span></td>
+          <td><span class="s-title">As a Pricing Manager, I want a Consumption Schedule on the Data Plan so tiered overage charges apply when bandwidth limits are breached</span></td>
+          <td><span class="s-kpi" title="Overage pricing calculates correctly for all 3 consumption tiers">Overage pricing calculates correctly for all 3...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-mid">5</span></td>
+        </tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR004-003</span></td>
+          <td><span class="s-title">As a Sales Rep, I want fiber install price auto-calculated from Fiber_Meters__c so I never need to manually compute the site fee</span></td>
+          <td><span class="s-kpi" title="Install price = $500 + ($250 x FLOOR(meters/100)) with zero manual overrides needed">Install price = $500 + ($250 x FLOOR(meters/10...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-mid">5</span></td>
+        </tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR004-004</span></td>
+          <td><span class="s-title">As a Pricing Manager, I want the Telco Platinum SLA priced at exactly 15% of Router + Data Plan net price so SLA revenue is always accurate</span></td>
+          <td><span class="s-kpi" title="SLA PoT calculation variance = 0% vs manual calculation in 100% of test cases">SLA PoT calculation variance = 0% vs manual ca...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-mid">5</span></td>
+        </tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR004-005</span></td>
+          <td><span class="s-title">As a Sales Rep, I want a validation rule blocking SLA selection without a Router so invalid bundles cannot be quoted</span></td>
+          <td><span class="s-kpi" title="100% of SLA-without-Router quote attempts blocked at save">100% of SLA-without-Router quote attempts bloc...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-mid">3</span></td>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">21p</span></td></tr>
+    <tr class="sg-total">
+      <td colspan="2" style="font-weight:700">Total Story Points</td>
+      <td style="font-size:12px;color:var(--text-2)">5/5 KPIs set</td>
+      <td style="font-size:12px;color:var(--text-2)">0 pts done</td>
+      <td><span class="pts-chip">21</span></td>
+    </tr></tbody>
+      </table>
+    </div>
+        
+      </div>
+      <div class="detail-card" id="dc-FTR-005" style="display:none">
+        <div class="d-head">
+          <div class="d-fid">FTR-005</div>
+          <h2 class="d-fname">5G Smart Office — Pricing Rules & Advanced Approvals</h2>
+          <div class="d-chips">
+            <span class="d-pattern">tiered-volume-pricing</span>
+            <span class="etom-badge etom-expandable" style="background:#0066CC15;color:#0066CC;border-color:#0066CC35" onclick="toggleEtom('etom-FTR-005')" title="Click to expand L2 processes">R2A &mdash; Request-to-Answer &#9660;</span><div class="etom-l2-panel" id="etom-FTR-005"><div class="etom-l2-title">L2 Processes spanned</div><div class="etom-l2-row">&#8627; 1.1.1 CRM Support & Readiness</div><div class="etom-l2-row">&#8627; 1.1.3 Selling</div><div class="etom-l2-row">&#8627; 1.1.2 Order Handling (pre-order)</div></div><span class="badge badge-active">In Progress</span><span class="badge badge-gate">Gate Open</span><span class="kpi-badge kpi-defined">Defined</span><span class="badge wl-fail">Blocked</span><span class="adr-badge adr-none">0 ADRs</span>
+            <span class="pts-chip">13 pts total</span>
+            <span class="d-done-pts">0 pts done</span>
+          </div>
+          <div class="d-bar"><div class="d-bar-fill" style="width:29%"></div></div>
+        </div>
+        <div class="d-stages">
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Presales</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Discovery</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-active">
+        <div class="sc-node scn-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 11-6.2-8.56"/></svg></div>
+        <div class="sc-label">Design</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-awaiting">Awaiting</span></div>
+        
+      </div>
+      <div class="sc sc-pending sc-prototype">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Prototype</div>
+        
+        
+        
+        <div style="margin-top:5px">
+          <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#AEAEB220;color:#AEAEB2;border:1px solid #AEAEB240">Type TBD</span>
+        </div>
+        <div style="margin-top:4px"><span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#FFEBEC;color:#D70015">&#9711; Awaiting</span></div>
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Build</div>
+        
+        <div class="sc-pts"><span class="pts-chip">13p</span></div>
+        
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Test</div>
+        
+        
+        
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Deploy</div>
+        
+        
+        
+        
+        
+      </div></div>
+        
+      <div class="d-section">
+        <div class="d-section-head">
+          <span class="d-section-title">Prototype</span>
+          <span class="badge badge-pending">Not Started</span>
+        </div>
+        <div class="proto-pending">
+          <div class="proto-pending-icon">&#9633;</div>
+          <div>
+            <div class="proto-pending-title">Prototype not yet started</div>
+            <div class="proto-pending-sub">Design must be approved before [XA] begins the prototype. Customer sign-off on the prototype is required before build can start.</div>
+          </div>
+        </div>
+      </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">White Label Gate</span>
+        <span class="badge wl-fail">Blocked</span>
+      </div>
+      <div class="wl-grid">
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-1: KPIs mapped to eTOM process</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-2: Product model SID-compliant</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-3: CRM decoupled from legacy billing</span></div>
+        <div class="wl-row wl-row-fail"><span class="wl-row-icon">&#10007;</span><span class="wl-row-label">WL-4: Workflows agent-ready (AR-1 to AR-4)</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">KPI / Success Metric</span>
+        <span class="kpi-badge kpi-defined">Defined</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">Quote-to-Activation Time</div>
+        <div class="kpi-grid">
+          <div class="kpi-field"><div class="kpi-field-label">Baseline</div><div class="kpi-field-value">14 days</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Target</div><div class="kpi-field-value kpi-target">Approval cycle completes within 4 business hours for >20% discount quotes</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Measurement</div><div class="kpi-field-value">Approval.CreatedDate to Approval.LastModifiedDate — Salesforce Approval History Report</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Review Cadence</div><div class="kpi-field-value">Sprint-end</div></div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Architecture Decision Records</span>
+        <span class="adr-badge adr-none">None committed</span>
+      </div>
+      <div class="kpi-empty">
+        <span class="kpi-empty-icon">&#9711;</span>
+        <div>
+          <div class="kpi-empty-title">No ADRs committed for this feature</div>
+          <div class="kpi-empty-sub">Every standard vs custom decision requires an ADR in <code>ADRs/</code>. Use <code>ADRs/ADR-000-template.md</code>.</div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">User Stories</span>
+        <span class="d-section-meta">2 stories &middot; 13 pts &middot; 0 done &middot; 2/2 KPIs</span>
+      </div>
+      <table class="stories-table">
+        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:200px">KPI</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
+        <tbody><tr class="sg-header"><td colspan="5">Build &mdash; 2 stories &middot; 13 pts</td></tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR005-001</span></td>
+          <td><span class="s-title">As a Pricing Manager, I want a volume discount price rule so customers buying 25+ routers automatically receive 15% off the Data Plan</span></td>
+          <td><span class="s-kpi" title="Volume discount applies to 100% of qualifying multi-site quotes with zero manual intervention">Volume discount applies to 100% of qualifying ...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-mid">5</span></td>
+        </tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR005-002</span></td>
+          <td><span class="s-title">As a Finance Director, I want sequential approval routing for discounts over 20% so financial risk is reviewed before quotes are sent</span></td>
+          <td><span class="s-kpi" title="Approval cycle time under 4 business hours for 90% of escalated quotes">Approval cycle time under 4 business hours for...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-high">8</span></td>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">13p</span></td></tr>
+    <tr class="sg-total">
+      <td colspan="2" style="font-weight:700">Total Story Points</td>
+      <td style="font-size:12px;color:var(--text-2)">2/2 KPIs set</td>
+      <td style="font-size:12px;color:var(--text-2)">0 pts done</td>
+      <td><span class="pts-chip">13</span></td>
+    </tr></tbody>
+      </table>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Dependencies</span>
+        <span class="d-section-meta">1 total &middot; <span style="color:var(--red);font-weight:700">1 open</span></span>
+      </div>
+      <div class="dep-list">
+      <div class="dep-card dep-open" onclick="openDepModal('FTR-005','DEP-005')">
+        <div class="dep-icon dep-icon-open">&#9888;</div>
+        <div class="dep-body">
+          <div class="dep-title">FTR-004 bundle products must exist before price rules can reference them</div>
+          <div class="dep-desc">Volume discount Price Rule targets the Data Plan product — product record must be seeded in org before FTR-005 build can start.</div>
+          <div class="dep-meta">
+            <span class="dep-type-tag">Data</span>
+            <span class="dep-status-chip dsc-open">Open</span>
+            <span class="dep-blocked-by">Blocked by: 5G Smart Office — Product Catalog & Bundle Structure</span>
+            <button class="dep-jump-btn" onclick="event.stopPropagation();sidebarJump('FTR-004')">&#8594; FTR-004</button>
+          </div>
+        </div>
+        <div class="dep-arrow">&#8250;</div>
+      </div></div>
+    </div>
+      </div>
+      <div class="detail-card" id="dc-FTR-006" style="display:none">
+        <div class="d-head">
+          <div class="d-fid">FTR-006</div>
+          <h2 class="d-fname">5G Smart Office — Order Decomposition (3 Fulfillment Tracks)</h2>
+          <div class="d-chips">
+            <span class="d-pattern">subscription-usage-hybrid</span>
+            <span class="etom-badge etom-expandable" style="background:#1D7D3A15;color:#1D7D3A;border-color:#1D7D3A35" onclick="toggleEtom('etom-FTR-006')" title="Click to expand L2 processes">O2P &mdash; Order-to-Payment &#9660;</span><div class="etom-l2-panel" id="etom-FTR-006"><div class="etom-l2-title">L2 Processes spanned</div><div class="etom-l2-row">&#8627; 1.1.2 Order Handling</div><div class="etom-l2-row">&#8627; 1.2.2 Service Config & Activation</div><div class="etom-l2-row">&#8627; 1.3.2 Resource Provisioning</div><div class="etom-l2-row">&#8627; 1.1.7 Billing & Collections</div></div><span class="badge badge-pending">Not Started</span><span class="kpi-badge kpi-defined">Defined</span><span class="badge wl-fail">Blocked</span><span class="adr-badge">2 ADRs</span>
+            <span class="pts-chip">21 pts total</span>
+            <span class="d-done-pts">0 pts done</span>
+          </div>
+          <div class="d-bar"><div class="d-bar-fill" style="width:43%"></div></div>
+        </div>
+        <div class="d-stages">
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Presales</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Discovery</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        
+      </div>
+      <div class="sc sc-complete">
+        <div class="sc-node scn-complete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Design</div>
+        <div class="sc-date">2026-05-26</div>
+        
+        
+        <div class="sc-gate"><span class="badge gate-approved">Approved</span></div>
+        <div class="sc-arts"><a class="art-link" href="../ADRs/ADR-002-async-telco-network-activation-api.md" title="ADRs/ADR-002-async-telco-network-activation-api.md">ADR-002-async-telco-network-activation-api.md</a><a class="art-link" href="../ADRs/ADR-003-erp-hardware-routing-platform-event.md" title="ADRs/ADR-003-erp-hardware-routing-platform-event.md">ADR-003-erp-hardware-routing-platform-event.md</a></div>
+      </div>
+      <div class="sc sc-pending sc-prototype">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Prototype</div>
+        
+        
+        
+        <div style="margin-top:5px">
+          <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#6B3FA020;color:#6B3FA0;border:1px solid #6B3FA040">Process Walkthrough</span>
+        </div>
+        <div style="margin-top:4px"><span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#FFEBEC;color:#D70015">&#9711; Awaiting</span></div>
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Build</div>
+        
+        <div class="sc-pts"><span class="pts-chip">21p</span></div>
+        
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Test</div>
+        
+        
+        
+        
+        
+      </div>
+      <div class="sc sc-pending">
+        <div class="sc-node scn-pending"><span class="node-dot"></span></div>
+        <div class="sc-label">Deploy</div>
+        
+        
+        
+        
+        
+      </div></div>
+        
+      <div class="d-section">
+        <div class="d-section-head">
+          <span class="d-section-title">Prototype</span>
+          <span class="badge badge-pending">Not Started</span>
+        </div>
+        <div class="proto-pending">
+          <div class="proto-pending-icon">&#9633;</div>
+          <div>
+            <div class="proto-pending-title">Prototype not yet started</div>
+            <div class="proto-pending-sub">Design must be approved before [XA] begins the prototype. Customer sign-off on the prototype is required before build can start.</div>
+          </div>
+        </div>
+      </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">White Label Gate</span>
+        <span class="badge wl-fail">Blocked</span>
+      </div>
+      <div class="wl-grid">
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-1: KPIs mapped to eTOM process</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-2: Product model SID-compliant</span></div>
+        <div class="wl-row wl-row-pass"><span class="wl-row-icon">&#10003;</span><span class="wl-row-label">WL-3: CRM decoupled from legacy billing</span></div>
+        <div class="wl-row wl-row-fail"><span class="wl-row-icon">&#10007;</span><span class="wl-row-label">WL-4: Workflows agent-ready (AR-1 to AR-4)</span></div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">KPI / Success Metric</span>
+        <span class="kpi-badge kpi-defined">Defined</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">Quote-to-Activation Time</div>
+        <div class="kpi-grid">
+          <div class="kpi-field"><div class="kpi-field-label">Baseline</div><div class="kpi-field-value">14 days</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Target</div><div class="kpi-field-value kpi-target">3 days — all 3 tracks complete within 72 hours of Order activation</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Measurement</div><div class="kpi-field-value">Asset.Activated_DateTime__c minus Order.ActivatedDate — Salesforce Report</div></div>
+          <div class="kpi-field"><div class="kpi-field-label">Review Cadence</div><div class="kpi-field-value">Sprint-end + 30/60/90 day post-deploy</div></div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Architecture Decision Records</span>
+        <span class="adr-badge">2 ADRs</span>
+      </div>
+      <div class="adr-list"><div class="adr-row"><span class="adr-icon">&#128196;</span><a class="adr-link" href="../ADRs/ADR-002-async-telco-network-activation-api.md" title="ADRs/ADR-002-async-telco-network-activation-api.md">ADR-002-async-telco-network-activation-api</a></div><div class="adr-row"><span class="adr-icon">&#128196;</span><a class="adr-link" href="../ADRs/ADR-003-erp-hardware-routing-platform-event.md" title="ADRs/ADR-003-erp-hardware-routing-platform-event.md">ADR-003-erp-hardware-routing-platform-event</a></div></div>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">User Stories</span>
+        <span class="d-section-meta">3 stories &middot; 21 pts &middot; 0 done &middot; 3/3 KPIs</span>
+      </div>
+      <table class="stories-table">
+        <thead><tr><th style="width:110px">ID</th><th>Story</th><th style="width:200px">KPI</th><th style="width:90px">Status</th><th style="width:44px;text-align:center">Pts</th></tr></thead>
+        <tbody><tr class="sg-header"><td colspan="5">Build &mdash; 3 stories &middot; 21 pts</td></tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR006-001</span></td>
+          <td><span class="s-title">As a Warehouse Ops Manager, I want hardware fulfillment events published to the ERP on Order activation so routers are picked and shipped on Day 1</span></td>
+          <td><span class="s-kpi" title="ERP_Confirmed__c stamped within 2 hours of Order activation for 99% of orders">ERP_Confirmed__c stamped within 2 hours of Ord...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-mid">5</span></td>
+        </tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR006-002</span></td>
+          <td><span class="s-title">As a Network Engineer, I want async network activation triggered on IMEI scan so provisioning completes without blocking the Order transaction</span></td>
+          <td><span class="s-kpi" title="Network activation confirmed within 24 hours of IMEI scan for 99% of sites">Network activation confirmed within 24 hours o...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-high">8</span></td>
+        </tr>
+        <tr class="story-row">
+          <td><span class="s-id">US-FTR006-003</span></td>
+          <td><span class="s-title">As a Field Service Dispatcher, I want a Work Order auto-created on Order activation with SLA window so technicians are dispatched within 4 hours</span></td>
+          <td><span class="s-kpi" title="Work Order assigned within 4 hours for 95% of activations; fiber splice complete by Day 2">Work Order assigned within 4 hours for 95% of ...</span></td>
+          <td><span class="s-status ss-todo">To Do</span></td>
+          <td><span class="sp-tag sp-high">8</span></td>
+        </tr><tr class="sg-sub"><td colspan="4"></td><td><span style="font-size:10px;color:var(--text-3)">21p</span></td></tr>
+    <tr class="sg-total">
+      <td colspan="2" style="font-weight:700">Total Story Points</td>
+      <td style="font-size:12px;color:var(--text-2)">3/3 KPIs set</td>
+      <td style="font-size:12px;color:var(--text-2)">0 pts done</td>
+      <td><span class="pts-chip">21</span></td>
+    </tr></tbody>
+      </table>
+    </div>
+        
+    <div class="d-section">
+      <div class="d-section-head">
+        <span class="d-section-title">Dependencies</span>
+        <span class="d-section-meta">3 total &middot; <span style="color:var(--red);font-weight:700">1 open</span></span>
+      </div>
+      <div class="dep-list">
+      <div class="dep-card dep-resolved" onclick="openDepModal('FTR-006','DEP-006')">
+        <div class="dep-icon dep-icon-resolved">&#10003;</div>
+        <div class="dep-body">
+          <div class="dep-title">ADR-002 committed before Track 2 build starts</div>
+          <div class="dep-desc">Async Queueable Apex pattern for Telco Network Controller API must be architecturally approved before any code is written for Track 2.</div>
+          <div class="dep-meta">
+            <span class="dep-type-tag">Process</span>
+            <span class="dep-status-chip dsc-resolved">Resolved</span>
+            <span class="dep-blocked-by">Blocked by: ADR-002 — Async Network Activation</span>
+            <button class="dep-jump-btn" onclick="event.stopPropagation();sidebarJump('FTR-006')">&#8594; FTR-006</button>
+          </div>
+        </div>
+        <div class="dep-arrow">&#8250;</div>
+      </div>
+      <div class="dep-card dep-resolved" onclick="openDepModal('FTR-006','DEP-007')">
+        <div class="dep-icon dep-icon-resolved">&#10003;</div>
+        <div class="dep-body">
+          <div class="dep-title">ADR-003 committed before Track 1 build starts</div>
+          <div class="dep-desc">Platform Event schema for Hardware_Fulfillment__e must be approved and deployed before Track 1 Flow can reference it.</div>
+          <div class="dep-meta">
+            <span class="dep-type-tag">Process</span>
+            <span class="dep-status-chip dsc-resolved">Resolved</span>
+            <span class="dep-blocked-by">Blocked by: ADR-003 — ERP Hardware Routing</span>
+            <button class="dep-jump-btn" onclick="event.stopPropagation();sidebarJump('FTR-006')">&#8594; FTR-006</button>
+          </div>
+        </div>
+        <div class="dep-arrow">&#8250;</div>
+      </div>
+      <div class="dep-card dep-open" onclick="openDepModal('FTR-006','DEP-008')">
+        <div class="dep-icon dep-icon-open">&#9888;</div>
+        <div class="dep-body">
+          <div class="dep-title">FTR-004 Order products must exist before decomposition flows can route by ProductCode</div>
+          <div class="dep-desc">Track 1 and Track 2 flows filter OrderItems by ProductCode — product records must be seeded before FTR-006 build starts.</div>
+          <div class="dep-meta">
+            <span class="dep-type-tag">Data</span>
+            <span class="dep-status-chip dsc-open">Open</span>
+            <span class="dep-blocked-by">Blocked by: 5G Smart Office — Product Catalog & Bundle Structure</span>
+            <button class="dep-jump-btn" onclick="event.stopPropagation();sidebarJump('FTR-004')">&#8594; FTR-004</button>
+          </div>
+        </div>
+        <div class="dep-arrow">&#8250;</div>
+      </div></div>
+    </div>
+      </div>
   </div>
 </div>
 <div class="legend">
@@ -1036,12 +1673,12 @@ nav {
   </div>
 </div>
 <script>
-const DEP_DATA = {"FTR-001::DEP-001":{"dep":{"id":"DEP-001","title":"Standard Pricebook must exist in target org","desc":"FTR-001 pricing procedures cannot activate until the Standard Pricebook record is seeded. This is a data dependency, not metadata.","blockedBy":"FTR-002","blockedByName":"Smart Product Swap","type":"Data","status":"open","owner":"DevOps"},"featureId":"FTR-001"},"FTR-001::DEP-002":{"dep":{"id":"DEP-002","title":"Context Tag schema approved by SA","desc":"Expression Set variables cannot be declared until the Solution Architect signs off the Context Tag schema from the Design gate.","blockedBy":"FTR-001","blockedByName":"FTR-001 Design Gate","type":"Process","status":"resolved","owner":"SA Lead"},"featureId":"FTR-001"},"FTR-003::DEP-003":{"dep":{"id":"DEP-003","title":"Regulatory approval for broadband pricing tiers","desc":"Tier pricing structure requires legal sign-off before being coded into Expression Sets. This is blocking design start.","blockedBy":"Legal","blockedByName":"Legal / Regulatory Team","type":"External","status":"open","owner":"PM"},"featureId":"FTR-003"},"FTR-003::DEP-004":{"dep":{"id":"DEP-004","title":"Fibre product SKUs loaded into org","desc":"FTR-003 discovery cannot complete until core fibre product SKUs are loaded into the org by the data team.","blockedBy":"FTR-001","blockedByName":"Tiered Pricing Expression Sets","type":"Data","status":"open","owner":"DA"},"featureId":"FTR-003"}};
+const DEP_DATA = {"FTR-001::DEP-001":{"dep":{"id":"DEP-001","title":"Standard Pricebook must exist in target org","desc":"FTR-001 pricing procedures cannot activate until the Standard Pricebook record is seeded. This is a data dependency, not metadata.","blockedBy":"FTR-002","blockedByName":"Smart Product Swap","type":"Data","status":"open","owner":"DevOps"},"featureId":"FTR-001"},"FTR-001::DEP-002":{"dep":{"id":"DEP-002","title":"Context Tag schema approved by SA","desc":"Expression Set variables cannot be declared until the Solution Architect signs off the Context Tag schema from the Design gate.","blockedBy":"FTR-001","blockedByName":"FTR-001 Design Gate","type":"Process","status":"resolved","owner":"SA Lead"},"featureId":"FTR-001"},"FTR-003::DEP-003":{"dep":{"id":"DEP-003","title":"Regulatory approval for broadband pricing tiers","desc":"Tier pricing structure requires legal sign-off before being coded into Expression Sets. This is blocking design start.","blockedBy":"Legal","blockedByName":"Legal / Regulatory Team","type":"External","status":"open","owner":"PM"},"featureId":"FTR-003"},"FTR-003::DEP-004":{"dep":{"id":"DEP-004","title":"Fibre product SKUs loaded into org","desc":"FTR-003 discovery cannot complete until core fibre product SKUs are loaded into the org by the data team.","blockedBy":"FTR-001","blockedByName":"Tiered Pricing Expression Sets","type":"Data","status":"open","owner":"DA"},"featureId":"FTR-003"},"FTR-005::DEP-005":{"dep":{"id":"DEP-005","title":"FTR-004 bundle products must exist before price rules can reference them","desc":"Volume discount Price Rule targets the Data Plan product — product record must be seeded in org before FTR-005 build can start.","blockedBy":"FTR-004","blockedByName":"5G Smart Office — Product Catalog & Bundle Structure","type":"Data","status":"open","owner":"DevOps"},"featureId":"FTR-005"},"FTR-006::DEP-006":{"dep":{"id":"DEP-006","title":"ADR-002 committed before Track 2 build starts","desc":"Async Queueable Apex pattern for Telco Network Controller API must be architecturally approved before any code is written for Track 2.","blockedBy":"FTR-006","blockedByName":"ADR-002 — Async Network Activation","type":"Process","status":"resolved","owner":"TA"},"featureId":"FTR-006"},"FTR-006::DEP-007":{"dep":{"id":"DEP-007","title":"ADR-003 committed before Track 1 build starts","desc":"Platform Event schema for Hardware_Fulfillment__e must be approved and deployed before Track 1 Flow can reference it.","blockedBy":"FTR-006","blockedByName":"ADR-003 — ERP Hardware Routing","type":"Process","status":"resolved","owner":"TA"},"featureId":"FTR-006"},"FTR-006::DEP-008":{"dep":{"id":"DEP-008","title":"FTR-004 Order products must exist before decomposition flows can route by ProductCode","desc":"Track 1 and Track 2 flows filter OrderItems by ProductCode — product records must be seeded before FTR-006 build starts.","blockedBy":"FTR-004","blockedByName":"5G Smart Office — Product Catalog & Bundle Structure","type":"Data","status":"open","owner":"DevOps"},"featureId":"FTR-006"}};
 let activeFeatureId = null;
 let jumpTarget = null;
-const featureStates    = { 'FTR-001':'active','FTR-002':'complete','FTR-003':'active' };
-const featureKpiStates = { 'FTR-001':'defined','FTR-002':'achieved','FTR-003':'missing' };
-const featureWlStates  = { 'FTR-001':'fail','FTR-002':'pass','FTR-003':'fail' };
+const featureStates    = { 'FTR-001':'active','FTR-002':'complete','FTR-003':'active','FTR-004':'active','FTR-005':'active','FTR-006':'partial' };
+const featureKpiStates = { 'FTR-001':'defined','FTR-002':'achieved','FTR-003':'missing','FTR-004':'defined','FTR-005':'defined','FTR-006':'defined' };
+const featureWlStates  = { 'FTR-001':'fail','FTR-002':'pass','FTR-003':'fail','FTR-004':'fail','FTR-005':'fail','FTR-006':'fail' };
 function filterSb(filter, btn) {
   document.querySelectorAll('.sb-filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -1091,7 +1728,7 @@ function openDepModal(featureId, depId) {
   document.getElementById('m-type').textContent    = dep.type;
   document.getElementById('m-owner').textContent   = dep.owner;
   const jump = document.getElementById('m-jump');
-  const linkedId = ["FTR-001","FTR-002","FTR-003"].find(id => id === dep.blockedBy);
+  const linkedId = ["FTR-001","FTR-002","FTR-003","FTR-004","FTR-005","FTR-006"].find(id => id === dep.blockedBy);
   if (linkedId) { jump.style.display = 'block'; jump.textContent = '\u2192 View ' + linkedId; jumpTarget = linkedId; }
   else          { jump.style.display = 'none'; jumpTarget = null; }
   document.getElementById('depModalOverlay').classList.add('open');

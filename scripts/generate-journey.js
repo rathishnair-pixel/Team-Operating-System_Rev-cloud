@@ -10,6 +10,7 @@ const OUT     = path.join(ROOT, 'results', 'feature-journey.html');
 
 const tracker = JSON.parse(fs.readFileSync(TRACKER, 'utf8'));
 const now     = new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+const NSM     = tracker.northStarMetric || null;
 
 const STAGES  = ['presales', 'discovery', 'design', 'prototype', 'build', 'test', 'deploy'];
 const SLABELS = { presales:'Presales', discovery:'Discovery', design:'Design', prototype:'Prototype', build:'Build', test:'Test', deploy:'Deploy' };
@@ -535,6 +536,7 @@ nav {
 .nav-right    { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .nav-updated  { font-size: 11px; color: var(--text-3); }
 .nav-refresh  { font-size: 11px; font-weight: 500; background: var(--blue-light); color: var(--blue); padding: 3px 10px; border-radius: 20px; }
+.nsm-chip     { font-size: 11px; color: var(--teal); background: var(--teal-bg); border: 1px solid rgba(11,110,110,0.2); padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
 .app { flex: 1; display: flex; min-height: 0; }
 .sidebar {
   width: 300px; flex-shrink: 0;
@@ -787,6 +789,7 @@ nav {
   <span class="nav-title">Team OS</span>
   <span class="nav-subtitle">Feature Journey &mdash; v4.0</span>
   <div class="nav-right">
+    ${NSM ? `<span class="nsm-chip" title="${NSM.measurement}">&#127919; ${NSM.name}: ${NSM.baseline} &rarr; <strong>${NSM.target.split(' ')[0]} ${NSM.target.split(' ')[1]}</strong></span>` : ''}
     <span class="nav-updated">Updated ${now}</span>
     <span class="nav-refresh">Auto-refresh 30s</span>
   </div>
