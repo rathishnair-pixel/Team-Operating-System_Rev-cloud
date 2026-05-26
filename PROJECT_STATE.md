@@ -1,8 +1,16 @@
-# Project State — Team OS v3.1
-**Last Updated:** 2026-05-22
+# Project State — Team OS v4.0
+**Last Updated:** 2026-05-26
+
+## North Star Metric
+> **Reduce Quote-to-Activation time from 14 days to 3 days**
+> - Baseline: 14 days (current average from quote signature to network activation)
+> - Target: 3 days (79% reduction)
+> - Measurement: Salesforce report — `Order.ActivatedDate` minus `Quote.SignedDate` per order
+> - Review Cadence: Sprint-end + 30/60/90 day post-deploy
+> - Owner: [PM] tracks, [TA] owns activation loop SLA
 
 ## Active Sprint
-Team OS v3.1 — Framework build. Agent swarm configured, protocols active.
+Team OS v4.0 — Epic E-001 (5G Smart Office) decomposed into FTR-004/005/006. KPI baseline set. Pending ADR-002 + ADR-003 before FTR-006 build gate opens.
 
 ## Team OS Protocol Status
 | # | Protocol | Status | Notes |
@@ -17,7 +25,11 @@ Team OS v3.1 — Framework build. Agent swarm configured, protocols active.
 | 8 | Delta Rule | Active | |
 | 9 | Source Citation Appendix (MCP) | Active | |
 
-## Recent Decisions (The "Why")
+## Pending ADRs (decisions made this session that need a commit)
+| ADR | Decision | Owner | Blocker For |
+|---|---|---|---|
+| ADR-002 | Telco Network Activation API — Named Credential pattern selection | [TA] | FTR-006 Track 2 build gate |
+| ADR-003 | ERP Hardware Routing — Platform Event vs Outbound Message | [TA] | FTR-006 Track 1 build gate |
 
 ## Recent Decisions (The "Why")
 - **Standalone ContextDefinition**: Platform-managed `RLM_SalesTransactionContext` cannot be extended via metadata (all attributes are `inheritedFrom`). Created self-contained `EcoGreenSwapContext` with `EcoSwapLineItem` node (`transposable=true`) instead.
