@@ -39,7 +39,7 @@ public with sharing class SubmitForTelcoApproval {
         try {
             Approval.ProcessSubmitRequest submitReq = new Approval.ProcessSubmitRequest();
             submitReq.setObjectId(req.quoteId);
-            submitReq.setProcessDefinitionNameOrId('TelcoDiscount_ApprovalProcess');
+            submitReq.setProcessDefinitionNameOrId('Telco_Discount_Approval_Process');
             Approval.ProcessResult result = Approval.process(submitReq);
             res.submitted    = result.isSuccess();
             res.approvalStep = 1;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
-    <active>true</active>
+    <active>false</active>
     <allowRecall>false</allowRecall>
     <allowedSubmitters>
         <type>allInternalUsers</type>
@@ -13,16 +13,10 @@
     </approvalPageFields>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
-        <approvalActions>
-            <action>
-                <name>Quote_Approval_Lock</name>
-                <type>FieldUpdate</type>
-            </action>
-        </approvalActions>
         <assignedApprover>
             <approver>
                 <name>Finance_Director_Queue</name>
-                <type>queue</type>
+                <type>Queue</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
@@ -40,25 +34,13 @@
         <rejectBehavior>
             <type>RejectRequest</type>
         </rejectBehavior>
-        <rejectionActions>
-            <action>
-                <name>Quote_Approval_Unlock</name>
-                <type>FieldUpdate</type>
-            </action>
-        </rejectionActions>
     </approvalStep>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
-        <approvalActions>
-            <action>
-                <name>Quote_Approval_Final_Approved</name>
-                <type>FieldUpdate</type>
-            </action>
-        </approvalActions>
         <assignedApprover>
             <approver>
                 <name>NetOps_VP_Queue</name>
-                <type>queue</type>
+                <type>Queue</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
@@ -68,15 +50,8 @@
         <rejectBehavior>
             <type>RejectRequest</type>
         </rejectBehavior>
-        <rejectionActions>
-            <action>
-                <name>Quote_Approval_Unlock</name>
-                <type>FieldUpdate</type>
-            </action>
-        </rejectionActions>
     </approvalStep>
     <description>2-step sequential approval for telco quotes with manual discount greater than 20%. Step 1: Finance Director. Step 2: NetOps VP. 4-hour escalation SLA enforced by Flow Orchestrator TelcoApprovalEscalationOrchestration per ADR-005. Triggered programmatically via SubmitForTelcoApproval Invocable Action.</description>
-    <emailTemplate>unfiled$public/TelcoApprovalRequest</emailTemplate>
     <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
     <entryCriteria>
         <criteriaItems>
@@ -85,26 +60,8 @@
             <value>20</value>
         </criteriaItems>
     </entryCriteria>
-    <finalApprovalActions>
-        <action>
-            <name>Quote_Approval_Unlock</name>
-            <type>FieldUpdate</type>
-        </action>
-    </finalApprovalActions>
     <finalApprovalRecordLock>false</finalApprovalRecordLock>
-    <finalRejectionActions>
-        <action>
-            <name>Quote_Approval_Unlock</name>
-            <type>FieldUpdate</type>
-        </action>
-    </finalRejectionActions>
     <finalRejectionRecordLock>false</finalRejectionRecordLock>
-    <initialSubmissionActions>
-        <action>
-            <name>Quote_Approval_Lock</name>
-            <type>FieldUpdate</type>
-        </action>
-    </initialSubmissionActions>
     <label>Telco Discount Approval Process</label>
     <processOrder>1</processOrder>
     <recordEditability>AdminOrCurrentApprover</recordEditability>
