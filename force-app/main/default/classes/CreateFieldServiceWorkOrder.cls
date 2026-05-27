@@ -6,18 +6,14 @@
 public with sharing class CreateFieldServiceWorkOrder {
 
     public class WorkOrderRequest {
-        @InvocableVariable(label='Order Id' required=true)
+        @InvocableVariable(label='Order Id')
         public String orderId;
-        @InvocableVariable(label='Order Item Id' required=true)
-        public String orderItemId;
-        @InvocableVariable(label='Site Address' required=true)
-        public String siteAddress;
+        @InvocableVariable(label='Order Item Id')
+        public Id orderItemId;
         @InvocableVariable(label='Fiber Meters' required=true)
-        public Integer fiberMeters;
+        public Double fiberMeters;
         @InvocableVariable(label='Site ID' required=true)
         public String siteId;
-        @InvocableVariable(label='Account Id' required=true)
-        public String accountId;
     }
 
     public class WorkOrderResult {
@@ -39,15 +35,12 @@ public with sharing class CreateFieldServiceWorkOrder {
         for (WorkOrderRequest req : requests) {
             Datetime slaStart = System.now();
             workOrders.add(new WorkOrder(
-                Subject          = 'Fiber Drop & Splice — Site ' + req.siteId,
-                AccountId        = req.accountId,
-                Street           = req.siteAddress,
-                Fiber_Meters__c  = req.fiberMeters,
-                SlaStartDate     = slaStart,
-                SlaExitDate      = slaStart.addHours(24),
-                Description      = 'Install fiber run of ' + req.fiberMeters + ' meters. ' +
-                                   'Splice completion required before Order can be closed. ' +
-                                   'Order: ' + req.orderId + ' | OrderItem: ' + req.orderItemId
+                Subject         = 'Fiber Drop & Splice — Site ' + req.siteId,
+                Fiber_Meters__c = (req.fiberMeters != null) ? req.fiberMeters : 0.0,
+                SlaStartDate    = slaStart,
+                Description     = 'Install fiber run of ' + req.fiberMeters + ' meters. SLA: 24h from activation. ' +
+                                  'Splice completion required before Order can be closed. ' +
+                                  'Order: ' + req.orderId + ' | OrderItem: ' + req.orderItemId
             ));
         }
 

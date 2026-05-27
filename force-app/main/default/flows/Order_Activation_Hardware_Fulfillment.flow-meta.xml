@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
-    <description>FTR-006 Track 1 — On Order activation, loop over OrderItems and publish Hardware_Fulfillment__e Platform Event for each ROUTER/DATA/SLA line. Excludes FIBER_INSTALL (handled by Track 3 FSL Work Order flow). Sets ERP_Confirmed__c as idempotency guard. See ADR-003.</description>
+    <description>FTR-006 Track 1 — On Order activation, loop over OrderItems and publish Hardware_Fulfillment__e Platform Event for each. Sets ERP_Confirmed__c as idempotency guard. See ADR-003.</description>
     <interviewLabel>Order Activation Hardware Fulfillment {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Order Activation — Hardware Fulfillment Publisher</label>
     <processMetadataValues>
@@ -23,12 +23,14 @@
             <operator>IsChanged</operator>
             <value><booleanValue>true</booleanValue></value>
         </filters>
+        <connector>
+            <targetReference>Get_Hardware_Order_Items</targetReference>
+        </connector>
         <object>Order</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
 
-    <!-- Get all OrderItems for this Order that are not FIBER_INSTALL and not yet ERP-confirmed -->
     <recordLookups>
         <name>Get_Hardware_Order_Items</name>
         <label>Get Hardware Order Items</label>
@@ -51,61 +53,29 @@
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>OrderItem</object>
+        <outputReference>iterOrderItems</outputReference>
         <queriedFields>Id</queriedFields>
         <queriedFields>OrderId</queriedFields>
-        <queriedFields>Product2.ProductCode</queriedFields>
         <queriedFields>Quantity</queriedFields>
-        <queriedFields>Product2.Name</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
 
-    <!-- Loop over each OrderItem -->
     <loops>
         <name>Loop_Order_Items</name>
         <label>Loop Order Items</label>
         <locationX>176</locationX>
         <locationY>288</locationY>
-        <collectionReference>Get_Hardware_Order_Items</collectionReference>
+        <collectionReference>iterOrderItems</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Check_Not_Fiber_Install</targetReference>
+            <targetReference>Publish_Hardware_Event</targetReference>
         </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>End_Loop</targetReference>
-        </noMoreValuesConnector>
     </loops>
 
-    <!-- Skip FIBER_INSTALL — handled by Track 3 -->
-    <decisions>
-        <name>Check_Not_Fiber_Install</name>
-        <label>Not FIBER_INSTALL?</label>
-        <locationX>176</locationX>
-        <locationY>408</locationY>
-        <defaultConnector>
-            <targetReference>Loop_Order_Items</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Is FIBER_INSTALL — skip</defaultConnectorLabel>
-        <rules>
-            <name>Not_Fiber_Install</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Loop_Order_Items.Current.Product2.ProductCode</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue><stringValue>FIBER_INSTALL</stringValue></rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Publish_Hardware_Event</targetReference>
-            </connector>
-            <label>Not FIBER_INSTALL</label>
-        </rules>
-    </decisions>
-
-    <!-- Publish Platform Event -->
     <recordCreates>
         <name>Publish_Hardware_Event</name>
         <label>Publish Hardware Fulfillment Event</label>
         <locationX>176</locationX>
-        <locationY>528</locationY>
+        <locationY>408</locationY>
         <connector>
             <targetReference>Mark_ERP_Confirmed</targetReference>
         </connector>
@@ -115,26 +85,21 @@
         </inputAssignments>
         <inputAssignments>
             <field>Order_Item_Id__c</field>
-            <value><elementReference>Loop_Order_Items.Current.Id</elementReference></value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Router_SKU__c</field>
-            <value><elementReference>Loop_Order_Items.Current.Product2.ProductCode</elementReference></value>
+            <value><elementReference>Loop_Order_Items.Id</elementReference></value>
         </inputAssignments>
         <inputAssignments>
             <field>Quantity__c</field>
-            <value><elementReference>Loop_Order_Items.Current.Quantity</elementReference></value>
+            <value><elementReference>Loop_Order_Items.Quantity</elementReference></value>
         </inputAssignments>
         <object>Hardware_Fulfillment__e</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
 
-    <!-- Stamp idempotency guard — prevents re-publish on re-trigger -->
     <recordUpdates>
         <name>Mark_ERP_Confirmed</name>
         <label>Mark ERP Confirmed</label>
         <locationX>176</locationX>
-        <locationY>648</locationY>
+        <locationY>528</locationY>
         <connector>
             <targetReference>Loop_Order_Items</targetReference>
         </connector>
@@ -142,7 +107,7 @@
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
-            <value><elementReference>Loop_Order_Items.Current.Id</elementReference></value>
+            <value><elementReference>Loop_Order_Items.Id</elementReference></value>
         </filters>
         <inputAssignments>
             <field>ERP_Confirmed__c</field>
@@ -151,12 +116,14 @@
         <object>OrderItem</object>
     </recordUpdates>
 
-    <programmaticFlowNodes>
-        <name>End_Loop</name>
-        <label>End</label>
-        <locationX>176</locationX>
-        <locationY>768</locationY>
-    </programmaticFlowNodes>
+    <variables>
+        <name>iterOrderItems</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>OrderItem</objectType>
+    </variables>
 
     <environments>Default</environments>
     <runInMode>DefaultMode</runInMode>

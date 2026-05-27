@@ -6,7 +6,7 @@
     <label>Order Item</label>
     <referenceTo>OrderItem</referenceTo>
     <relationshipLabel>Assets</relationshipLabel>
-    <relationshipName>Assets__r</relationshipName>
+    <relationshipName>Assets</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

@@ -1,0 +1,4 @@
+# .forceignore - files excluded from SFDX source tracking and deploy
+# productConstraintModel is not in the SFDX metadata registry (not deployable via CLI)
+# CML records must be created manually in org via Revenue Cloud Setup
+force-app/main/default/productConstraintModels/

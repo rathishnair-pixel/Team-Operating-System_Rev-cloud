@@ -28,20 +28,19 @@
             <operator>EqualTo</operator>
             <value><stringValue>Pending_Activation</stringValue></value>
         </filters>
+        <connector>
+            <targetReference>Has_Order_Item</targetReference>
+        </connector>
         <object>Asset</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
 
-    <!-- Verify OrderItemId__c is populated before enqueue -->
     <decisions>
         <name>Has_Order_Item</name>
         <label>Has OrderItem Reference?</label>
         <locationX>176</locationX>
         <locationY>168</locationY>
-        <defaultConnector>
-            <targetReference>End_No_OrderItem</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>No OrderItem — skip</defaultConnectorLabel>
         <rules>
             <name>OrderItem_Present</name>
@@ -58,7 +57,6 @@
         </rules>
     </decisions>
 
-    <!-- Call EnqueueNetworkActivation Invocable -->
     <actionCalls>
         <name>Enqueue_Network_Activation</name>
         <label>Enqueue Network Activation</label>
@@ -71,13 +69,6 @@
             <value><elementReference>$Record.OrderItemId__c</elementReference></value>
         </inputParameters>
     </actionCalls>
-
-    <programmaticFlowNodes>
-        <name>End_No_OrderItem</name>
-        <label>End — No OrderItem</label>
-        <locationX>396</locationX>
-        <locationY>168</locationY>
-    </programmaticFlowNodes>
 
     <environments>Default</environments>
     <runInMode>DefaultMode</runInMode>

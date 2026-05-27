@@ -32,10 +32,9 @@ public class TelcoNetworkActivationQueueable implements Queueable, Database.Allo
         }
 
         try {
-            // Endpoint from Custom Metadata — SOUL R-05
-            Telco_API_Config__mdt config = [SELECT Endpoint__c FROM Telco_API_Config__mdt WHERE DeveloperName = 'Network_Controller' LIMIT 1];
+            // Named Credential handles auth — no hardcoded URLs (SOUL R-05)
             HttpRequest req  = new HttpRequest();
-            req.setEndpoint('callout:Telco_Network_Controller' + config.Endpoint__c);
+            req.setEndpoint('callout:Telco_Network_Controller/api/v1/activate');
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setBody(JSON.serialize(new Map<String, Object>{
