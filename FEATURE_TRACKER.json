@@ -255,11 +255,11 @@
         "deploy":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["scripts/devops-preflight-5g.sh", "scripts/seed-5g-products.sh"] }
       },
       "userStories": [
-        { "id": "US-FTR004-001", "title": "As a Catalog Admin, I want the 5G Smart Office bundle hierarchy defined so products are structured 3 levels deep in RCA", "points": 3, "status": "todo", "stage": "build", "kpi": "Bundle hierarchy activates without validation errors in org" },
-        { "id": "US-FTR004-002", "title": "As a Pricing Manager, I want a Consumption Schedule on the Data Plan so tiered overage charges apply when bandwidth limits are breached", "points": 5, "status": "todo", "stage": "build", "kpi": "Overage pricing calculates correctly for all 3 consumption tiers" },
-        { "id": "US-FTR004-003", "title": "As a Sales Rep, I want fiber install price auto-calculated from Fiber_Meters__c so I never need to manually compute the site fee", "points": 5, "status": "todo", "stage": "build", "kpi": "Install price = $500 + ($250 x FLOOR(meters/100)) with zero manual overrides needed" },
-        { "id": "US-FTR004-004", "title": "As a Pricing Manager, I want the Telco Platinum SLA priced at exactly 15% of Router + Data Plan net price so SLA revenue is always accurate", "points": 5, "status": "todo", "stage": "build", "kpi": "SLA PoT calculation variance = 0% vs manual calculation in 100% of test cases" },
-        { "id": "US-FTR004-005", "title": "As a Sales Rep, I want a validation rule blocking SLA selection without a Router so invalid bundles cannot be quoted", "points": 3, "status": "todo", "stage": "build", "kpi": "100% of SLA-without-Router quote attempts blocked at save" }
+        { "id": "US-FTR004-001", "title": "As a Catalog Admin, I want the 5G Smart Office bundle hierarchy defined so products are structured 3 levels deep in RCA", "points": 3, "status": "done", "stage": "deploy", "kpi": "Bundle hierarchy activates without validation errors in org" },
+        { "id": "US-FTR004-002", "title": "As a Pricing Manager, I want a Consumption Schedule on the Data Plan so tiered overage charges apply when bandwidth limits are breached", "points": 5, "status": "done", "stage": "deploy", "kpi": "Overage pricing calculates correctly for all 3 consumption tiers" },
+        { "id": "US-FTR004-003", "title": "As a Sales Rep, I want fiber install price auto-calculated from Fiber_Meters__c so I never need to manually compute the site fee", "points": 5, "status": "done", "stage": "deploy", "kpi": "Install price = $500 + ($250 x FLOOR(meters/100)) with zero manual overrides needed" },
+        { "id": "US-FTR004-004", "title": "As a Pricing Manager, I want the Telco Platinum SLA priced at exactly 15% of Router + Data Plan net price so SLA revenue is always accurate", "points": 5, "status": "done", "stage": "deploy", "kpi": "SLA PoT calculation variance = 0% vs manual calculation in 100% of test cases" },
+        { "id": "US-FTR004-005", "title": "As a Sales Rep, I want a validation rule blocking SLA selection without a Router so invalid bundles cannot be quoted", "points": 3, "status": "done", "stage": "deploy", "kpi": "100% of SLA-without-Router quote attempts blocked at save" }
       ],
       "dependencies": []
     },
@@ -294,9 +294,9 @@
         "deploy":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/approvalProcesses/Quote.TelcoDiscount_ApprovalProcess.approvalProcess-meta.xml"] }
       },
       "userStories": [
-        { "id": "US-FTR005-001", "title": "As a Pricing Manager, I want a volume discount price rule so customers buying 25+ routers automatically receive 15% off the Data Plan", "points": 5, "status": "todo", "stage": "build", "kpi": "Volume discount applies to 100% of qualifying multi-site quotes with zero manual intervention" },
-        { "id": "US-FTR005-002a", "title": "As a Finance Director, I want sequential approval routing for discounts over 20% so financial risk is reviewed by Finance then NetOps before quote is sent", "points": 4, "status": "todo", "stage": "build", "kpi": "100% of >20% discount quotes locked and routed correctly to Finance Director then NetOps VP" },
-        { "id": "US-FTR005-002b", "title": "As a Finance Director, I want an automatic 4-hour escalation so unanswered approvals are forwarded to my manager without manual chasing", "points": 4, "status": "todo", "stage": "build", "kpi": "Approval escalation fires within 4 business hours for 100% of unanswered approval steps" }
+        { "id": "US-FTR005-001", "title": "As a Pricing Manager, I want a volume discount price rule so customers buying 25+ routers automatically receive 15% off the Data Plan", "points": 5, "status": "done", "stage": "deploy", "kpi": "Volume discount applies to 100% of qualifying multi-site quotes with zero manual intervention" },
+        { "id": "US-FTR005-002a", "title": "As a Finance Director, I want sequential approval routing for discounts over 20% so financial risk is reviewed by Finance then NetOps before quote is sent", "points": 4, "status": "done", "stage": "deploy", "kpi": "100% of >20% discount quotes locked and routed correctly to Finance Director then NetOps VP" },
+        { "id": "US-FTR005-002b", "title": "As a Finance Director, I want an automatic 4-hour escalation so unanswered approvals are forwarded to my manager without manual chasing", "points": 4, "status": "done", "stage": "deploy", "kpi": "Approval escalation fires within 4 business hours for 100% of unanswered approval steps" }
       ],
       "dependencies": [
         {
@@ -345,9 +345,9 @@
         "deploy":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/flows/Order_Activation_Hardware_Fulfillment.flow-meta.xml", "force-app/main/default/flows/Asset_IMEI_Scan_Network_Activation.flow-meta.xml", "force-app/main/default/flows/Order_Activation_Fiber_Work_Order.flow-meta.xml"] }
       },
       "userStories": [
-        { "id": "US-FTR006-001", "title": "As a Warehouse Ops Manager, I want hardware fulfillment events published to the ERP on Order activation so routers are picked and shipped on Day 1", "points": 5, "status": "todo", "stage": "build", "kpi": "ERP_Confirmed__c stamped within 2 hours of Order activation for 99% of orders" },
-        { "id": "US-FTR006-002", "title": "As a Network Engineer, I want async network activation triggered on IMEI scan so provisioning completes without blocking the Order transaction", "points": 8, "status": "todo", "stage": "build", "kpi": "Network activation confirmed within 24 hours of IMEI scan for 99% of sites" },
-        { "id": "US-FTR006-003", "title": "As a Field Service Dispatcher, I want a Work Order auto-created on Order activation with SLA window so technicians are dispatched within 4 hours", "points": 8, "status": "todo", "stage": "build", "kpi": "Work Order assigned within 4 hours for 95% of activations; fiber splice complete by Day 2" }
+        { "id": "US-FTR006-001", "title": "As a Warehouse Ops Manager, I want hardware fulfillment events published to the ERP on Order activation so routers are picked and shipped on Day 1", "points": 5, "status": "done", "stage": "deploy", "kpi": "ERP_Confirmed__c stamped within 2 hours of Order activation for 99% of orders" },
+        { "id": "US-FTR006-002", "title": "As a Network Engineer, I want async network activation triggered on IMEI scan so provisioning completes without blocking the Order transaction", "points": 8, "status": "done", "stage": "deploy", "kpi": "Network activation confirmed within 24 hours of IMEI scan for 99% of sites" },
+        { "id": "US-FTR006-003", "title": "As a Field Service Dispatcher, I want a Work Order auto-created on Order activation with SLA window so technicians are dispatched within 4 hours", "points": 8, "status": "done", "stage": "deploy", "kpi": "Work Order assigned within 4 hours for 95% of activations; fiber splice complete by Day 2" }
       ],
       "dependencies": [
         {
