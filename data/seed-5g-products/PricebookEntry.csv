@@ -1,0 +1,5 @@
+Product2.ProductCode,UnitPrice,IsActive,CurrencyIsoCode
+EDGE_5G_ROUTER,1200.00,true,AUD
+UNLIMITED_5G_DATA,350.00,true,AUD
+FIBER_INSTALL,500.00,true,AUD
+TELCO_PLATINUM_SLA,0.00,true,AUD

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <description>FTR-006 Track 3 — On Order activation, find all FIBER_INSTALL OrderItems and call CreateFieldServiceWorkOrder Invocable Action to create FSL Work Orders with 24-hour SLA windows. Fiber_Meters__c drives technician prep time. See ADR-003.</description>
+    <interviewLabel>Order Activation Fiber Work Order {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Order Activation — Fiber Work Order Creator</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>176</locationX>
+        <locationY>48</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Activated</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>IsChanged</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <object>Order</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+
+    <!-- Get FIBER_INSTALL OrderItems for this Order -->
+    <recordLookups>
+        <name>Get_Fiber_Order_Items</name>
+        <label>Get Fiber Install Order Items</label>
+        <locationX>176</locationX>
+        <locationY>168</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Has_Fiber_Lines</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>OrderId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>Product2.ProductCode</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>FIBER_INSTALL</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>OrderItem</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>OrderId</queriedFields>
+        <queriedFields>Fiber_Meters__c</queriedFields>
+        <queriedFields>ShipToStreet</queriedFields>
+        <queriedFields>Site_Id__c</queriedFields>
+        <queriedFields>Order.AccountId</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <!-- Only proceed if fiber lines exist -->
+    <decisions>
+        <name>Check_Has_Fiber_Lines</name>
+        <label>Has Fiber Install Lines?</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <defaultConnector>
+            <targetReference>End_No_Fiber</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No FIBER_INSTALL lines — done</defaultConnectorLabel>
+        <rules>
+            <name>Has_Fiber_Lines</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Fiber_Order_Items</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Loop_Fiber_Items</targetReference>
+            </connector>
+            <label>Fiber lines found</label>
+        </rules>
+    </decisions>
+
+    <!-- Loop fiber items and build Work Order requests -->
+    <loops>
+        <name>Loop_Fiber_Items</name>
+        <label>Loop Fiber Items</label>
+        <locationX>176</locationX>
+        <locationY>408</locationY>
+        <collectionReference>Get_Fiber_Order_Items</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Create_Work_Order</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>End_Fiber_Done</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+
+    <!-- Call CreateFieldServiceWorkOrder Invocable -->
+    <actionCalls>
+        <name>Create_Work_Order</name>
+        <label>Create Field Service Work Order</label>
+        <locationX>176</locationX>
+        <locationY>528</locationY>
+        <actionName>CreateFieldServiceWorkOrder</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Loop_Fiber_Items</targetReference>
+        </connector>
+        <inputParameters>
+            <name>orderId</name>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>orderItemId</name>
+            <value><elementReference>Loop_Fiber_Items.Current.Id</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>siteAddress</name>
+            <value><elementReference>Loop_Fiber_Items.Current.ShipToStreet</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>fiberMeters</name>
+            <value><elementReference>Loop_Fiber_Items.Current.Fiber_Meters__c</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>siteId</name>
+            <value><elementReference>Loop_Fiber_Items.Current.Site_Id__c</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>accountId</name>
+            <value><elementReference>Loop_Fiber_Items.Current.Order.AccountId</elementReference></value>
+        </inputParameters>
+    </actionCalls>
+
+    <programmaticFlowNodes>
+        <name>End_No_Fiber</name>
+        <label>End — No Fiber Lines</label>
+        <locationX>396</locationX>
+        <locationY>288</locationY>
+    </programmaticFlowNodes>
+
+    <programmaticFlowNodes>
+        <name>End_Fiber_Done</name>
+        <label>End — Work Orders Created</label>
+        <locationX>176</locationX>
+        <locationY>648</locationY>
+    </programmaticFlowNodes>
+
+    <environments>Default</environments>
+    <runInMode>DefaultMode</runInMode>
+    <status>Active</status>
+</Flow>

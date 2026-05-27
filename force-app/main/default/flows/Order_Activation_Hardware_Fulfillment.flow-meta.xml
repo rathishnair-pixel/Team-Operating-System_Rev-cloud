@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <description>FTR-006 Track 1 — On Order activation, loop over OrderItems and publish Hardware_Fulfillment__e Platform Event for each ROUTER/DATA/SLA line. Excludes FIBER_INSTALL (handled by Track 3 FSL Work Order flow). Sets ERP_Confirmed__c as idempotency guard. See ADR-003.</description>
+    <interviewLabel>Order Activation Hardware Fulfillment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Order Activation — Hardware Fulfillment Publisher</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>176</locationX>
+        <locationY>48</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Activated</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>IsChanged</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <object>Order</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+
+    <!-- Get all OrderItems for this Order that are not FIBER_INSTALL and not yet ERP-confirmed -->
+    <recordLookups>
+        <name>Get_Hardware_Order_Items</name>
+        <label>Get Hardware Order Items</label>
+        <locationX>176</locationX>
+        <locationY>168</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_Order_Items</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>OrderId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>ERP_Confirmed__c</field>
+            <operator>EqualTo</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>OrderItem</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>OrderId</queriedFields>
+        <queriedFields>Product2.ProductCode</queriedFields>
+        <queriedFields>Quantity</queriedFields>
+        <queriedFields>Product2.Name</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <!-- Loop over each OrderItem -->
+    <loops>
+        <name>Loop_Order_Items</name>
+        <label>Loop Order Items</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <collectionReference>Get_Hardware_Order_Items</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Check_Not_Fiber_Install</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>End_Loop</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+
+    <!-- Skip FIBER_INSTALL — handled by Track 3 -->
+    <decisions>
+        <name>Check_Not_Fiber_Install</name>
+        <label>Not FIBER_INSTALL?</label>
+        <locationX>176</locationX>
+        <locationY>408</locationY>
+        <defaultConnector>
+            <targetReference>Loop_Order_Items</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Is FIBER_INSTALL — skip</defaultConnectorLabel>
+        <rules>
+            <name>Not_Fiber_Install</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Loop_Order_Items.Current.Product2.ProductCode</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue><stringValue>FIBER_INSTALL</stringValue></rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Publish_Hardware_Event</targetReference>
+            </connector>
+            <label>Not FIBER_INSTALL</label>
+        </rules>
+    </decisions>
+
+    <!-- Publish Platform Event -->
+    <recordCreates>
+        <name>Publish_Hardware_Event</name>
+        <label>Publish Hardware Fulfillment Event</label>
+        <locationX>176</locationX>
+        <locationY>528</locationY>
+        <connector>
+            <targetReference>Mark_ERP_Confirmed</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Order_Id__c</field>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Order_Item_Id__c</field>
+            <value><elementReference>Loop_Order_Items.Current.Id</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Router_SKU__c</field>
+            <value><elementReference>Loop_Order_Items.Current.Product2.ProductCode</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Quantity__c</field>
+            <value><elementReference>Loop_Order_Items.Current.Quantity</elementReference></value>
+        </inputAssignments>
+        <object>Hardware_Fulfillment__e</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+
+    <!-- Stamp idempotency guard — prevents re-publish on re-trigger -->
+    <recordUpdates>
+        <name>Mark_ERP_Confirmed</name>
+        <label>Mark ERP Confirmed</label>
+        <locationX>176</locationX>
+        <locationY>648</locationY>
+        <connector>
+            <targetReference>Loop_Order_Items</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>Loop_Order_Items.Current.Id</elementReference></value>
+        </filters>
+        <inputAssignments>
+            <field>ERP_Confirmed__c</field>
+            <value><booleanValue>true</booleanValue></value>
+        </inputAssignments>
+        <object>OrderItem</object>
+    </recordUpdates>
+
+    <programmaticFlowNodes>
+        <name>End_Loop</name>
+        <label>End</label>
+        <locationX>176</locationX>
+        <locationY>768</locationY>
+    </programmaticFlowNodes>
+
+    <environments>Default</environments>
+    <runInMode>DefaultMode</runInMode>
+    <status>Active</status>
+</Flow>

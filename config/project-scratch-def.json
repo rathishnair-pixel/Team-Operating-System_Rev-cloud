@@ -1,0 +1,26 @@
+{
+  "orgName": "Team OS — 5G Smart Office Dev",
+  "edition": "Developer",
+  "features": [
+    "FieldService",
+    "FlowOrchestration",
+    "PlatformEvents",
+    "Communities"
+  ],
+  "settings": {
+    "caseSettings": {
+      "enableCaseFeed": true
+    },
+    "chatterSettings": {
+      "enableChatter": true
+    },
+    "contractSettings": {
+      "autoCalculateEndDate": true
+    },
+    "orderSettings": {
+      "enableOrders": true,
+      "enableNegativeQuantity": false,
+      "enableReductionOrders": true
+    }
+  }
+}

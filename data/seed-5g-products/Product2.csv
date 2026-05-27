@@ -1,0 +1,5 @@
+ProductCode,Name,Description,IsActive,Family
+EDGE_5G_ROUTER,Edge 5G Enterprise Router,"5G managed enterprise router with 4G failover. Required component of the 5G Smart Office bundle. Maximum 1 per site.",true,Hardware
+UNLIMITED_5G_DATA,Unlimited 5G Core Data Plan,"Unlimited data plan for the 5G Smart Office bundle. Tiered overage applies above 1TB/month. Volume discount of 15% applies for 25+ sites.",true,Connectivity
+FIBER_INSTALL,Fiber Drop and Site Installation,"One-time fiber drop and splice installation service. Price = $500 base + $250 per 100m of fiber run. Excluded from SLA PoT calculation.",true,Professional Services
+TELCO_PLATINUM_SLA,Telco Platinum SLA,"Platinum SLA add-on for 5G Smart Office. 99.99% uptime SLA. Price is 15% of Router + Data Plan net price. Requires both Router and Data Plan on same quote.",true,SLA

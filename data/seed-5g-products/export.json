@@ -1,0 +1,23 @@
+{
+  "version": 1.0,
+  "objects": [
+    {
+      "query": "SELECT Id, Name, ProductCode, Description, IsActive, Family FROM Product2 WHERE ProductCode IN ('EDGE_5G_ROUTER','UNLIMITED_5G_DATA','FIBER_INSTALL','TELCO_PLATINUM_SLA')",
+      "operation": "Upsert",
+      "externalId": "ProductCode"
+    },
+    {
+      "query": "SELECT Id, Name, IsActive FROM Pricebook2 WHERE IsStandard = true",
+      "operation": "Upsert",
+      "externalId": "Id"
+    },
+    {
+      "query": "SELECT Id, Product2Id, Pricebook2Id, UnitPrice, IsActive, CurrencyIsoCode FROM PricebookEntry WHERE Product2.ProductCode IN ('EDGE_5G_ROUTER','UNLIMITED_5G_DATA','FIBER_INSTALL','TELCO_PLATINUM_SLA') AND Pricebook2.IsStandard = true",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "references": [
+        { "field": "Product2Id", "objectName": "Product2", "externalId": "ProductCode" }
+      ]
+    }
+  ]
+}
