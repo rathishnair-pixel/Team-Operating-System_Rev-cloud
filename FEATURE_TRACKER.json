@@ -249,9 +249,9 @@
         "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-004-pot-expression-set-filter-declarative-first.md", "ADRs/ADR-006-smartoffice-context-definition-agentforce.md"] },
-        "prototype": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["results/ftr-004-prototype-bundle-config-2026-05-26.html"], "prototype_type": "salesforce-sandbox", "customer_approved": false },
-        "build":     { "status": "complete",    "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["force-app/main/default/productConstraintModels/Edge5GEnterpriseRouterCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/Unlimited5GCoreDataPlanCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/TelcoPlatinumSLACML.productConstraintModel-meta.xml", "force-app/main/default/classes/ConfigureTelcoBundle.cls"] },
-        "test":      { "status": "complete",    "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/ConfigureTelcoBundleTest.cls"] },
+        "prototype": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["results/ftr-004-prototype-bundle-config-2026-05-26.html"], "prototype_type": "salesforce-sandbox", "customer_approved": true },
+        "build":     { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/productConstraintModels/Edge5GEnterpriseRouterCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/Unlimited5GCoreDataPlanCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/TelcoPlatinumSLACML.productConstraintModel-meta.xml", "force-app/main/default/classes/ConfigureTelcoBundle.cls"] },
+        "test":      { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/ConfigureTelcoBundleTest.cls"] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
       },
       "userStories": [
@@ -288,9 +288,9 @@
         "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-005-approval-sla-escalation-flow-orchestrator.md"] },
-        "prototype": { "status": "in-progress", "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["results/ftr-005-prototype-pricing-approvals-2026-05-26.html"], "prototype_type": "process-walkthrough", "customer_approved": false },
-        "build":     { "status": "complete",    "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/SubmitForTelcoApproval.cls", "force-app/main/default/classes/EscalateTelcoApproval.cls", "force-app/main/default/approvalProcesses/Quote.TelcoDiscount_ApprovalProcess.approvalProcess-meta.xml", "force-app/main/default/objects/Quote/fields/Last_Escalated_DateTime__c.field-meta.xml"] },
-        "test":      { "status": "complete",    "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/SubmitForTelcoApprovalTest.cls", "force-app/main/default/classes/EscalateTelcoApprovalTest.cls"] },
+        "prototype": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["results/ftr-005-prototype-pricing-approvals-2026-05-26.html"], "prototype_type": "process-walkthrough", "customer_approved": true },
+        "build":     { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/SubmitForTelcoApproval.cls", "force-app/main/default/classes/EscalateTelcoApproval.cls", "force-app/main/default/approvalProcesses/Quote.TelcoDiscount_ApprovalProcess.approvalProcess-meta.xml", "force-app/main/default/objects/Quote/fields/Last_Escalated_DateTime__c.field-meta.xml"] },
+        "test":      { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/SubmitForTelcoApprovalTest.cls", "force-app/main/default/classes/EscalateTelcoApprovalTest.cls"] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
       },
       "userStories": [
@@ -306,7 +306,7 @@
           "blockedBy": "FTR-004",
           "blockedByName": "5G Smart Office — Product Catalog & Bundle Structure",
           "type": "Data",
-          "status": "open",
+          "status": "resolved",
           "owner": "DevOps"
         }
       ]
@@ -339,9 +339,9 @@
         "presales":  { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "discovery": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": [] },
         "design":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["ADRs/ADR-002-async-telco-network-activation-api.md", "ADRs/ADR-003-erp-hardware-routing-platform-event.md"] },
-        "prototype": { "status": "in-progress",  "approval_status": "awaiting", "date": "2026-05-26", "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": false },
-        "build":     { "status": "complete",    "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/TelcoNetworkActivationQueueable.cls", "force-app/main/default/classes/CreateFieldServiceWorkOrder.cls", "force-app/main/default/classes/EnqueueNetworkActivation.cls", "force-app/main/default/flows/Order_Activation_Hardware_Fulfillment.flow-meta.xml", "force-app/main/default/flows/Asset_IMEI_Scan_Network_Activation.flow-meta.xml", "force-app/main/default/flows/Order_Activation_Fiber_Work_Order.flow-meta.xml", "force-app/main/default/objects/Hardware_Fulfillment__e/Hardware_Fulfillment__e.object-meta.xml", "force-app/main/default/productConstraintModels/FiberDropSiteInstallationCML.productConstraintModel-meta.xml"] },
-        "test":      { "status": "complete",    "approval_status": "awaiting", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/TelcoNetworkActivationQueueableTest.cls", "force-app/main/default/classes/CreateFieldServiceWorkOrderTest.cls", "force-app/main/default/classes/EnqueueNetworkActivationTest.cls"] },
+        "prototype": { "status": "complete",     "approval_status": "approved", "date": "2026-05-26", "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": true },
+        "build":     { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/TelcoNetworkActivationQueueable.cls", "force-app/main/default/classes/CreateFieldServiceWorkOrder.cls", "force-app/main/default/classes/EnqueueNetworkActivation.cls", "force-app/main/default/flows/Order_Activation_Hardware_Fulfillment.flow-meta.xml", "force-app/main/default/flows/Asset_IMEI_Scan_Network_Activation.flow-meta.xml", "force-app/main/default/flows/Order_Activation_Fiber_Work_Order.flow-meta.xml", "force-app/main/default/objects/Hardware_Fulfillment__e/Hardware_Fulfillment__e.object-meta.xml", "force-app/main/default/productConstraintModels/FiberDropSiteInstallationCML.productConstraintModel-meta.xml"] },
+        "test":      { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/TelcoNetworkActivationQueueableTest.cls", "force-app/main/default/classes/CreateFieldServiceWorkOrderTest.cls", "force-app/main/default/classes/EnqueueNetworkActivationTest.cls"] },
         "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
       },
       "userStories": [
