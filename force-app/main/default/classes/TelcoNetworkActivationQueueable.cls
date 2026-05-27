@@ -21,15 +21,17 @@ public class TelcoNetworkActivationQueueable implements Queueable, Database.Allo
         ];
 
         // Find linked Asset for this order item
-        Asset asset = [
+        List<Asset> assets = [
             SELECT Id, IMEI_Scanned__c FROM Asset
             WHERE OrderItemId__c = :orderItemId LIMIT 1
         ];
 
-        if (!asset.IMEI_Scanned__c) {
-            // IMEI not yet scanned — do not activate. 24-hour escalation timer handled separately.
+        if (assets.isEmpty() || !assets[0].IMEI_Scanned__c) {
+            // No asset found or IMEI not yet scanned — do not activate.
             return;
         }
+
+        Asset asset = assets[0];
 
         try {
             // Named Credential handles auth — no hardcoded URLs (SOUL R-05)
@@ -65,16 +67,18 @@ public class TelcoNetworkActivationQueueable implements Queueable, Database.Allo
 
     private void retry(OrderItem item) {
         if (attemptNumber < MAX_ATTEMPTS) {
-            // Exponential backoff via re-enqueue
-            System.enqueueJob(new TelcoNetworkActivationQueueable(orderItemId, attemptNumber + 1));
+            if (!Test.isRunningTest()) {
+                System.enqueueJob(new TelcoNetworkActivationQueueable(orderItemId, attemptNumber + 1));
+            }
         } else {
             // All retries exhausted — create Case for Network Ops
             OrderItem failed = new OrderItem(Id = orderItemId, Network_Status__c = 'Failed');
             update failed;
+            List<Group> queues = [SELECT Id FROM Group WHERE DeveloperName = 'Network_Ops_Queue' AND Type = 'Queue' LIMIT 1];
             Case escalation = new Case(
                 Subject     = 'Activation Failed — Order ' + item.Order.OrderNumber,
                 Description = 'TelcoNetworkActivationQueueable exhausted 3 retry attempts. Manual intervention required.',
-                OwnerId     = [SELECT Id FROM Group WHERE DeveloperName = 'Network_Ops_Queue' AND Type = 'Queue' LIMIT 1].Id
+                OwnerId     = queues.isEmpty() ? UserInfo.getUserId() : queues[0].Id
             );
             insert escalation;
         }

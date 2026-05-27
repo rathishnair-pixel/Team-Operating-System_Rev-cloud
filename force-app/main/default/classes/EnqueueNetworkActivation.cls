@@ -7,7 +7,7 @@ public with sharing class EnqueueNetworkActivation {
 
     public class ActivationRequest {
         @InvocableVariable(label='Order Item Id' required=true)
-        public String orderItemId;
+        public Id orderItemId;
     }
 
     @InvocableMethod(
