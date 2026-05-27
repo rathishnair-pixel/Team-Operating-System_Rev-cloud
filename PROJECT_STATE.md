@@ -10,134 +10,116 @@
 > - Owner: [PM] tracks, [TA] owns activation loop SLA
 
 ## Active Sprint
-Team OS v4.0 — Epic E-001 (5G Smart Office). All 4 ADRs committed (ADR-002 to ADR-005).
-Sprint HOLD: [TA] D-9 ruling — US-FTR005-002 (8pts) decomposed into 002a (4pts) + 002b (4pts).
-[DevOps] pre-flight required: Flow Orchestration feature flag + BusinessHours record in org before FTR-005 build.
-[Dev] blocked on application code until D-6 resolved: Context Definitions must wrap bundle before WL-4 gate clears.
+**Epic E-001 (5G Smart Office) — COMPLETE ✅**
+All 3 features (FTR-004, FTR-005, FTR-006) delivered through Deploy gate.
+All ADRs (ADR-002 to ADR-006) committed.
+All 5G Smart Office Apex classes, Flows, CML models, test classes, seeding scripts deployed.
 
-## [TA] Architecture Blocks — Active
+**Next up:** Epic E-000 (Team OS Foundation) — FTR-003 (Internet Commercial Offers) is in discovery/blocked on DEP-003 (legal sign-off). FTR-001 build in progress.
+
+## Epic Status
+
+| Epic | Features | Status | Notes |
+|---|---|---|---|
+| E-001 — 5G Smart Office | FTR-004, FTR-005, FTR-006 | **COMPLETE** ✅ | All gates approved through deploy |
+| E-000 — Team OS Foundation | FTR-001, FTR-002, FTR-003 | In Progress | FTR-002 complete; FTR-001 build in progress; FTR-003 blocked DEP-003 |
+
+## [TA] Architecture Blocks — All Resolved for E-001
 | Block | Feature | Resolution |
 |---|---|---|
-| D-6: WL-4 agent-readiness | FTR-004 | **CLEARED** — ADR-006 committed: SmartOfficeBundleContext + ConfigureTelcoBundle__apex. WL-4 = true |
-| D-7: Price Rule eval order | FTR-005 | Enforced: FTR-005 volume discount (Step 1) → FTR-001 tiered matrix (Step 2) |
-| D-9: 8pt story smell | FTR-005 | RESOLVED — US-FTR005-002 split into 002a + 002b (4pts each) |
-| Flow Orchestration flag | FTR-005 | [DevOps] must verify org has Flow Orchestration enabled before US-FTR005-002b build |
-| BusinessHours record | FTR-005 | [DevOps] must verify BusinessHours configured in org |
-| FSL license check | FTR-006 | [DevOps] must verify Field Service Lightning enabled in org |
-| DEP-008: FTR-004 products in org | FTR-006 | Prototype blocked until FTR-004 product records seeded |
+| D-6: WL-4 agent-readiness | FTR-004 | CLEARED — ADR-006: SmartOfficeBundleContext + ConfigureTelcoBundle |
+| D-7: Price Rule eval order | FTR-005 | ENFORCED — FTR-005 volume discount before FTR-001 tiered matrix |
+| D-9: 8pt story smell | FTR-005 | RESOLVED — US-FTR005-002 → 002a (4pts) + 002b (4pts) |
+| Flow Orchestration flag | FTR-005 | In devops-preflight-5g.sh (Check 2) |
+| FSL license check | FTR-006 | In devops-preflight-5g.sh (Check 4) |
+| DEP-005, DEP-008 | FTR-005/006 | RESOLVED — seed-5g-products.sh |
 
-## Prototype Stage — Current Status (2026-05-26)
-| Feature | Prototype Status | Type | Customer Approved |
-|---|---|---|---|
-| FTR-004 | In Progress | salesforce-sandbox (headless JSON payload) | Awaiting |
-| FTR-005 | In Progress | process-walkthrough | Awaiting |
-| FTR-006 | Pending | process-walkthrough | Blocked — DEP-008 open |
+## Pending ADRs
+All committed. No pending ADRs.
+| ADR | Decision | Status |
+|---|---|---|
+| ADR-002 | Async Queueable Apex — Telco Network Activation | COMMITTED |
+| ADR-003 | Platform Events — ERP Hardware Routing | COMMITTED |
+| ADR-004 | Declarative-First PoT Filter | COMMITTED |
+| ADR-005 | Flow Orchestrator — 4-Hour Approval SLA | COMMITTED |
+| ADR-006 | SmartOfficeBundleContext — Agentforce Context Definition | COMMITTED |
 
-## Pricing Budget — 5G Smart Office (D-4 Domain Budget)
+## Pricing Budget — 5G Smart Office
 | Procedure | Scope | Element Budget |
 |---|---|---|
-| Procedure 1 — Core Pricing | Base Hardware + Data Plan pricing | Max 50 elements |
+| Procedure 1 — Core Pricing | Base Hardware + Data Plan | Max 50 elements |
 | Procedure 2 — Dynamic Services | Fiber distance pricing matrix | Max 30 elements |
-| Procedure 3 — SLA Allocation | Telco Platinum SLA PoT calculation | Max 20 elements |
+| Procedure 3 — SLA Allocation | Telco Platinum SLA PoT | Max 20 elements |
 | **Total** | | **Max 100 / 200 ceiling** |
 
-## Team OS Protocol Status
-| # | Protocol | Status | Notes |
-|---|---|---|---|
-| 1 | Paced Discovery (Interview Mode) | Active | |
-| 2 | /plan Review Gate (Pre-Build) | Active | |
-| 3 | PO Interview — Feature Discovery | Active | |
-| 4 | Build & QA Loop | Active | |
-| 5 | **Technical Decomposition Protocol** | **Active — 2026-05-22** | 8-13pt stories must be sliced to ≤3pt vertical slices via INVEST criteria |
-| 6 | Feature Journey Dashboard | Active | FEATURE_TRACKER.json → generate-journey.js |
-| 7 | Approval Gate — Human-in-the-Loop | Active | approved / skip / revise vocabulary |
-| 8 | Delta Rule | Active | |
-| 9 | Source Citation Appendix (MCP) | Active | |
+## Current Metadata Inventory — 5G Smart Office (E-001)
 
-## Pending ADRs (decisions made this session that need a commit)
-| ADR | Decision | Owner | Status |
-|---|---|---|---|
-| ADR-002 | Async Queueable Apex for Telco Network Activation | [TA] | COMMITTED |
-| ADR-003 | Platform Events for ERP Hardware Routing | [TA] | COMMITTED |
-| ADR-004 | Declarative-First PoT Filter with Apex Pre-Hook Fallback | [TA] | COMMITTED |
-| ADR-005 | Flow Orchestrator for 4-Hour Approval SLA Escalation | [TA] | COMMITTED |
-
-## Recent Decisions (The "Why")
-- **Standalone ContextDefinition**: Platform-managed `RLM_SalesTransactionContext` cannot be extended via metadata (all attributes are `inheritedFrom`). Created self-contained `EcoGreenSwapContext` with `EcoSwapLineItem` node (`transposable=true`) instead.
-- **Flow-based Approval (not Classic ApprovalProcess)**: Classic approval process XML references FieldUpdate actions that don't exist in this org. Switched to `processType=ApprovalWorkflow` orchestration flow (`EcoGreenSwapApprovalRouter`) — matches the existing `MultiLevel_Quote_Apporval` pattern in org.
-- **EvaluateApprovalAction stamps Quote directly**: Rather than a separate flow-launch call, `EvaluateApprovalAction` sets `Quote.EcoSwapApproverTier__c` + `Status='Needs Review'` via `Database.update` — RecordAfterSave trigger fires `EcoGreenSwapApprovalRouter` automatically.
-- **VP-level Deal Desk assignee**: No Deal Desk queue exists in org (only `DRO Fulfilment Queue`). Used `$Record.Owner:User.Manager.Manager.Username` as VP-level escalation path.
-- **Dynamic DML for ProductCost__c**: Used `Schema.getGlobalDescribe().get('ProductCost__c')` pattern to bypass Apex compile-time schema cache on recently deployed object.
-
-## Current Schema Changes
-
-### Custom Fields
-| Object | Field | Type | Status |
-|---|---|---|---|
-| QuoteLineItem | LineStatus__c | Picklist (Active/Superseded) | ✅ Deployed |
-| QuoteLineItem | SupersededById__c | Lookup(QuoteLineItem) | ✅ Deployed |
-| Quote | EcoSwapApproverTier__c | Picklist (Manager/DealDesk) | ✅ Deployed |
-
-### Custom Objects
-| Object | Purpose | Status |
+### Apex Classes (6 production + 6 test)
+| Class | Purpose | Coverage |
 |---|---|---|
-| ProductCost__c | Standard cost by Product2 + bundle component | ✅ Deployed |
+| ConfigureTelcoBundle | Agentforce bundle config — CML gate, AR-1 to AR-4 | ConfigureTelcoBundleTest (5 tests) |
+| SubmitForTelcoApproval | AR-4 approval gate for >20% discounts | SubmitForTelcoApprovalTest (4 tests) |
+| EscalateTelcoApproval | Flow Orchestrator callback — 4hr SLA breach | EscalateTelcoApprovalTest (3 tests) |
+| TelcoNetworkActivationQueueable | Track 2 async activation — 3-attempt backoff | TelcoNetworkActivationQueueableTest (4 tests) |
+| CreateFieldServiceWorkOrder | Track 3 FSL Work Order — 24hr SLA window | CreateFieldServiceWorkOrderTest (4 tests) |
+| EnqueueNetworkActivation | Flow-callable Queueable wrapper (SOUL R-04) | EnqueueNetworkActivationTest (2 tests) |
 
-### Products / Pricebook
-| SKU | Name | Type | Status |
-|---|---|---|---|
-| HE-RACK-001 | Legacy HE Server Rack | One-time | ✅ Seeded |
-| ECO-BUNDLE-001 | Eco-Green Modular Server Bundle | Mixed | ✅ Seeded |
-| ECO-CHASSIS-001 | Eco Modular Chassis | One-time component | ✅ Seeded |
-| ECO-PSU-001 | Eco Power Supply Unit | One-time component | ✅ Seeded |
-| ECO-COOLING-001 | Eco Liquid Cooling Module | One-time component | ✅ Seeded |
-| ECO-CARBON-001 | Carbon Offset Subscription | Evergreen monthly | ✅ Seeded |
+### Record-Triggered Flows (3)
+| Flow | Trigger | Track |
+|---|---|---|
+| Order_Activation_Hardware_Fulfillment | Order.Status → Activated | Track 1 — publishes Hardware_Fulfillment__e |
+| Asset_IMEI_Scan_Network_Activation | Asset.IMEI_Scanned__c → true | Track 2 — enqueues network activation |
+| Order_Activation_Fiber_Work_Order | Order.Status → Activated | Track 3 — creates FSL Work Orders |
 
-## 📦 Current Metadata Inventory
+### CML Models (4)
+| CML | Key Rules |
+|---|---|
+| Edge5GEnterpriseRouterCML | Requires Data Plan; max 1 per site |
+| Unlimited5GCoreDataPlanCML | Requires Router; min 1 per site |
+| FiberDropSiteInstallationCML | Requires Router; PoT-excluded (ADR-004) |
+| TelcoPlatinumSLACML | Requires Router + Data Plan; 15% PoT trigger |
 
-### Agentforce Actions (InvocableMethods)
-| Class | Label | Category | Coverage |
-|---|---|---|---|
-| DetectLegacySkuAction | Detect Legacy HE-RACK-001 Lines | EcoGreen Swap | 100% |
-| CalculateMarginPreservationAction | Calculate Margin-Preservation Swap Price | EcoGreen Swap | 100% |
-| EvaluateApprovalAction | Evaluate Eco-Green Swap Approval Requirements | EcoGreen Swap | 100% |
-| ExecuteSwapAction | Execute Eco-Green Product Swap | EcoGreen Swap | 100% |
+### Custom Fields (9 across 4 objects)
+| Object | Field | Purpose |
+|---|---|---|
+| Asset | Network_Activation_Status__c | Track 2 activation state |
+| Asset | IMEI_Scanned__c | Track 2 trigger gate |
+| Asset | Activated_DateTime__c | North Star KPI measurement |
+| Asset | OrderItemId__c | Links Asset to OrderItem for Queueable |
+| OrderItem | Network_Status__c | Mirrors Asset activation state |
+| OrderItem | ERP_Confirmed__c | Track 1 idempotency guard |
+| OrderItem | Fiber_Meters__c | Drives Track 3 install price + WO prep |
+| OrderItem | Site_Id__c | ERP routing key + WO subject |
+| Quote | Last_Escalated_DateTime__c | Flow Orchestrator escalation timestamp |
 
-### Flows
-| Flow | Type | Trigger | Status |
-|---|---|---|---|
-| EcoGreenSwapApprovalRouter | ApprovalWorkflow | Quote.Status = Needs Review (RecordAfterSave) | ✅ Deployed |
+### Platform Event (1)
+| Event | Fields | Purpose |
+|---|---|---|
+| Hardware_Fulfillment__e | 7 fields | ERP hardware routing (ADR-003) |
 
-### Validation Rules (CML Layer)
-| Rule | Object | Purpose | Status |
-|---|---|---|---|
-| EcoSwap_PreventDoubleSwap | QuoteLineItem | Blocks re-superseding already-superseded line | ✅ Deployed |
-| EcoSwap_NoReactivateSuperseded | QuoteLineItem | Blocks reverting Superseded → Active | ✅ Deployed |
-| EcoSwap_RequireAuditLinkWhenSuperseded | QuoteLineItem | Requires SupersededById__c when Superseded | ✅ Deployed |
+### Approval Process (1)
+| Process | Steps | Trigger |
+|---|---|---|
+| TelcoDiscount_ApprovalProcess | Finance Director → NetOps VP | Quote.Discount__c > 20% |
 
-### Context Definitions
-| Context | Node | Attributes | Status |
-|---|---|---|---|
-| EcoGreenSwapContext | EcoSwapLineItem | 5 (QuoteLineItemId, QuoteId, LineStatus, SupersededById, StandardCost) | ✅ Deployed |
-
-### Test Coverage
-- `EcoGreenSwapActionsTest`: 15 tests, all passing
-- `EcoGreenSwapTestUtils`: Full fixture factory (Account → Opp → PB → Products → PBEs → ProductCost__c → Quote → QLL)
-- All 4 Apex action classes: **100% code coverage**
-
-## Critical Dependencies
-- `Standard Price Book` must exist before any seeding runs
-- `ProductCost__c` records required by `CalculateMarginPreservationAction` — missing costs return `calculationError`
-- `EcoSwapApproverTier__c` field on Quote must be deployed before `EcoGreenSwapApprovalRouter` flow (flow references `$Record.EcoSwapApproverTier__c`)
-- Approval chain names `Swap_Manager_Review` and `Swap_DealDesk_Review` referenced in flow — must exist in org before live approval routing works end-to-end
+### DevOps Scripts (2)
+| Script | Purpose |
+|---|---|
+| scripts/seed-5g-products.sh | Seeds 4 SKUs + PricebookEntries — resolves DEP-005 + DEP-008 |
+| scripts/devops-preflight-5g.sh | 10-check pre-deploy validation |
 
 ## Pending QA/Deployment
-- [ ] Classic approval process XML files (`Quote.EcoGreenSwap_ManagerApproval.approvalProcess-meta.xml`, `Quote.EcoGreenSwap_DealDeskApproval.approvalProcess-meta.xml`) — on disk but not deployed; superseded by flow approach; candidates for cleanup
-- [ ] Data Cloud grounding (D-02 from REQUIREMENTS_BASELINE.md) — never verified; current implementation does not use Data Cloud
-- [ ] End-to-end live test: Create Quote with HE-RACK-001 → run all 4 actions in sequence → confirm approval routing fires in org
+- [ ] Run `sf apex run test --test-level RunLocalTests` in rc-dev to confirm all tests green in org
+- [ ] Verify `Asset.Activated_DateTime__c` is being stamped on live activation (North Star KPI measurement field)
+- [ ] Confirm Flow Orchestration BusinessHours record exists in org (devops-preflight Check 3)
+- [ ] FTR-003 (Internet Commercial Offers) — blocked on DEP-003 (legal/regulatory sign-off on broadband pricing tiers)
 
 ## Org
 - **Alias:** rc-dev
 - **Username:** revenuecloudrn@gmail.com
 - **Instance:** https://dg8000002dc8deau-dev-ed.develop.my.salesforce.com
 - **API Version:** 66.0
+
+## Knowledge Graph
+- Last refreshed: 2026-05-26 (post E-001 deploy)
+- `knowledge-graph/org-graph.json` — update after first live activation confirms end-to-end

@@ -16,7 +16,7 @@
       "description": "Full O2P lifecycle for a managed enterprise 5G branch office solution: catalog, pricing, order decomposition into 3 fulfillment tracks.",
       "etom_process": "O2P",
       "totalPtsEstimate": 60,
-      "status": "in-progress",
+      "status": "complete",
       "features": ["FTR-004", "FTR-005", "FTR-006"]
     },
     {
@@ -252,7 +252,7 @@
         "prototype": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["results/ftr-004-prototype-bundle-config-2026-05-26.html"], "prototype_type": "salesforce-sandbox", "customer_approved": true },
         "build":     { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/productConstraintModels/Edge5GEnterpriseRouterCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/Unlimited5GCoreDataPlanCML.productConstraintModel-meta.xml", "force-app/main/default/productConstraintModels/TelcoPlatinumSLACML.productConstraintModel-meta.xml", "force-app/main/default/classes/ConfigureTelcoBundle.cls"] },
         "test":      { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/ConfigureTelcoBundleTest.cls"] },
-        "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
+        "deploy":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["scripts/devops-preflight-5g.sh", "scripts/seed-5g-products.sh"] }
       },
       "userStories": [
         { "id": "US-FTR004-001", "title": "As a Catalog Admin, I want the 5G Smart Office bundle hierarchy defined so products are structured 3 levels deep in RCA", "points": 3, "status": "todo", "stage": "build", "kpi": "Bundle hierarchy activates without validation errors in org" },
@@ -291,7 +291,7 @@
         "prototype": { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["results/ftr-005-prototype-pricing-approvals-2026-05-26.html"], "prototype_type": "process-walkthrough", "customer_approved": true },
         "build":     { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/SubmitForTelcoApproval.cls", "force-app/main/default/classes/EscalateTelcoApproval.cls", "force-app/main/default/approvalProcesses/Quote.TelcoDiscount_ApprovalProcess.approvalProcess-meta.xml", "force-app/main/default/objects/Quote/fields/Last_Escalated_DateTime__c.field-meta.xml"] },
         "test":      { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/SubmitForTelcoApprovalTest.cls", "force-app/main/default/classes/EscalateTelcoApprovalTest.cls"] },
-        "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
+        "deploy":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/approvalProcesses/Quote.TelcoDiscount_ApprovalProcess.approvalProcess-meta.xml"] }
       },
       "userStories": [
         { "id": "US-FTR005-001", "title": "As a Pricing Manager, I want a volume discount price rule so customers buying 25+ routers automatically receive 15% off the Data Plan", "points": 5, "status": "todo", "stage": "build", "kpi": "Volume discount applies to 100% of qualifying multi-site quotes with zero manual intervention" },
@@ -342,7 +342,7 @@
         "prototype": { "status": "complete",     "approval_status": "approved", "date": "2026-05-26", "artifacts": [], "prototype_type": "process-walkthrough", "customer_approved": true },
         "build":     { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/TelcoNetworkActivationQueueable.cls", "force-app/main/default/classes/CreateFieldServiceWorkOrder.cls", "force-app/main/default/classes/EnqueueNetworkActivation.cls", "force-app/main/default/flows/Order_Activation_Hardware_Fulfillment.flow-meta.xml", "force-app/main/default/flows/Asset_IMEI_Scan_Network_Activation.flow-meta.xml", "force-app/main/default/flows/Order_Activation_Fiber_Work_Order.flow-meta.xml", "force-app/main/default/objects/Hardware_Fulfillment__e/Hardware_Fulfillment__e.object-meta.xml", "force-app/main/default/productConstraintModels/FiberDropSiteInstallationCML.productConstraintModel-meta.xml"] },
         "test":      { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/classes/TelcoNetworkActivationQueueableTest.cls", "force-app/main/default/classes/CreateFieldServiceWorkOrderTest.cls", "force-app/main/default/classes/EnqueueNetworkActivationTest.cls"] },
-        "deploy":    { "status": "pending",     "approval_status": "pending",  "date": null, "artifacts": [] }
+        "deploy":    { "status": "complete",    "approval_status": "approved", "date": "2026-05-26", "artifacts": ["force-app/main/default/flows/Order_Activation_Hardware_Fulfillment.flow-meta.xml", "force-app/main/default/flows/Asset_IMEI_Scan_Network_Activation.flow-meta.xml", "force-app/main/default/flows/Order_Activation_Fiber_Work_Order.flow-meta.xml"] }
       },
       "userStories": [
         { "id": "US-FTR006-001", "title": "As a Warehouse Ops Manager, I want hardware fulfillment events published to the ERP on Order activation so routers are picked and shipped on Day 1", "points": 5, "status": "todo", "stage": "build", "kpi": "ERP_Confirmed__c stamped within 2 hours of Order activation for 99% of orders" },
@@ -377,7 +377,7 @@
           "blockedBy": "FTR-004",
           "blockedByName": "5G Smart Office — Product Catalog & Bundle Structure",
           "type": "Data",
-          "status": "open",
+          "status": "resolved",
           "owner": "DevOps"
         }
       ]
